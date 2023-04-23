@@ -19,6 +19,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Basic query parser infrastructure.
@@ -29,6 +30,7 @@ import java.util.List;
  */
 public class Parser {
   private static final int[] NO_BINDS = new int[0];
+  private static final char[] chars = new char[]{' ', '\n', '\r', '\t'};
 
   /**
    * Parses JDBC query into PostgreSQL's native format. Several queries might be given if separated
@@ -58,6 +60,7 @@ public class Parser {
 
     int fragmentStart = 0;
     int inParen = 0;
+    int inBeginEnd = 0;
 
     char[] aChars = query.toCharArray();
 
@@ -82,6 +85,12 @@ public class Parser {
     int keyWordCount = 0;
     int keywordStart = -1;
     int keywordEnd = -1;
+
+    String queryTemp = query.trim();
+    queryTemp = queryTemp.replaceAll("\\s+", "\0");
+    String[] queryArr = queryTemp.split("\0");
+    boolean haveSpecialKeyword = isContainSpecialKeyword(queryArr);
+
     /*
     loop through looking for keywords, single quotes, double quotes, comments, dollar quotes,
     parenthesis, ? and ;
@@ -107,7 +116,82 @@ public class Parser {
           break;
 
         case '/': // possibly /* */ style comment
+          int j = i;
           i = Parser.parseBlockComment(aChars, i);
+          if (j != i) {
+            break;
+          }
+          if (i < aChars.length - 1 && "*".equals(String.valueOf(aChars[i + 1]))) {
+            break;
+          }
+          if (i > 1 && "*".equals(String.valueOf(aChars[i - 1]))) {
+            break;
+          }
+          if (inBeginEnd > 0) {
+            break;
+          }
+          if (!haveSpecialKeyword) {
+            break;
+          }
+
+          if (i > 1 && ("\n".equals(String.valueOf(aChars[i - 1]))
+              || " ".equals(String.valueOf(aChars[i - 1])))) {
+
+            if (inParen == 0) {
+              if (!whitespaceOnly) {
+                numberOfStatements++;
+                nativeSql.append(aChars, fragmentStart, i - fragmentStart);
+                whitespaceOnly = true;
+              }
+              fragmentStart = i + 1;
+              if (nativeSql.length() > 0) {
+                if (addReturning(nativeSql, currentCommandType, returningColumnNames,
+                    isReturningPresent,
+                    quoteReturningIdentifiers)) {
+                  isReturningPresent = true;
+                }
+
+                if (splitStatements) {
+                  if (nativeQueries == null) {
+                    nativeQueries = new ArrayList<NativeQuery>();
+                  }
+
+                  if (!isValuesFound || !isCurrentReWriteCompatible
+                      || valuesParenthesisClosePosition == -1
+                      || (bindPositions != null && valuesParenthesisClosePosition < bindPositions
+                          .get(bindPositions.size() - 1))) {
+                    valuesParenthesisOpenPosition = -1;
+                    valuesParenthesisClosePosition = -1;
+                  }
+
+                  inBeginEnd = 0;
+                  nativeQueries
+                      .add(new NativeQuery(nativeSql.toString(), toIntArray(bindPositions), false,
+                          SqlCommand.createStatementTypeInfo(currentCommandType,
+                              isBatchedReWriteConfigured,
+                              valuesParenthesisOpenPosition, valuesParenthesisClosePosition,
+                              isReturningPresent, nativeQueries.size())));
+                }
+              }
+              prevCommandType = currentCommandType;
+              isReturningPresentPrev = isReturningPresent;
+              currentCommandType = SqlCommandType.BLANK;
+              isReturningPresent = false;
+              if (splitStatements) {
+                // Prepare for next query
+                if (bindPositions != null) {
+                  bindPositions.clear();
+                }
+                nativeSql.setLength(0);
+                isValuesFound = false;
+                isCurrentReWriteCompatible = false;
+                valuesParenthesisOpenPosition = -1;
+                valuesParenthesisClosePosition = -1;
+                valuesParenthesisCloseFound = false;
+              }
+            }
+            break;
+          }
           break;
 
         case '$': // possibly dollar quote start
@@ -146,6 +230,11 @@ public class Parser {
           break;
 
         case ';':
+
+          if (haveSpecialKeyword) {
+            break;
+          }
+
           // we don't split the queries if BEGIN ATOMIC is present
           if (!isBeginAtomicPresent && inParen == 0) {
             if (!whitespaceOnly) {
@@ -197,6 +286,30 @@ public class Parser {
             }
           }
           break;
+
+        case 'b':
+        case 'B':
+          if (i + 5 < aChars.length && i - 1 > 0) {
+            if ("E".equalsIgnoreCase(String.valueOf(aChars[i + 1]))
+                && "G".equalsIgnoreCase(String.valueOf(aChars[i + 2]))
+                && "I".equalsIgnoreCase(String.valueOf(aChars[i + 3]))
+                && "N".equalsIgnoreCase(String.valueOf(aChars[i + 4]))
+                && isSpecialCharacters(aChars[i - 1])
+                && isSpecialCharacters(aChars[i + 5])) {
+              inBeginEnd++;
+            }
+          }
+          break;
+        case 'e':
+        case 'E':
+          if (i + 2 < aChars.length) {
+            if ("N".equalsIgnoreCase(String.valueOf(aChars[i + 1]))
+                && "D".equalsIgnoreCase(String.valueOf(aChars[i + 2]))) {
+              int[] result = parseEnd(i, aChars, inBeginEnd);
+              i = result[0];
+              inBeginEnd = result[1];
+            }
+          }
 
         default:
           if (keywordStart >= 0) {
@@ -472,6 +585,90 @@ public class Parser {
     }
 
     return query.length;
+  }
+
+  public static boolean isSpecialCharacters(char aChar) {
+    for (char specialChar : chars) {
+      if (specialChar == aChar) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /**
+   * Judge if keyword contains END str. like END or END; or *;END;*
+   *
+   * @param keyword upperCase string
+   * @return true if contains END str.
+   */
+  private static boolean isPackageEnd(String keyword) {
+    final String search = "END";
+    final char compareChar = ';';
+    if (search.equals(keyword)) {
+      return true;
+    }
+    int position = keyword.indexOf(search);
+    if (position == -1) {
+      return false;
+    }
+    if (position != 0 && keyword.charAt(position - 1) != compareChar) {
+      return false;
+    }
+    int lastPos = position + search.length();
+    if (lastPos != keyword.length() && keyword.charAt(lastPos) != compareChar) {
+      return false;
+    }
+    return true;
+  }
+
+  /**
+   * Judge whether the statement contains the keywords procedure, function, create, package and
+   * declare
+   *
+   * @param queryArr An array of strings consisting of SQL statements
+   * @return boolean
+   */
+  private static boolean isContainSpecialKeyword(final String[] queryArr) {
+    if (queryArr[0].toUpperCase(Locale.ENGLISH).equals("BEGIN")) {
+      return true;
+    }
+    boolean haveCreate = false;
+    boolean havePackage = false;
+    for (int i = 0; i < queryArr.length; i++) {
+      if (queryArr[i] == null) {
+        continue;
+      }
+      String upperQuery = queryArr[i].toUpperCase(Locale.ENGLISH);
+      switch (upperQuery) {
+        case "PROCEDURE":
+        case "FUNCTION":
+        case "DECLARE":
+          return true;
+        case "CREATE":
+          if (i == 0) {
+            haveCreate = true;
+          }
+          break;
+        case "PACKAGE":
+          havePackage = true;
+          break;
+        case "END":
+          if (haveCreate && havePackage) {
+            // Case : create package tn end is end tn;
+            return true;
+          }
+          break;
+        default:
+          if (haveCreate && havePackage) {
+            if (isPackageEnd(upperQuery)) {
+              return true;
+            }
+          }
+          break;
+      }
+    }
+    return false;
   }
 
   /**
@@ -1444,7 +1641,49 @@ public class Parser {
         PSQLState.SYNTAX_ERROR);
   }
 
-  private static int escapeFunction(char[] sql, int i, StringBuilder newsql, boolean stdStrings) throws SQLException {
+  /**
+   * Judge whether the current end is the end paired with begin
+   */
+  private static int[] parseEnd(final int offset, final char[] query, final int inBeginEnd) {
+    int tempOffset = offset;
+    int tempInBeginEnd = inBeginEnd;
+    tempOffset = tempOffset + 3;
+    while (tempOffset < query.length) {
+      if (isSpecialCharacters(query[tempOffset])) {
+        tempOffset++;
+      } else if ("-".equals(String.valueOf(query[tempOffset]))) {
+        int temp = tempOffset;
+        tempOffset = Parser.parseLineComment(query, tempOffset);
+        if (temp == tempOffset) {
+          tempOffset++;
+        }
+      } else if ("/".equals(String.valueOf(query[tempOffset]))) {
+        int temp = tempOffset;
+        temp = Parser.parseBlockComment(query, temp);
+        if (tempOffset != temp) {
+          tempOffset = temp + 1;
+        } else {
+          // Not a slash for a comment
+          tempOffset--;
+          tempInBeginEnd--;
+          break;
+        }
+      } else if (";".equals(String.valueOf(query[tempOffset]))
+          || (tempOffset + 1 < query.length && "$$".equals(
+              String.valueOf(query[tempOffset]) + query[tempOffset + 1]))) {
+        // This is the end paired with begin
+        tempInBeginEnd--;
+        break;
+      } else {
+        tempOffset--;
+        break;
+      }
+    }
+    return new int[]{tempOffset, tempInBeginEnd};
+  }
+
+  private static int escapeFunction(char[] sql, int i, StringBuilder newsql, boolean stdStrings)
+      throws SQLException {
     String functionName;
     int argPos = findOpenParenthesis(sql, i);
     if (argPos < sql.length) {
