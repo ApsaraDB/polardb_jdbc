@@ -179,6 +179,10 @@ public class PgConnection implements BaseConnection {
   // Bind String to UNSPECIFIED or VARCHAR?
   private final boolean bindStringAsVarchar;
 
+  /* POLAR DIFF */
+  private boolean mapDateToTimestamp = false;
+  /* POLAR DIFF END */
+
   // Current warnings; there might be more on queryExecutor too.
   private @Nullable SQLWarning firstWarning;
 
@@ -248,6 +252,9 @@ public class PgConnection implements BaseConnection {
     if (prepareThreshold == -1) {
       setForceBinary(true);
     }
+
+    /* POLAR: set some parameters. */
+    polarSetParameters(info);
 
     // Now make the initial connection and set up local state
     this.queryExecutor = ConnectionFactory.openConnection(hostSpecs, info);
@@ -469,6 +476,12 @@ public class PgConnection implements BaseConnection {
   }
 
   private final TimestampUtils timestampUtils;
+
+  /* POLAR: set some parameters */
+  private void polarSetParameters(Properties info) {
+    // new add parameters
+    this.mapDateToTimestamp = PGProperty.MAP_DATE_TO_TIMESTAMP.getBoolean(info);
+  }
 
   @Deprecated
   public TimestampUtils getTimestampUtils() {
@@ -1936,5 +1949,9 @@ public class PgConnection implements BaseConnection {
     }
     this.xmlFactoryFactory = xmlFactoryFactory;
     return xmlFactoryFactory;
+  }
+
+  public boolean isMapDateToTimestamp() {
+    return mapDateToTimestamp;
   }
 }

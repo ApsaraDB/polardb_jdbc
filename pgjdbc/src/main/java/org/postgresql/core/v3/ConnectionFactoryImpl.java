@@ -918,6 +918,25 @@ public class ConnectionFactoryImpl extends ConnectionFactory {
       SetupQueryRunner.run(queryExecutor, "SET extra_float_digits = 3", false);
     }
 
+    /*
+     * POLARDB DIFF Reset nls_xxx_format like dateStyle to make sys.date\timestamp\timestamptz data
+     * correct Setting this via SQL instead of the standard StartupMessages (like dateStyle) is to
+     * ensure compatibility with older versions.
+     */
+    if (PGProperty.RESET_NLS_FORMAT.getBoolean(info)) {
+      String paramSetSql =
+          "SELECT pg_catalog.set_config(name,'%s','f') FROM pg_catalog.pg_settings WHERE name = '%s' ";
+
+      SetupQueryRunner.run(queryExecutor,
+          String.format(paramSetSql, "YYYY-MM-DD HH24:MI:SS", "nls_date_format"), false);
+      SetupQueryRunner.run(queryExecutor,
+          String.format(paramSetSql, "YYYY-MM-DD HH24:MI:SS.FF", "nls_timestamp_format"), false);
+      SetupQueryRunner.run(queryExecutor,
+          String.format(paramSetSql, "YYYY-MM-DD HH24:MI:SS.FFTZH", "nls_timestamp_tz_format"),
+          false);
+    }
+    /* POLARDB end */
+
     String appName = PGProperty.APPLICATION_NAME.getOrDefault(info);
     if (appName != null && dbVersion >= ServerVersion.v9_0.getVersionNum()) {
       StringBuilder sql = new StringBuilder();

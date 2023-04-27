@@ -236,4 +236,9 @@ public interface BaseConnection extends PGConnection, Connection {
    * @return true if should be included and passed on to other exceptions
    */
   boolean getLogServerErrorDetail();
+
+  /**
+   * POLARDB DIFF
+   */
+  boolean isMapDateToTimestamp();
 }

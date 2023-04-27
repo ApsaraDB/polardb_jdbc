@@ -779,6 +779,25 @@ public enum PGProperty {
       "",
       "Factory class to instantiate factories for XML processing"),
 
+  COMP_MODE(
+      "compMode",
+      "polardb",
+      "PolarDB compatibility mode",
+      false,
+      new String[]{"polardb", "oracle", "postgresql"}),
+
+  MAP_DATE_TO_TIMESTAMP(
+      "mapDateToTimestamp",
+      "true",
+      "Map date to timestamp.",
+      false),
+
+  RESET_NLS_FORMAT(
+      "resetNlsFormat",
+      "true",
+      "Reset nls_timestamp_format/nls_timestamptz_format/nls_date_format at connection startup",
+      false),
+
   ;
 
   private final String name;

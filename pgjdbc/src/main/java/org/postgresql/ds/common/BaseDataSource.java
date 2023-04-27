@@ -1835,4 +1835,20 @@ public abstract class BaseDataSource implements CommonDataSource, Referenceable 
   public boolean isReWriteBatchedInserts() {
     return getReWriteBatchedInserts();
   }
+
+  public boolean getResetNlsFormat() {
+    return PGProperty.RESET_NLS_FORMAT.getBoolean(properties);
+  }
+
+  public void setResetNlsFormat(boolean resetNlsFormat) {
+    PGProperty.RESET_NLS_FORMAT.set(properties, resetNlsFormat);
+  }
+
+  public boolean getMapDateToTimestamp() {
+    return PGProperty.MAP_DATE_TO_TIMESTAMP.getBoolean(properties);
+  }
+
+  public void setMapDateToTimestamp(boolean mapDateToTimestamp) {
+    PGProperty.MAP_DATE_TO_TIMESTAMP.set(properties, mapDateToTimestamp);
+  }
 }

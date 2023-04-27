@@ -92,6 +92,11 @@ public class Oid {
   public static final int TSVECTOR = 3614;
   public static final int TSQUERY = 3615;
 
+  /* POLAR DIFF */
+  public static final int ORADATE = 9002;
+  public static final int ORADATE_ARRAY = 9008;
+  /* POLAR end */
+
   private static final Map<Integer, String> OID_TO_NAME = new HashMap<>(100);
   private static final Map<String, Integer> NAME_TO_OID = new HashMap<>(100);
 

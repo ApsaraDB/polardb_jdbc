@@ -1014,5 +1014,13 @@ public abstract class AbstractArraysTest<A> {
     public boolean getLogServerErrorDetail() {
       return false;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isMapDateToTimestamp() {
+      return false;
+    }
   }
 }

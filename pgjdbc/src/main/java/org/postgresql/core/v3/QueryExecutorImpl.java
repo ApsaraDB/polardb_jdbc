@@ -158,6 +158,8 @@ public class QueryExecutorImpl extends QueryExecutorBase {
 
   private final AdaptiveFetchCache adaptiveFetchCache;
 
+  private boolean mapDateToTimeStamp = false;
+
   @SuppressWarnings({"assignment.type.incompatible", "argument.type.incompatible",
       "method.invocation.invalid"})
   public QueryExecutorImpl(PGStream pgStream,
@@ -171,6 +173,7 @@ public class QueryExecutorImpl extends QueryExecutorBase {
     this.cleanupSavePoints = PGProperty.CLEANUP_SAVEPOINTS.getBoolean(info);
     // assignment.type.incompatible, argument.type.incompatible
     this.replicationProtocol = new V3ReplicationProtocol(this, pgStream);
+    this.mapDateToTimeStamp = PGProperty.MAP_DATE_TO_TIMESTAMP.getBoolean(info);
     readStartupMessages();
   }
 
@@ -2149,6 +2152,11 @@ public class QueryExecutorImpl extends QueryExecutorBase {
 
           for (int i = 1; i <= numParams; i++) {
             int typeOid = pgStream.receiveInteger4();
+            /* POLAR DIFF: map sys.date to timestamp */
+            if (mapDateToTimeStamp) {
+              typeOid = polarMapTypeOid(typeOid);
+            }
+            /* POLAR end */
             params.setResolvedType(i, typeOid);
           }
 
@@ -2633,6 +2641,13 @@ public class QueryExecutorImpl extends QueryExecutorBase {
       int typeLength = pgStream.receiveInteger2();
       int typeModifier = pgStream.receiveInteger4();
       int formatType = pgStream.receiveInteger2();
+
+      /* POLAR DIFF: map sys.date to timestamp */
+      if (mapDateToTimeStamp) {
+        typeOid = polarMapTypeOid(typeOid);
+      }
+      /* POLAR end */
+
       fields[i] = new Field(columnLabel,
           typeOid, typeLength, typeModifier, tableOid, positionInTable);
       fields[i].setFormat(formatType);
@@ -3048,4 +3063,24 @@ public class QueryExecutorImpl extends QueryExecutorBase {
       new SimpleQuery(
           new NativeQuery("ROLLBACK TO SAVEPOINT PGJDBC_AUTOSAVE", new int[0], false, SqlCommand.BLANK),
           null, false);
+
+  /* POLAR DIFF: map sys.date to timestamp */
+  public static int polarMapTypeOid(int typeoid) {
+
+    switch (typeoid) {
+      /* Treat SYS.DATE as TIMESTAMP */
+      case Oid.ORADATE:
+        typeoid = Oid.TIMESTAMP;
+        break;
+      /* Treat SYS.DATE_ARRAY as TIMESTAMP_ARRAY */
+      case Oid.ORADATE_ARRAY:
+        typeoid = Oid.TIMESTAMP_ARRAY;
+        break;
+      default:
+        break;
+    }
+
+    return typeoid;
+  }
+  /* POLAR end */
 }

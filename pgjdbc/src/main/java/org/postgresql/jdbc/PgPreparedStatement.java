@@ -256,6 +256,11 @@ class PgPreparedStatement extends PgStatement implements PreparedStatement {
         break;
       case Types.DATE:
         oid = Oid.DATE;
+        /* POLAR DIFF: map date to timestamp */
+        if (connection.isMapDateToTimestamp()) {
+          oid = Oid.TIMESTAMP;
+        }
+        /* POLAR DIFF end */
         break;
       case Types.TIME:
       case Types.TIME_WITH_TIMEZONE:
@@ -409,6 +414,12 @@ class PgPreparedStatement extends PgStatement implements PreparedStatement {
 
   public void setDate(@Positive int parameterIndex,
       java.sql.@Nullable Date x) throws SQLException {
+    /* POLAR DIFF: map date as timestamp */
+    if (x != null && connection.isMapDateToTimestamp()) {
+      setTimestamp(parameterIndex, new Timestamp(((java.util.Date) x).getTime()));
+      return;
+    }
+    /* POLAR DIFF end */
     setDate(parameterIndex, x, null);
   }
 
@@ -508,6 +519,13 @@ class PgPreparedStatement extends PgStatement implements PreparedStatement {
   // Helper method for setting parameters to PGobject subclasses.
   private void setPGobject(@Positive int parameterIndex, PGobject x) throws SQLException {
     String typename = x.getType();
+
+    /* POLAR DIFF: map date as timestamp */
+    if (typename.equals("date") && connection.isMapDateToTimestamp()) {
+      typename = "timestamp";
+    }
+    /* POLAR end */
+
     int oid = connection.getTypeInfo().getPGType(typename);
     if (oid == Oid.UNSPECIFIED) {
       throw new PSQLException(GT.tr("Unknown type {0}.", typename),
@@ -1472,6 +1490,11 @@ class PgPreparedStatement extends PgStatement implements PreparedStatement {
 
   private void setDate(@Positive int i, LocalDate localDate) throws SQLException {
     int oid = Oid.DATE;
+    /* POLAR DIFF */
+    if (connection.isMapDateToTimestamp()) {
+      oid = Oid.TIMESTAMP;
+    }
+    /* POLAR DIFF end */
     bindString(i, getTimestampUtils().toString(localDate), oid);
   }
 

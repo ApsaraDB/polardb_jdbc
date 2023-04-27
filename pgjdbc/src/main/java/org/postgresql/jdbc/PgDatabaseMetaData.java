@@ -13,6 +13,7 @@ import org.postgresql.core.Oid;
 import org.postgresql.core.ServerVersion;
 import org.postgresql.core.Tuple;
 import org.postgresql.core.TypeInfo;
+import org.postgresql.core.v3.QueryExecutorImpl;
 import org.postgresql.util.ByteConverter;
 import org.postgresql.util.GT;
 import org.postgresql.util.JdbcBlackHole;
@@ -1586,6 +1587,10 @@ public class PgDatabaseMetaData implements DatabaseMetaData {
       byte[] @Nullable [] tuple = new byte[numberOfFields][];
       int typeOid = (int) rs.getLong("atttypid");
       int typeMod = rs.getInt("atttypmod");
+
+      if (connection.isMapDateToTimestamp()) {
+        typeOid = QueryExecutorImpl.polarMapTypeOid(typeOid);
+      }
 
       tuple[0] = null; // Catalog name, not supported
       tuple[1] = rs.getBytes("nspname"); // Schema

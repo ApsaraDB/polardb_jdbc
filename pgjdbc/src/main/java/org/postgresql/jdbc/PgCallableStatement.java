@@ -200,6 +200,13 @@ class PgCallableStatement extends PgPreparedStatement implements CallableStateme
       case Types.BOOLEAN:
         sqlType = Types.BIT;
         break;
+      /* POLAR DIFF: map date to timestamp */
+      case Types.DATE:
+        if (connection.isMapDateToTimestamp()) {
+          sqlType = Types.TIMESTAMP;
+        }
+        break;
+      /* POLAR DIFF end */
       default:
         break;
     }
@@ -318,6 +325,11 @@ class PgCallableStatement extends PgPreparedStatement implements CallableStateme
   }
 
   public java.sql.@Nullable Date getDate(@Positive int parameterIndex) throws SQLException {
+    /* POLAR DIFF: map date to timestamp */
+    if (connection.isMapDateToTimestamp()) {
+      return new java.sql.Date(getTimestamp(parameterIndex).getTime());
+    }
+    /* POLAR DIFF end */
     Object result = checkIndex(parameterIndex, Types.DATE, "Date");
     return (java.sql.@Nullable Date) result;
   }
