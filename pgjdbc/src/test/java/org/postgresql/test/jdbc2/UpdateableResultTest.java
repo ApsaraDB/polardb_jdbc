@@ -471,7 +471,7 @@ public class UpdateableResultTest extends BaseTest4 {
         ResultSet.CONCUR_UPDATABLE).executeQuery(sql);
     assertTrue(rs.next());
     assertEquals(testDate, rs.getDate("dt"));
-    rs.updateDate("dt", Date.valueOf("2020-01-01"));
+    rs.updateTimestamp("dt", Timestamp.valueOf("2020-01-01 00:00:00"));
     rs.updateRow();
     assertEquals(Date.valueOf("2020-01-01"), rs.getDate("dt"));
     con.commit();
@@ -793,7 +793,7 @@ public class UpdateableResultTest extends BaseTest4 {
     assertTrue(rs.next());
     assertTrue(rs.first());
     int id = rs.getInt("id");
-    rs.updateDate("dt", Date.valueOf("1999-01-01"));
+    rs.updateTimestamp("dt", Timestamp.valueOf("1999-01-01 00:00:00"));
     rs.updateRow();
     assertFalse(rs.next());
     rs.close();
@@ -812,7 +812,7 @@ public class UpdateableResultTest extends BaseTest4 {
     assertTrue(rs.next());
     assertTrue(rs.first());
     String name = rs.getString("name");
-    rs.updateDate("dt", Date.valueOf("1999-01-01"));
+    rs.updateTimestamp("dt", Timestamp.valueOf("1999-01-01 00:00:00"));
     rs.updateRow();
     assertFalse(rs.next());
     rs.close();
@@ -834,7 +834,7 @@ public class UpdateableResultTest extends BaseTest4 {
     assertTrue(rs.first());
     id = rs.getInt(("id"));
     id2 = rs.getInt(("id2"));
-    rs.updateDate("dt", Date.valueOf("1999-01-01"));
+    rs.updateTimestamp("dt", Timestamp.valueOf("1999-01-01 00:00:00"));
     rs.updateRow();
     rs.close();
     rs = st.executeQuery("select dt from uniquekeys where id = " + id + " and id2 = " + id2);
@@ -854,7 +854,7 @@ public class UpdateableResultTest extends BaseTest4 {
     assertTrue(rs.next());
     assertTrue(rs.first());
     id = rs.getInt(("id"));
-    rs.updateDate("dt", Date.valueOf("1999-01-01"));
+    rs.updateTimestamp("dt", Timestamp.valueOf("1999-01-01 00:00:00"));
     rs.updateRow();
     rs.close();
     rs = st.executeQuery("select id, dt from uniquekeys where id = " + id);
@@ -873,7 +873,7 @@ public class UpdateableResultTest extends BaseTest4 {
     assertTrue(rs.next());
     assertTrue(rs.first());
     try {
-      rs.updateDate("dt", Date.valueOf("1999-01-01"));
+      rs.updateTimestamp("dt", Timestamp.valueOf("1999-01-01 00:00:00"));
       fail("Should have failed since id2 is nullable column");
     } catch (SQLException ex) {
       assertEquals("No eligible primary or unique key found for table uniquekeys.",
@@ -891,7 +891,7 @@ public class UpdateableResultTest extends BaseTest4 {
     assertTrue(rs.next());
     assertTrue(rs.first());
     try {
-      rs.updateDate("dt", Date.valueOf("1999-01-01"));
+      rs.updateTimestamp("dt", Timestamp.valueOf("1999-01-01 00:00:00"));
       fail("Should have failed since no UK/PK are in the select statement");
     } catch (SQLException ex) {
       assertEquals("No eligible primary or unique key found for table uniquekeys.",

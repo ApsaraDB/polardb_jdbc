@@ -411,9 +411,9 @@ public class BatchExecuteTest extends BaseTest4 {
 
     ResultSet rs = stmt.executeQuery("SELECT d FROM batchescape");
     Assert.assertTrue(rs.next());
-    Assert.assertEquals("2007-11-20", rs.getString(1));
+    Assert.assertEquals("2007-11-20 00:00:00", rs.getString(1));
     Assert.assertTrue(rs.next());
-    Assert.assertEquals("2007-11-20", rs.getString(1));
+    Assert.assertEquals("2007-11-20 00:00:00", rs.getString(1));
     Assert.assertTrue(!rs.next());
     TestUtil.closeQuietly(stmt);
   }

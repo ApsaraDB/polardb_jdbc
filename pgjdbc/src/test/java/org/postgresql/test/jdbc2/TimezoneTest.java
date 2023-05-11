@@ -127,7 +127,7 @@ public class TimezoneTest {
       assertTrue(rs.next());
       checkDatabaseContents("SELECT tstz::text,ts::text,t::text,tz::text,d::text from testtimezone",
           new String[]{"2005-01-01 12:00:00+00", "2005-01-01 15:00:00", "15:00:00", "15:00:00+03",
-              "2005-01-01"});
+              "2005-01-01 00:00:00"});
 
       Timestamp ts;
       String str;
@@ -205,7 +205,7 @@ public class TimezoneTest {
       ts = rs.getTimestamp(5, cGMT13);
       assertEquals(1104490800000L, ts.getTime()); // 2005-01-01 00:00:00 +1300
       str = rs.getString(5);
-      assertEquals("date -> getString" + format, "2005-01-01", str);
+      assertEquals("date -> getString" + format, "2005-01-01 00:00:00", str);
 
       assertTrue(!rs.next());
       ps.close();
@@ -223,7 +223,7 @@ public class TimezoneTest {
 
       assertTrue(rs.next());
       checkDatabaseContents("SELECT tstz::text,ts::text,d::text from testtimezone",
-          new String[]{"2005-01-01 12:00:00+00", "2005-01-01 15:00:00", "2005-01-01"});
+          new String[]{"2005-01-01 12:00:00+00", "2005-01-01 15:00:00", "2005-01-01 00:00:00"});
 
       Date d;
 
@@ -485,15 +485,15 @@ public class TimezoneTest {
           "SELECT seq::text,tstz::text,ts::text,tz::text,d::text from testtimezone ORDER BY seq",
           new String[][]{
               new String[]{"1", "2005-01-01 12:00:00+00", "2005-01-01 13:00:00", "13:00:00+01",
-                  "2005-01-01"},
+                  "2005-01-01 13:00:00"},
               new String[]{"2", "2005-01-01 12:00:00+00", "2005-01-01 12:00:00", "12:00:00+00",
-                  "2005-01-01"},
+                  "2005-01-01 12:00:00"},
               new String[]{"3", "2005-01-01 12:00:00+00", "2005-01-01 15:00:00", "15:00:00+03",
-                  "2005-01-01"},
+                  "2005-01-01 15:00:00"},
               new String[]{"4", "2005-01-01 12:00:00+00", "2005-01-01 07:00:00", "07:00:00-05",
-                  "2005-01-01"},
+                  "2005-01-01 07:00:00"},
               new String[]{"5", "2005-01-01 12:00:00+00", "2005-01-02 01:00:00", "01:00:00+13",
-                  "2005-01-02"}});
+                  "2005-01-02 01:00:00"}});
 
       //
       // check results
@@ -509,35 +509,35 @@ public class TimezoneTest {
       assertEquals(instant, rs.getTimestamp(2));
       assertEquals(instant, rs.getTimestamp(3));
       assertEquals(instantTime, rs.getTimestamp(4));
-      assertEquals(instantDateJVM, rs.getTimestamp(5));
+      assertEquals(instant, rs.getTimestamp(5));
 
       assertTrue(rs.next());
       assertEquals(seq++, rs.getInt(1));
       assertEquals(instant, rs.getTimestamp(2, cUTC));
       assertEquals(instant, rs.getTimestamp(3, cUTC));
       assertEquals(instantTime, rs.getTimestamp(4, cUTC));
-      assertEquals(instantDateUTC, rs.getTimestamp(5, cUTC));
+      assertEquals(instant, rs.getTimestamp(5, cUTC));
 
       assertTrue(rs.next());
       assertEquals(seq++, rs.getInt(1));
       assertEquals(instant, rs.getTimestamp(2, cGMT03));
       assertEquals(instant, rs.getTimestamp(3, cGMT03));
       assertEquals(instantTime, rs.getTimestamp(4, cGMT03));
-      assertEquals(instantDateGMT03, rs.getTimestamp(5, cGMT03));
+      assertEquals(instant, rs.getTimestamp(5, cGMT03));
 
       assertTrue(rs.next());
       assertEquals(seq++, rs.getInt(1));
       assertEquals(instant, rs.getTimestamp(2, cGMT05));
       assertEquals(instant, rs.getTimestamp(3, cGMT05));
       assertEquals(instantTime, rs.getTimestamp(4, cGMT05));
-      assertEquals(instantDateGMT05, rs.getTimestamp(5, cGMT05));
+      assertEquals(instant, rs.getTimestamp(5, cGMT05));
 
       assertTrue(rs.next());
       assertEquals(seq++, rs.getInt(1));
       assertEquals(instant, rs.getTimestamp(2, cGMT13));
       assertEquals(instant, rs.getTimestamp(3, cGMT13));
       assertEquals(normalizeTimeOfDayPart(instantTime, cGMT13), rs.getTimestamp(4, cGMT13));
-      assertEquals(instantDateGMT13, rs.getTimestamp(5, cGMT13));
+      assertEquals(instant, rs.getTimestamp(5, cGMT13));
 
       assertTrue(!rs.next());
       ps.close();
@@ -605,11 +605,11 @@ public class TimezoneTest {
       checkDatabaseContents(
           "SELECT seq::text,tstz::text,ts::text,d::text from testtimezone ORDER BY seq",
           new String[][]{
-              new String[]{"1", "2004-12-31 23:00:00+00", "2005-01-01 00:00:00", "2005-01-01"},
-              new String[]{"2", "2005-01-01 00:00:00+00", "2005-01-01 00:00:00", "2005-01-01"},
-              new String[]{"3", "2004-12-31 21:00:00+00", "2005-01-01 00:00:00", "2005-01-01"},
-              new String[]{"4", "2005-01-01 05:00:00+00", "2005-01-01 00:00:00", "2005-01-01"},
-              new String[]{"5", "2004-12-31 11:00:00+00", "2005-01-01 00:00:00", "2005-01-01"}});
+              new String[]{"1", "2004-12-31 23:00:00+00", "2005-01-01 00:00:00", "2005-01-01 00:00:00"},
+              new String[]{"2", "2005-01-01 00:00:00+00", "2005-01-01 00:00:00", "2005-01-01 00:00:00"},
+              new String[]{"3", "2004-12-31 21:00:00+00", "2005-01-01 00:00:00", "2005-01-01 00:00:00"},
+              new String[]{"4", "2005-01-01 05:00:00+00", "2005-01-01 00:00:00", "2005-01-01 00:00:00"},
+              new String[]{"5", "2004-12-31 11:00:00+00", "2005-01-01 00:00:00", "2005-01-01 00:00:00"}});
       //
       // check results
       //

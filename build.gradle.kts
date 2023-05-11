@@ -139,6 +139,7 @@ allprojects {
         if (enableMavenLocal) {
             mavenLocal()
         }
+        "http://mvnrepo.alibaba-inc.com/mvn/repository"
         mavenCentral()
     }
 

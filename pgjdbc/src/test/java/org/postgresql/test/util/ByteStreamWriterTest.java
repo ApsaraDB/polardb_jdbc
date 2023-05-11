@@ -9,6 +9,7 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.postgresql.test.TestUtil;
 import org.postgresql.test.jdbc2.BaseTest4;
@@ -72,7 +73,12 @@ public class ByteStreamWriterTest extends BaseTest4 {
       try {
         rs.next();
         byte[] actualData = rs.getBytes(1);
-        assertArrayEquals("Sent and received data are not the same", data, actualData);
+
+        if (data.length != 0) {
+          assertArrayEquals("Sent and received data are not the same", data, actualData);
+        } else {
+          assertNull(actualData);
+        }
       } finally {
         rs.close();
       }

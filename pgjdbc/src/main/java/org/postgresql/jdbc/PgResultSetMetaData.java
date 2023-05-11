@@ -198,7 +198,7 @@ public class PgResultSetMetaData implements ResultSetMetaData, PGResultSetMetaDa
             + "a.attnotnull OR (t.typtype = 'd' AND t.typnotnull), ");
 
     if ( connection.haveMinimumServerVersion(ServerVersion.v10)) {
-      sql.append("a.attidentity != '' OR pg_catalog.pg_get_expr(d.adbin, d.adrelid) LIKE '%nextval(%' ");
+      sql.append("a.attidentity is not null OR pg_catalog.pg_get_expr(d.adbin, d.adrelid) LIKE '%nextval(%' ");
     } else {
       sql.append("pg_catalog.pg_get_expr(d.adbin, d.adrelid) LIKE '%nextval(%' ");
     }

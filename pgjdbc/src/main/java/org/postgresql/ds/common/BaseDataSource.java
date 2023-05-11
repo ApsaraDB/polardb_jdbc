@@ -1851,4 +1851,12 @@ public abstract class BaseDataSource implements CommonDataSource, Referenceable 
   public void setMapDateToTimestamp(boolean mapDateToTimestamp) {
     PGProperty.MAP_DATE_TO_TIMESTAMP.set(properties, mapDateToTimestamp);
   }
+
+  public boolean getCompMode() {
+    return PGProperty.COMP_MODE.getBoolean(properties);
+  }
+
+  public void setCompMode(boolean compMode) {
+    PGProperty.COMP_MODE.set(properties, compMode);
+  }
 }

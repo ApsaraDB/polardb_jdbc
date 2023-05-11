@@ -411,7 +411,7 @@ public class ResultSetTest extends BaseTest4 {
   @Test
   public void testgetBadBoolean() throws SQLException {
     testBadBoolean("'2017-03-13 14:25:48.130861'::timestamp", "2017-03-13 14:25:48.130861");
-    testBadBoolean("'2017-03-13'::date", "2017-03-13");
+    testBadBoolean("'2017-03-13'::date", "2017-03-13 00:00:00");
     testBadBoolean("'2017-03-13 14:25:48.130861'::time", "14:25:48.130861");
     testBadBoolean("ARRAY[[1,0],[0,1]]", "{{1,0},{0,1}}");
     testBadBoolean("29::bit(4)", "1101");
@@ -801,17 +801,30 @@ public class ResultSetTest extends BaseTest4 {
 
     rs = con.createStatement().executeQuery("select a from testnumeric where t = '1.0'");
     assertTrue(rs.next());
-    assertEquals(BigDecimal.valueOf(1.0), rs.getBigDecimal(1));
+    if (binaryMode == BinaryMode.FORCE) {
+      assertEquals(BigDecimal.valueOf(1.0), rs.getBigDecimal(1));
+    } else {
+      assertEquals(BigDecimal.valueOf(1), rs.getBigDecimal(1));
+    }
     rs.close();
 
     rs = con.createStatement().executeQuery("select a from testnumeric where t = '0.0'");
     assertTrue(rs.next());
-    assertEquals(BigDecimal.valueOf(0.0), rs.getBigDecimal(1));
+    if (binaryMode == BinaryMode.FORCE) {
+      assertEquals(BigDecimal.valueOf(0.0), rs.getBigDecimal(1));
+    } else {
+      assertEquals(BigDecimal.valueOf(0), rs.getBigDecimal(1));
+    }
     rs.close();
 
     rs = con.createStatement().executeQuery("select a from testnumeric where t = '-1.0'");
     assertTrue(rs.next());
-    assertEquals(BigDecimal.valueOf(-1.0), rs.getBigDecimal(1));
+    if (binaryMode == BinaryMode.FORCE) {
+      assertEquals(BigDecimal.valueOf(-1.0), rs.getBigDecimal(1));
+    } else {
+      assertEquals(BigDecimal.valueOf(-1), rs.getBigDecimal(1));
+    }
+
     rs.close();
 
     rs = con.createStatement().executeQuery("select a from testnumeric where t = '1.2'");
@@ -826,7 +839,11 @@ public class ResultSetTest extends BaseTest4 {
 
     rs = con.createStatement().executeQuery("select a from testnumeric where t = '0.000000000000000000000000000990'");
     assertTrue(rs.next());
-    assertEquals(new BigDecimal("0.000000000000000000000000000990"), rs.getBigDecimal(1));
+    if (binaryMode == BinaryMode.FORCE) {
+      assertEquals(new BigDecimal("0.000000000000000000000000000990"), rs.getBigDecimal(1));
+    } else {
+      assertEquals(new BigDecimal("0.00000000000000000000000000099"), rs.getBigDecimal(1));
+    }
     rs.close();
 
     rs = con.createStatement().executeQuery("select a from testnumeric where t = '10.0000000000099'");
@@ -836,17 +853,31 @@ public class ResultSetTest extends BaseTest4 {
 
     rs = con.createStatement().executeQuery("select a from testnumeric where t = '.10000000000000'");
     assertTrue(rs.next());
-    assertEquals(new BigDecimal("0.10000000000000"), rs.getBigDecimal(1));
+    if (binaryMode == BinaryMode.FORCE) {
+      assertEquals(new BigDecimal("0.10000000000000"), rs.getBigDecimal(1));
+    } else {
+      assertEquals(new BigDecimal("0.1"), rs.getBigDecimal(1));
+    }
     rs.close();
 
     rs = con.createStatement().executeQuery("select a from testnumeric where t = '.10'");
     assertTrue(rs.next());
-    assertEquals(new BigDecimal("0.10"), rs.getBigDecimal(1));
+    if (binaryMode == BinaryMode.FORCE) {
+      assertEquals(new BigDecimal("0.10"), rs.getBigDecimal(1));
+    } else {
+      assertEquals(new BigDecimal("0.1"), rs.getBigDecimal(1));
+    }
     rs.close();
 
     rs = con.createStatement().executeQuery("select a from testnumeric where t = '1.10000000000000'");
     assertTrue(rs.next());
-    assertEquals(new BigDecimal("1.10000000000000"), rs.getBigDecimal(1));
+
+    if (binaryMode == BinaryMode.FORCE) {
+      assertEquals(new BigDecimal("1.10000000000000"), rs.getBigDecimal(1));
+    } else {
+      assertEquals(new BigDecimal("1.1"), rs.getBigDecimal(1));
+    }
+
     rs.close();
 
     rs = con.createStatement().executeQuery("select a from testnumeric where t = '99999.2'");

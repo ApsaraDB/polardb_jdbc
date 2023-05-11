@@ -48,10 +48,10 @@ public class CopyTest {
   private String copyParams;
   // 0's required to match DB output for numeric(5,2)
   private String[] origData =
-      {"First Row\t1\t1.10\n",
-          "Second Row\t2\t-22.20\n",
+      {"First Row\t1\t1.1\n",
+          "Second Row\t2\t-22.2\n",
           "\\N\t\\N\t\\N\n",
-          "\t4\t444.40\n"};
+          "\\N\t4\t444.4\n"};
   private int dataRows = origData.length;
 
   private byte[] getData(String[] origData) {

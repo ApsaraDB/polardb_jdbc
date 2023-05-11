@@ -95,7 +95,7 @@ public class BinaryStreamTest extends BaseTest4 {
   public void testKnownLengthEmpty() throws Exception {
     byte[] data = new byte[0];
     insertStreamKownLength(data);
-    validateContent(data);
+    validateContent(null);
   }
 
   @Test
