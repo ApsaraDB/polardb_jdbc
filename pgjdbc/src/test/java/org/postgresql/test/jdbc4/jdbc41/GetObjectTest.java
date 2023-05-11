@@ -331,8 +331,8 @@ public class GetObjectTest {
       calendar.set(Calendar.MONTH, Calendar.JANUARY);
       calendar.set(Calendar.DAY_OF_MONTH, 8);
       Date expectedNoZone = new Date(calendar.getTimeInMillis());
-      assertEquals(expectedNoZone, rs.getObject("date_column", Date.class));
-      assertEquals(expectedNoZone, rs.getObject(1, Date.class));
+      assertEquals(expectedNoZone, rs.getObject("date_column", Timestamp.class));
+      assertEquals(expectedNoZone, rs.getObject(1, Timestamp.class));
     } finally {
       rs.close();
     }
@@ -346,7 +346,7 @@ public class GetObjectTest {
     ResultSet rs = stmt.executeQuery(TestUtil.selectSQL("table1", "date_column"));
     try {
       assertTrue(rs.next());
-      Date date = rs.getObject(1,Date.class);
+      Timestamp date = rs.getObject(1,Timestamp.class);
       assertTrue(rs.wasNull());
     } finally {
       rs.close();

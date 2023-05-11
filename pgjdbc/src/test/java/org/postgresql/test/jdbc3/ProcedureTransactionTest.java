@@ -7,7 +7,6 @@ package org.postgresql.test.jdbc3;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import org.postgresql.PGProperty;
 import org.postgresql.core.ServerVersion;
@@ -142,7 +141,7 @@ public class ProcedureTransactionTest extends BaseTest4 {
     con.setAutoCommit(false);
     try {
       testProcAutoCommit();
-      fail("Should throw an exception");
+      // POLAR: support commit in procedure insicde transaction block
     } catch (SQLException ex) {
       //2D000 invalid_transaction_termination
       assertTrue(ex.getSQLState().equalsIgnoreCase(PSQLState.INVALID_TRANSACTION_TERMINATION.getState()));

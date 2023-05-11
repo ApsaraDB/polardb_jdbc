@@ -1440,7 +1440,7 @@ public class PgDatabaseMetaData implements DatabaseMetaData {
       throws SQLException {
     String sql;
     sql = "SELECT nspname AS TABLE_SCHEM, NULL AS TABLE_CATALOG FROM pg_catalog.pg_namespace "
-          + " WHERE nspname <> 'pg_toast' AND (nspname !~ '^pg_temp_' "
+          + " WHERE nspname <> 'pg_toast' AND nsppkgns = 0 AND (nspname !~ '^pg_temp_' "
           + " OR nspname = (pg_catalog.current_schemas(true))[1]) AND (nspname !~ '^pg_toast_temp_' "
           + " OR nspname = replace((pg_catalog.current_schemas(true))[1], 'pg_temp_', 'pg_toast_temp_')) ";
     if (schemaPattern != null && !schemaPattern.isEmpty()) {
@@ -1697,13 +1697,13 @@ public class PgDatabaseMetaData implements DatabaseMetaData {
                   : connection.encodeString(Integer.toString(connection.getTypeInfo().getSQLType(baseTypeOid)));
 
       String autoinc = "NO";
-      if (defval != null && defval.contains("nextval(") || identity != null) {
+      if (defval != null && defval.contains("nextval(") || (identity != null && identity.length() != 0)) {
         autoinc = "YES";
       }
       tuple[22] = connection.encodeString(autoinc); // IS_AUTOINCREMENT
 
       String generatedcolumn = "NO";
-      if (generated != null) {
+      if (generated != null && generated.length() != 0) {
         generatedcolumn = "YES";
       }
       tuple[23] = connection.encodeString(generatedcolumn); // IS_GENERATEDCOLUMN

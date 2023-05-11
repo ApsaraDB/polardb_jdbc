@@ -405,7 +405,7 @@ public class SetObject310Test extends BaseTest4 {
   @Test
   public void testSetLocalDateWithType() throws SQLException {
     LocalDate data = LocalDate.parse("1971-12-15");
-    java.sql.Date actual = insertThenReadWithType(data, Types.DATE, "date_column", java.sql.Date.class);
+    java.sql.Timestamp actual = insertThenReadWithType(data, Types.DATE, "date_column", java.sql.Timestamp.class);
     java.sql.Date expected = java.sql.Date.valueOf("1971-12-15");
     assertEquals(expected, actual);
   }
@@ -416,7 +416,7 @@ public class SetObject310Test extends BaseTest4 {
   @Test
   public void testSetLocalDateWithoutType() throws SQLException {
     LocalDate data = LocalDate.parse("1971-12-15");
-    java.sql.Date actual = insertThenReadWithoutType(data, "date_column", java.sql.Date.class);
+    java.sql.Timestamp actual = insertThenReadWithoutType(data, "date_column", java.sql.Timestamp.class);
     java.sql.Date expected = java.sql.Date.valueOf("1971-12-15");
     assertEquals(expected, actual);
   }

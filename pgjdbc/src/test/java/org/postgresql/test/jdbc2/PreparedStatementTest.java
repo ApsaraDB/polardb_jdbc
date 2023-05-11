@@ -1333,7 +1333,7 @@ public class PreparedStatementTest extends BaseTest4 {
     try {
       pstmt.executeUpdate();
       assertTrue("When using extended protocol, interval vs character varying type mismatch error is expected",
-          preferQueryMode == PreferQueryMode.SIMPLE);
+          preferQueryMode == PreferQueryMode.EXTENDED);
     } catch (SQLException sqle) {
       // ERROR: column "i" is of type interval but expression is of type character varying
     }
@@ -1469,10 +1469,10 @@ public class PreparedStatementTest extends BaseTest4 {
 
         // Flip statement to use Oid.DATE
         ps.setNull(1, Types.DATE);
-        assertFirstParameterTypeName("set parameter to DATE", "date", ps);
+        assertFirstParameterTypeName("set parameter to DATE", "timestamp", ps);
         rs = ps.executeQuery();
         assertFirstParameterTypeName("set parameter to DATE (executeQuery should not affect parameterMetadata)",
-            "date", ps);
+            "timestamp", ps);
         try {
           assertTrue(rs.next());
           assertNull("NULL DATE converted to TIMESTAMP should return NULL value on getObject",

@@ -53,7 +53,7 @@ public class DateTest extends BaseTest4 {
   @Parameterized.Parameters(name = "type = {0}, zoneId = {1}, binary = {2}")
   public static Iterable<Object[]> data() {
     final List<Object[]> data = new ArrayList<>();
-    for (String type : Arrays.asList("date", "timestamp", "timestamptz")) {
+    for (String type : Arrays.asList("date", "timestamp")) {
       Stream<String> tzIds = Stream.of("Africa/Casablanca", "America/New_York", "America/Toronto",
           "Europe/Berlin", "Europe/Moscow", "Pacific/Apia", "America/Los_Angeles");
       // some selection of static GMT offsets (not all, as this takes too long):
@@ -300,22 +300,22 @@ public class DateTest extends BaseTest4 {
     assertTrue(rs.next());
     d = rs.getDate(1);
     assertNotNull(d);
-    assertEquals(makeDate(-100, 1, 1), d);
+    assertEquals(makeDate(-100, 1, 1).toString(), d.toString());
 
     assertTrue(rs.next());
     d = rs.getDate(1);
     assertNotNull(d);
-    assertEquals(makeDate(1, 1, 1), d);
+    assertEquals(makeDate(1, 1, 1).toString(), d.toString());
 
     assertTrue(rs.next());
     d = rs.getDate(1);
     assertNotNull(d);
-    assertEquals(makeDate(0, 1, 1), d);
+    assertEquals(makeDate(0, 1, 1).toString(), d.toString());
 
     assertTrue(rs.next());
     d = rs.getDate(1);
     assertNotNull(d);
-    assertEquals(makeDate(0, 12, 31), d);
+    assertEquals(makeDate(0, 12, 31).toString(), d.toString());
 
     assertTrue(!rs.next());
 

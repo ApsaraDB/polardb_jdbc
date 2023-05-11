@@ -932,7 +932,7 @@ public class ConnectionFactoryImpl extends ConnectionFactory {
       SetupQueryRunner.run(queryExecutor,
           String.format(paramSetSql, "YYYY-MM-DD HH24:MI:SS.FF", "nls_timestamp_format"), false);
       SetupQueryRunner.run(queryExecutor,
-          String.format(paramSetSql, "YYYY-MM-DD HH24:MI:SS.FFTZH", "nls_timestamp_tz_format"),
+          String.format(paramSetSql, "YYYY-MM-DD HH24:MI:SS.FFOF", "nls_timestamp_tz_format"),
           false);
     }
     /* POLARDB end */

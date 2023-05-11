@@ -154,6 +154,13 @@ public enum PGProperty {
       false,
       new String[] {"true", "false"}),
 
+  COMP_MODE(
+      "compMode",
+      "polardb",
+      "PolarDB compatibility mode",
+      false,
+      new String[] { "polardb", "oracle", "postgresql" }),
+
   /**
    * <p>The timeout value used for socket connect operations. If connecting to the server takes longer
    * than this value, the connection is broken.</p>
@@ -374,6 +381,12 @@ public enum PGProperty {
       "false",
       "When connections that are not explicitly closed are garbage collected, log the stacktrace from the opening of the connection to trace the leak source"),
 
+  MAP_DATE_TO_TIMESTAMP(
+      "mapDateToTimestamp",
+      "true",
+      "Map date to timestamp.",
+      false),
+
   /**
    * Specifies size of buffer during fetching result set. Can be specified as specified size or
    * percent of heap memory.
@@ -545,6 +558,12 @@ public enum PGProperty {
           + "which will allow the connection to be used for logical replication "
           + "from that database. "
           + "(backend >= 9.4)"),
+
+  RESET_NLS_FORMAT(
+      "resetNlsFormat",
+      "true",
+      "Reset nls_timestamp_format/nls_timestamptz_format/nls_date_format at connection startup",
+      false),
 
   /**
    * Configure optimization to enable batch insert re-writing.
@@ -779,24 +798,7 @@ public enum PGProperty {
       "",
       "Factory class to instantiate factories for XML processing"),
 
-  COMP_MODE(
-      "compMode",
-      "polardb",
-      "PolarDB compatibility mode",
-      false,
-      new String[]{"polardb", "oracle", "postgresql"}),
 
-  MAP_DATE_TO_TIMESTAMP(
-      "mapDateToTimestamp",
-      "true",
-      "Map date to timestamp.",
-      false),
-
-  RESET_NLS_FORMAT(
-      "resetNlsFormat",
-      "true",
-      "Reset nls_timestamp_format/nls_timestamptz_format/nls_date_format at connection startup",
-      false),
 
   ;
 

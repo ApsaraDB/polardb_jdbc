@@ -92,6 +92,8 @@ public class OidValuesCorrectnessTest extends BaseTest4 {
       put("JSON_ARRAY", "_JSON");
       put("REF_CURSOR", "REFCURSOR");
       put("REF_CURSOR_ARRAY", "_REFCURSOR");
+      put("ORADATE", "date");
+      put("ORADATE_ARRAY", "_date");
     }};
 
   @Parameterized.Parameters(name = "oidName={0}, oidValue={1}")
@@ -123,7 +125,15 @@ public class OidValuesCorrectnessTest extends BaseTest4 {
 
     Statement stmt = con.createStatement();
     ResultSet resultSet;
-    stmt.execute("select oid from pg_type where typname = '" + typeName.toLowerCase(Locale.ROOT) + "'");
+    Integer namespaceOid;
+
+    if (oidValue == 9002 || oidValue == 9008) {
+      namespaceOid = 9001;
+    } else {
+      namespaceOid = 11;
+    }
+
+    stmt.execute("select oid from pg_type where typname = '" + typeName.toLowerCase(Locale.ROOT) + "' and typnamespace = '" + namespaceOid + "'");
     resultSet = stmt.getResultSet();
 
     // resultSet have to have next row

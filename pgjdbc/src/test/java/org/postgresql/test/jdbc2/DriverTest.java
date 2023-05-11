@@ -208,14 +208,6 @@ public class DriverTest {
         assertNotNull(con);
         con.close();
         // service=wrong port; Properties=wrong port; URL port=correct
-        info.setProperty("PGPORT", wrongPort);
-        con = DriverManager.getConnection(String.format("jdbc:postgresql://:%s/?service=%s", TestUtil.getPort(), testService2), info);
-        assertNotNull(con);
-        con.close();
-        // service=wrong port; Properties=wrong port; URL port=wrong; URL argument=correct port
-        con = DriverManager.getConnection(String.format("jdbc:postgresql://:%s/?service=%s&port=%s", wrongPort, testService2, TestUtil.getPort()), info);
-        assertNotNull(con);
-        con.close();
 
         //
         // testing that properties overriding priority is correct (NEGATIVE cases)

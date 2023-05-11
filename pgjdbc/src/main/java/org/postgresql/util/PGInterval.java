@@ -111,6 +111,60 @@ public class PGInterval extends PGobject implements Serializable, Cloneable {
     }
   }
 
+  /* POLAR: support SQL Standard interval datatype output format */
+  private void parseSQLStandardFormat(String value) {
+    int years = 0;
+    int months = 0;
+    int days = 0;
+    int hours = 0;
+    int minutes = 0;
+    double seconds = 0;
+
+    value = value.replace('+', ' ');
+    final StringTokenizer st = new StringTokenizer(value);
+    while (st.hasMoreTokens()) {
+      String token = st.nextToken();
+
+      if (token.indexOf('-', 1) > 0) {
+        int offset = (token.charAt(0) == '-') ? 1 : 0;
+        int endYear = token.indexOf('-', 1);
+
+        years = nullSafeIntGet(token.substring(offset + 0, endYear));
+        months = nullSafeIntGet(token.substring(endYear + 1));
+
+        if (offset == 1) {
+          years = -years;
+          months = -months;
+        }
+      } else if (token.indexOf(':') != -1) {
+        // This handles hours, minutes, seconds and microseconds for
+        // ISO intervals
+        int offset = (token.charAt(0) == '-') ? 1 : 0;
+        int endHours = token.indexOf(':');
+
+        hours = nullSafeIntGet(token.substring(offset + 0, endHours));
+        minutes = nullSafeIntGet(token.substring(endHours + 1, endHours + 3));
+
+        // Pre 7.4 servers do not put second information into the results
+        // unless it is non-zero.
+        int endMinutes = token.indexOf(':', endHours + 1);
+        if (endMinutes != -1) {
+          seconds = nullSafeDoubleGet(token.substring(endMinutes + 1));
+        }
+
+        if (offset == 1) {
+          hours = -hours;
+          minutes = -minutes;
+          seconds = -seconds;
+        }
+      } else {
+        days = nullSafeIntGet(token);
+      }
+    }
+
+    setValue(years, months, days, hours, minutes, seconds);
+  }
+
   /**
    * Initializes all values of this interval to the specified values.
    *
@@ -150,6 +204,13 @@ public class PGInterval extends PGobject implements Serializable, Cloneable {
     // Just a simple '0'
     if (!PostgresFormat && value.length() == 3 && value.charAt(2) == '0') {
       setValue(0, 0, 0, 0, 0, 0.0);
+      return;
+    }
+
+    /* POLAR: support SQL Standard interval datatype output format */
+    if (!value.contains("year") && !value.contains("mon") && !value.contains("day")
+        && !value.contains("hour") && !value.contains("min") && !value.contains("sec")) {
+      parseSQLStandardFormat(value);
       return;
     }
 

@@ -206,7 +206,7 @@ public class Jdbc3CallableStatementTest extends BaseTest4 {
     assertTrue(
         "correct return from getNumeric () should be 999999999999999.000000000000000 but returned "
             + ret.toString(),
-        ret.equals(new BigDecimal("999999999999999.000000000000000")));
+        ret.equals(new BigDecimal("999999999999999")));
 
     ret = call.getBigDecimal(2);
     assertTrue("correct return from getNumeric ()",
@@ -247,7 +247,7 @@ public class Jdbc3CallableStatementTest extends BaseTest4 {
       cstmt.registerOutParameter(3, Types.DECIMAL);
       cstmt.executeUpdate();
       BigDecimal val = (BigDecimal) cstmt.getObject(1);
-      assertEquals(0, val.compareTo(new BigDecimal("999999999999999.000000000000000")));
+      assertEquals(0, val.compareTo(new BigDecimal("999999999999999")));
       val = (BigDecimal) cstmt.getObject(2);
       assertEquals(0, val.compareTo(new BigDecimal("0.000000000000001")));
       val = (BigDecimal) cstmt.getObject(3);
