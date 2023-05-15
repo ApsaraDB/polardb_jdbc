@@ -1022,5 +1022,13 @@ public abstract class AbstractArraysTest<A> {
     public boolean isMapDateToTimestamp() {
       return false;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isOraMode() {
+      return false;
+    }
   }
 }

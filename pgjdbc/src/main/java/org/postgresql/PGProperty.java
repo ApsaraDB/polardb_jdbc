@@ -156,10 +156,10 @@ public enum PGProperty {
 
   COMP_MODE(
       "compMode",
-      "polardb",
+      "true",
       "PolarDB compatibility mode",
       false,
-      new String[] { "polardb", "oracle", "postgresql" }),
+      new String[] { "true", "false"}),
 
   /**
    * <p>The timeout value used for socket connect operations. If connecting to the server takes longer

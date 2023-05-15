@@ -181,6 +181,7 @@ public class PgConnection implements BaseConnection {
 
   /* POLAR DIFF */
   private boolean mapDateToTimestamp = false;
+  private boolean isOraMode = false;
   /* POLAR DIFF END */
 
   // Current warnings; there might be more on queryExecutor too.
@@ -481,6 +482,7 @@ public class PgConnection implements BaseConnection {
   private void polarSetParameters(Properties info) {
     // new add parameters
     this.mapDateToTimestamp = PGProperty.MAP_DATE_TO_TIMESTAMP.getBoolean(info);
+    this.isOraMode = PGProperty.COMP_MODE.getBoolean(info);
   }
 
   @Deprecated
@@ -1951,7 +1953,13 @@ public class PgConnection implements BaseConnection {
     return xmlFactoryFactory;
   }
 
+  @Override
   public boolean isMapDateToTimestamp() {
     return mapDateToTimestamp;
+  }
+
+  @Override
+  public boolean isOraMode() {
+    return isOraMode;
   }
 }
