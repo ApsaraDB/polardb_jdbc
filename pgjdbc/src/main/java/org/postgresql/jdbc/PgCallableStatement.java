@@ -143,6 +143,15 @@ class PgCallableStatement extends PgPreparedStatement implements CallableStateme
             // For backwards compatibility reasons we support that ref cursors can be
             // registered with both Types.OTHER and Types.REF_CURSOR so we allow
             // this specific mismatch
+          } else if (connection.isOraMode() && columnType == Types.NUMERIC && functionReturnType[j] == Types.INTEGER) {
+            // POLAR: support OUT number compatiable with INTEGER
+            if (callResult[j] != null) {
+              callResult[j] = ((BigDecimal) callResult[j]).intValue();
+            }
+          } else if (connection.isOraMode() && columnType == Types.INTEGER && functionReturnType[j] == Types.NUMERIC) {
+            if (callResult[j] != null) {
+              callResult[j] = BigDecimal.valueOf((Integer) callResult[j]);
+            }
           } else {
             throw new PSQLException(GT.tr(
                 "A CallableStatement function was executed and the out parameter {0} was of type {1} however type {2} was registered.",
@@ -279,6 +288,16 @@ class PgCallableStatement extends PgPreparedStatement implements CallableStateme
   }
 
   public int getInt(@Positive int parameterIndex) throws SQLException {
+
+    /* POLAR: allow getInt from number */
+    if (connection.isOraMode()) {
+      int testReturn = this.testReturn != null ? this.testReturn[parameterIndex - 1] : -1;
+
+      if (testReturn == Types.NUMERIC) {
+        return ((BigDecimal) callResult[parameterIndex - 1]).intValue();
+      }
+    }
+
     Object result = checkIndex(parameterIndex, Types.INTEGER, "Int");
     if (result == null) {
       return 0;

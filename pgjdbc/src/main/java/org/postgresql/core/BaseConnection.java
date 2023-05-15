@@ -241,4 +241,6 @@ public interface BaseConnection extends PGConnection, Connection {
    * POLARDB DIFF
    */
   boolean isMapDateToTimestamp();
+
+  boolean isOraMode();
 }
