@@ -45,7 +45,7 @@
 %{!?runselftest:%global runselftest 1}
 
 %global section		devel
-%global source_path	pgjdbc/src/main/java/org/postgresql
+%global source_path	pgjdbc/src/main/java/com/aliyun/polardb2
 
 Summary:	JDBC driver for PostgreSQL
 Name:		postgresql-jdbc
@@ -54,7 +54,7 @@ Release:	GENERATED
 License:	BSD
 URL:		http://jdbc.postgresql.org/
 
-Source0:	https://repo1.maven.org/maven2/org/postgresql/postgresql/%{version}/postgresql-%{version}-jdbc-src.tar.gz
+Source0:	https://repo1.maven.org/maven2/com/aliyun/polardb2/postgresql/%{version}/postgresql-%{version}-jdbc-src.tar.gz
 Provides:	pgjdbc = %version-%release
 
 BuildArch:	noarch
@@ -109,11 +109,11 @@ find -type f \( -name "*.jar" -or -name "*.class" \) | xargs rm -f
 %pom_xpath_remove "pom:dependency[pom:artifactId = 'system-stubs-jupiter']"
 
 # Remove the test files depending on system-stubs-jupiter
-rm src/test/java/org/postgresql/test/jdbc2/DriverTest.java \
-   src/test/java/org/postgresql/util/OSUtilTest.java \
-   src/test/java/org/postgresql/util/StubEnvironmentAndProperties.java \
-   src/test/java/org/postgresql/jdbcurlresolver/PgPassParserTest.java \
-   src/test/java/org/postgresql/jdbcurlresolver/PgServiceConfParserTest.java
+rm src/test/java/com/aliyun/polardb2/test/jdbc2/DriverTest.java \
+   src/test/java/com/aliyun/polardb2/util/OSUtilTest.java \
+   src/test/java/com/aliyun/polardb2/util/StubEnvironmentAndProperties.java \
+   src/test/java/com/aliyun/polardb2/jdbcurlresolver/PgPassParserTest.java \
+   src/test/java/com/aliyun/polardb2/jdbcurlresolver/PgServiceConfParserTest.java
 
 # compat symlink: requested by dtardon (libreoffice), reverts part of
 # 0af97ce32de877 commit.

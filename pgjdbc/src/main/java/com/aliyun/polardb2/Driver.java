@@ -157,7 +157,7 @@ public class Driver implements java.sql.Driver {
 
     if (cl == null) {
       LOGGER.log(Level.WARNING, "Can't find a classloader for the Driver; not loading driver "
-          + "configuration from org/postgresql/driverconfig.properties");
+          + "configuration from com/aliyun/polardb2/driverconfig.properties");
       return merged; // Give up on finding defaults.
     }
 
@@ -168,7 +168,7 @@ public class Driver implements java.sql.Driver {
     // earlier files. To do this we've got to read the returned
     // Enumeration into temporary storage.
     ArrayList<URL> urls = new ArrayList<URL>();
-    Enumeration<URL> urlEnum = cl.getResources("org/postgresql/driverconfig.properties");
+    Enumeration<URL> urlEnum = cl.getResources("com/aliyun/polardb2/driverconfig.properties");
     while (urlEnum.hasMoreElements()) {
       urls.add(urlEnum.nextElement());
     }
@@ -531,7 +531,7 @@ public class Driver implements java.sql.Driver {
     // argument "defaults" EXCLUDING defaults
     // priority 3 - Values retrieved by "service"
     Properties priority3Service = new Properties();
-    // priority 4 - Properties loaded by Driver.loadDefaultProperties() (user, org/postgresql/driverconfig.properties)
+    // priority 4 - Properties loaded by Driver.loadDefaultProperties() (user, com/aliyun/polardb2/driverconfig.properties)
     // argument "defaults" INCLUDING defaults
     // priority 5 - PGProperty defaults for PGHOST, PGPORT, PGDBNAME
 

@@ -135,7 +135,7 @@ If you decide to add a new test case, you should do two things:
 1. Add a test class. It should
    contain `setUp()` and `tearDown()` methods that create and destroy
    the fixture respectively.
-2. Add your test class in `$JDBC_SRC/src/test/java/org/postgresql/test`. This will make the test case
+2. Add your test class in `$JDBC_SRC/src/test/java/com/aliyun/polardb2/test`. This will make the test case
    part of the test suite.
 
 ## 6 - Guidelines for developing new tests
@@ -175,7 +175,7 @@ behaviour or the intended implementation of a feature?
 
 ## 7 - Example
 
-See [BlobTest.java](https://github.com/pgjdbc/pgjdbc/blob/master/pgjdbc/src/test/java/org/postgresql/test/jdbc2/BlobTest.java) for an example of a unit test that creates  test table, runs a test, and then drops the table. There are other tests in [pgjdbc/src/test/java/org/postgresql](https://github.com/pgjdbc/pgjdbc/tree/master/pgjdbc/src/test/java/org/postgresql) which you can use an examples. Please add your own tests in this location.
+See [BlobTest.java](https://github.com/pgjdbc/pgjdbc/blob/master/pgjdbc/src/test/java/com/aliyun/polardb2/test/jdbc2/BlobTest.java) for an example of a unit test that creates  test table, runs a test, and then drops the table. There are other tests in [pgjdbc/src/test/java/com/aliyun/polardb2](https://github.com/pgjdbc/pgjdbc/tree/master/pgjdbc/src/test/java/com/aliyun/polardb2) which you can use an examples. Please add your own tests in this location.
 
 ## 8 - SSL tests
 
