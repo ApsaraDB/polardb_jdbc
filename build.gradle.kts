@@ -3,6 +3,7 @@
  * See the LICENSE file in the project root for more information.
  */
 
+import com.aliyun.polardb2.buildtools.JavaCommentPreprocessorTask
 import com.github.spotbugs.SpotBugsTask
 import com.github.vlsi.gradle.crlf.CrLfSpec
 import com.github.vlsi.gradle.crlf.LineEndings
@@ -13,7 +14,6 @@ import com.github.vlsi.gradle.publishing.dsl.simplifyXml
 import com.github.vlsi.gradle.publishing.dsl.versionFromResolution
 import de.thetaphi.forbiddenapis.gradle.CheckForbiddenApis
 import de.thetaphi.forbiddenapis.gradle.CheckForbiddenApisExtension
-import org.postgresql.buildtools.JavaCommentPreprocessorTask
 
 plugins {
     publishing
@@ -51,8 +51,8 @@ val skipJavadoc by props()
 val skipForbiddenApis by props()
 val enableMavenLocal by props()
 val enableGradleMetadata by props()
-// For instance -PincludeTestTags=!org.postgresql.test.SlowTests
-//           or -PincludeTestTags=!org.postgresql.test.Replication
+// For instance -PincludeTestTags=!com.aliyun.polardb2.test.SlowTests
+//           or -PincludeTestTags=!com.aliyun.polardb2.test.Replication
 val includeTestTags by props("")
 // By default use Java implementation to sign artifacts
 // When useGpgCmd=true, then gpg command line tool is used for signing
@@ -117,7 +117,7 @@ releaseParams {
 }
 
 allprojects {
-    group = "org.postgresql"
+    group = "com.aliyun.polardb2"
     version = buildVersion
 
     apply(plugin = "com.github.vlsi.gradle-extensions")
@@ -277,7 +277,7 @@ allprojects {
                         // Do not collect coverage when not asked (e.g. via jacocoReport or -Pcoverage)
                         isEnabled = jacocoEnabled
                         // We don't want to collect coverage for third-party classes
-                        includes?.add("org.postgresql.*")
+                        includes?.add("com.aliyun.polardb2.*")
                     }
                 }
             }
@@ -415,7 +415,7 @@ allprojects {
                     // licenseHeaderFile(licenseHeaderFile)
                     importOrder(
                         "static ",
-                        "org.postgresql.",
+                        "com.aliyun.polardb2.",
                         "",
                         "java.",
                         "javax."
@@ -516,7 +516,7 @@ allprojects {
                         attributes["Specification-Title"] = "JDBC"
                     }
                     attributes["Implementation-Vendor"] = "PostgreSQL Global Development Group"
-                    attributes["Implementation-Vendor-Id"] = "org.postgresql"
+                    attributes["Implementation-Vendor-Id"] = "com.aliyun.polardb2"
                 }
             }
 

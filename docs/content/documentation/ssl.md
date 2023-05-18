@@ -31,7 +31,7 @@ The connection URL parameters `sslfactory` allow the user to specify which custo
 available to the driver's classloader.
 
 This class must have a zero argument constructor or a single argument constructor preferentially taking
-a `Properties` argument. There is a simple `org.postgresql.ssl.DefaultJavaSSLFactory` provided which uses the
+a `Properties` argument. There is a simple `com.aliyun.polardb2.ssl.DefaultJavaSSLFactory` provided which uses the
 default java SSLFactory.
 
 Information on how to actually implement such a class is beyond the scope of this documentation. Places to look for help
@@ -122,4 +122,4 @@ In the event of problems extra debugging information is available by adding `-Dj
 In some situations it may not be possible to configure your Java environment to make the server certificate available, for example in an applet. For a large scale deployment it would be best to get a certificate signed by recognized
 certificate authority, but that is not always an option. The JDBC driver provides an option to establish a SSL connection without doing any validation, but please understand the risk involved before enabling this option.
 
-A non-validating connection is established via a custom `SSLSocketFactory` class that is provided with the driver. Setting the connection URL parameter `sslfactory=org.postgresql.ssl.NonValidatingFactory` will turn off all SSL validation.
+A non-validating connection is established via a custom `SSLSocketFactory` class that is provided with the driver. Setting the connection URL parameter `sslfactory=com.aliyun.polardb2.ssl.NonValidatingFactory` will turn off all SSL validation.

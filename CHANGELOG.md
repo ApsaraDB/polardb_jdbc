@@ -204,7 +204,7 @@ will be filled with zeroes by the driver after use.Call sites within the driver 
 This includes direct usage in the GSS authentication code paths that internally were already converting the String password into a char[] for internal usage.
 This allows configuring a connection with a password that must be generated on the fly or periodically changes. [PR #2369](https://github.com/pgjdbc/pgjdbc/pull/2369) original issue [Issue #2102](https://github.com/pgjdbc/pgjdbc/issues/2102)
 - feat: add tcpNoDelay option [PR #2341](https://github.com/pgjdbc/pgjdbc/pull/2341) fixes [Issue #2324](https://github.com/pgjdbc/pgjdbc/issues/2324)
-- feat: pg_service.conf and .pgpass support (jdbc:postgresql://?service=my-service) [PR #2260](https://github.com/pgjdbc/pgjdbc/pull/2260) fixes [Issue #2278](https://github.com/pgjdbc/pgjdbc/issues/2278)
+- feat: pg_service.conf and .pgpass support (jdbc:polardb://?service=my-service) [PR #2260](https://github.com/pgjdbc/pgjdbc/pull/2260) fixes [Issue #2278](https://github.com/pgjdbc/pgjdbc/issues/2278)
 
 ### Fixed
 - Use local TimestampUtil in PgStatement and PgResultset for thread safety [PR #2291](https://github.com/pgjdbc/pgjdbc/pull/2291)
@@ -253,9 +253,9 @@ binary numeric values which represented integers multiples of 10,000 from 10,000
 - If assumeMinServerVersion is not defined and server is at least 9.0, group startup statements into a single transaction PR [#1977](https://github.com/pgjdbc/pgjdbc/pull/1977)
 
 ### Added
-- Support for pg_service.conf file and jdbc URL syntax: "jdbc:postgresql://?service=service1".
-  Resource can be provided using 1) property "-Dorg.postgresql.pgservicefile=file1" 2) environment variable PGSERVICEFILE=file2 3) default location "$HOME/.pg_service.conf" 4) environment variable PGSYSCONFDIR=dir1 looks for file "dir1/pg_service.conf".
-- Support for .pgpass file. Resource can be provided using 1) property "-Dorg.postgresql.pgpassfile=file1" 2) environment variable PGPASSFILE=file2 3) default location "$HOME/.pgpass"
+- Support for pg_service.conf file and jdbc URL syntax: "jdbc:polardb://?service=service1".
+  Resource can be provided using 1) property "-Dcom.aliyun.polardb2.pgservicefile=file1" 2) environment variable PGSERVICEFILE=file2 3) default location "$HOME/.pg_service.conf" 4) environment variable PGSYSCONFDIR=dir1 looks for file "dir1/pg_service.conf".
+- Support for .pgpass file. Resource can be provided using 1) property "-Dcom.aliyun.polardb2.pgpassfile=file1" 2) environment variable PGPASSFILE=file2 3) default location "$HOME/.pgpass"
 
 ### Fixed
 - Rework OSGi bundle activator so it does not rely on exception message to check DataSourceFactory presence PR [#507](https://github.com/pgjdbc/pgjdbc/pull/507)
@@ -717,7 +717,7 @@ thrown to caller to be dealt with so no need to log at this verbosity by pgjdbc 
 ### Fixed
 - Fix data being truncated in setCharacterStream (bug introduced in 42.0.0) [PR 802](https://github.com/pgjdbc/pgjdbc/pull/802)
 - Fix calculation of lastReceiveLSN for logical replication [PR 801](https://github.com/pgjdbc/pgjdbc/pull/801)
-- Make sure org.postgresql.Driver is loaded when accessing though DataSource interface [Issue 768](https://github.com/pgjdbc/pgjdbc/issues/768)
+- Make sure com.aliyun.polardb2.Driver is loaded when accessing though DataSource interface [Issue 768](https://github.com/pgjdbc/pgjdbc/issues/768)
 
 ### Regressions
 - There's no 42.1.0.jre6 version due to infinity handling bug. Fixed in 42.1.1.jre6

@@ -31,5 +31,5 @@ buildNumber.properties
 
 # Ignore folders used to build binaries for old Java
 /eclipsebin/
-benchmarks
+benchmarks/bin
 .vscode

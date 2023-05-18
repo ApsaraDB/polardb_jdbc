@@ -10,30 +10,30 @@ PostgreSQL® is an extensible database system. You can add your own functions to
 
 ## Accessing the Extensions
 
-To access some of the extensions, you need to use some extra methods in the `org.postgresql.PGConnection` class. In this case, you would need to cast the return value of `Driver.getConnection()` . For example:
+To access some of the extensions, you need to use some extra methods in the `com.aliyun.polardb2.PGConnection` class. In this case, you would need to cast the return value of `Driver.getConnection()` . For example:
 
 ```java
 Connection db = Driver.getConnection(url, username, password);
 // ...
 // later on
-Fastpath fp = db.unwrap(org.postgresql.PGConnection.class).getFastpathAPI();
+Fastpath fp = db.unwrap(com.aliyun.polardb2.PGConnection.class).getFastpathAPI();
 ```
 
 ## Geometric Data Types
 
-PostgreSQL® has a set of data types that can store geometric features into a table. These include single points, lines, and polygons.  We support these types in Java with the org.postgresql.geometric package. Please consult the Javadoc mentioned in [Further Reading](/documentation/reading) for details of available classes and features.
+PostgreSQL® has a set of data types that can store geometric features into a table. These include single points, lines, and polygons.  We support these types in Java with the com.aliyun.polardb2.geometric package. Please consult the Javadoc mentioned in [Further Reading](/documentation/reading) for details of available classes and features.
 
 ##### Example 9.1. Using the CIRCLE datatype JDBC
 
 ```java
 import java.sql.*;
 
-import org.postgresql.geometric.PGpoint;
-import org.postgresql.geometric.PGcircle;
+import com.aliyun.polardb2.geometric.PGpoint;
+import com.aliyun.polardb2.geometric.PGcircle;
 
 public class GeometricTest {
     public static void main(String args[]) throws Exception {
-        String url = "jdbc:postgresql://localhost:5432/test";
+        String url = "jdbc:polardb://localhost:5432/test";
         try (Connection conn = DriverManager.getConnection(url, "test", "")) {
             try (Statement stmt = conn.createStatement()) {
                 stmt.execute("CREATE TEMP TABLE geomtest(mycirc circle)");
@@ -76,7 +76,7 @@ Large objects are supported in the standard JDBC specification. However, that
 interface is limited, and the API provided by PostgreSQL® allows for random
 access to the objects contents, as if it was a local file.
 
-The org.postgresql.largeobject package provides to Java the libpq C interface's
+The com.aliyun.polardb2.largeobject package provides to Java the libpq C interface's
 large object API. It consists of two classes, `LargeObjectManager` , which deals
 with creating, opening and deleting large objects, and `LargeObject` which deals
 with an individual object.  For an example usage of this API, please see
@@ -99,8 +99,8 @@ import java.sql.*;
 
 public class NotificationTest {
     public static void main(String args[]) throws Exception {
-        Class.forName("org.postgresql.Driver");
-        String url = "jdbc:postgresql://localhost:5432/test";
+        Class.forName("com.aliyun.polardb2.Driver");
+        String url = "jdbc:polardb://localhost:5432/test";
 
         // Create two distinct connections, one for the notifier
         // and another for the listener to show the communication
@@ -122,11 +122,11 @@ public class NotificationTest {
 
 class Listener extends Thread {
     private Connection conn;
-    private org.postgresql.PGConnection pgconn;
+    private com.aliyun.polardb2.PGConnection pgconn;
 
     Listener(Connection conn) throws SQLException {
         this.conn = conn;
-        this.pgconn = conn.unwrap(org.postgresql.PGConnection.class);
+        this.pgconn = conn.unwrap(com.aliyun.polardb2.PGConnection.class);
         Statement stmt = conn.createStatement();
         stmt.execute("LISTEN mymessage");
         stmt.close();
@@ -135,11 +135,11 @@ class Listener extends Thread {
     public void run() {
         try {
             while (true) {
-                org.postgresql.PGNotification notifications[] = pgconn.getNotifications();
+                com.aliyun.polardb2.PGNotification notifications[] = pgconn.getNotifications();
 
                 // If this thread is the only one that uses the connection, a timeout can be used to
                 // receive notifications immediately:
-                // org.postgresql.PGNotification notifications[] = pgconn.getNotifications(10000);
+                // com.aliyun.polardb2.PGNotification notifications[] = pgconn.getNotifications(10000);
 
                 if (notifications != null) {
                     for (int i = 0; i < notifications.length; i++)
@@ -393,7 +393,7 @@ and it forces the driver to invalidate and re-prepare server side statement.
 
 Recommendation is to use the consistent datatype for each bind placeholder, and use the same type
 for `setNull` .
-Check out `org.postgresql.test.jdbc2.PreparedStatementTest.testAlternatingBindType` example for more details.
+Check out `com.aliyun.polardb2.test.jdbc2.PreparedStatementTest.testAlternatingBindType` example for more details.
 
 #### Debugging
 
@@ -402,7 +402,7 @@ following might be helpful to debug the case.
 
 1. Client logging. If you add `loggerLevel=TRACE&loggerFile=pgjdbc-trace.log`, you would get trace
 of the messages send between the driver and the backend
-1. You might check `org.postgresql.test.jdbc2.AutoRollbackTestSuite` as it verifies lots of combinations
+1. You might check `com.aliyun.polardb2.test.jdbc2.AutoRollbackTestSuite` as it verifies lots of combinations
 
 ##### Example 9.3. Using server side prepared statements
 
@@ -412,14 +412,14 @@ import java.sql.*;
 public class ServerSidePreparedStatement {
 
     public static void main(String args[]) throws Exception {
-        Class.forName("org.postgresql.Driver");
-        String url = "jdbc:postgresql://localhost:5432/test";
+        Class.forName("com.aliyun.polardb2.Driver");
+        String url = "jdbc:polardb://localhost:5432/test";
         Connection conn = DriverManager.getConnection(url, "test", "");
 
         PreparedStatement pstmt = conn.prepareStatement("SELECT ?");
 
         // cast to the pg extension interface
-        org.postgresql.PGStatement pgstmt = pstmt.unwrap(org.postgresql.PGStatement.class);
+        com.aliyun.polardb2.PGStatement pgstmt = pstmt.unwrap(com.aliyun.polardb2.PGStatement.class);
 
         // on the third execution start using server side statements
         pgstmt.setPrepareThreshold(3);
@@ -459,26 +459,26 @@ of these levels such that the value will be the default for all of its children.
 
 ```java
 // pg extension interfaces
-org.postgresql.PGConnection pgconn;
-org.postgresql.PGStatement pgstmt;
+com.aliyun.polardb2.PGConnection pgconn;
+com.aliyun.polardb2.PGStatement pgstmt;
 
 // set a prepared statement threshold for connections created from this url
-String url = "jdbc:postgresql://localhost:5432/test?prepareThreshold=3";
+String url = "jdbc:polardb://localhost:5432/test?prepareThreshold=3";
 
 // see that the connection has picked up the correct threshold from the url
 Connection conn = DriverManager.getConnection(url, "test", "");
-pgconn = conn.unwrap(org.postgresql.PGConnection.class);
+pgconn = conn.unwrap(com.aliyun.polardb2.PGConnection.class);
 System.out.println(pgconn.getPrepareThreshold()); // Should be 3
 
 // see that the statement has picked up the correct threshold from the connection
 PreparedStatement pstmt = conn.prepareStatement("SELECT ?");
-pgstmt = pstmt.unwrap(org.postgresql.PGStatement.class);
+pgstmt = pstmt.unwrap(com.aliyun.polardb2.PGStatement.class);
 System.out.println(pgstmt.getPrepareThreshold()); // Should be 3
 
 // change the connection's threshold and ensure that new statements pick it up
 pgconn.setPrepareThreshold(5);
 PreparedStatement pstmt = conn.prepareStatement("SELECT ?");
-pgstmt = pstmt.unwrap(org.postgresql.PGStatement.class);
+pgstmt = pstmt.unwrap(com.aliyun.polardb2.PGStatement.class);
 System.out.println(pgstmt.getPrepareThreshold()); // Should be 5
 ```
 
@@ -500,7 +500,7 @@ As of pgJDBC 42.2.6, it also exposes the parameter status information to user ap
 
 ## Methods
 
-Two methods on `org.postgresql.PGConnection` provide the client interface to reported parameters. Parameter names are
+Two methods on `com.aliyun.polardb2.PGConnection` provide the client interface to reported parameters. Parameter names are
 case-insensitive and case-preserving.
 
 * `Map PGConnection.getParameterStatuses()` - return a map of all reported parameters and their values.
@@ -514,7 +514,7 @@ See the `PGConnection` JavaDoc for details.
 If you're working directly with a `java.sql.Connection` you can
 
 ```java
-import org.postgresql.PGConnection;
+import com.aliyun.polardb2.PGConnection;
 
 void my_function(Connection conn) {
     System.out.println("My application name is " + ((PGConnection) conn).getParameterStatus("application_name"));
@@ -611,7 +611,7 @@ is not available to execute SQL commands, and can only be used with replication 
 ##### Example 9.4. Create replication connection.
 
 ```java
-String url = "jdbc:postgresql://localhost:5432/postgres";
+String url = "jdbc:polardb://localhost:5432/postgres";
 Properties props = new Properties();
 PGProperty.USER.set(props, "postgres");
 PGProperty.PASSWORD.set(props, "postgres");
@@ -623,8 +623,8 @@ Connection con = DriverManager.getConnection(url, props);
 PGConnection replConnection = con.unwrap(PGConnection.class);
 ```
 
-The entire replication API is grouped in `org.postgresql.replication.PGReplicationConnection` and is available via
-`org.postgresql.PGConnection#getReplicationAPI` .
+The entire replication API is grouped in `com.aliyun.polardb2.replication.PGReplicationConnection` and is available via
+`com.aliyun.polardb2.PGConnection#getReplicationAPI` .
 
 Before you can start replication protocol, you need to have replication slot, which can be also created via pgJDBC API.
 
@@ -718,8 +718,8 @@ PGReplicationStream stream =
 
 After create `PGReplicationStream` , it's time to start receive changes in real-time.
 
-Changes can be received from stream as blocking( `org.postgresql.replication.PGReplicationStream#read` ) or as
-non-blocking (`org.postgresql.replication.PGReplicationStream#readPending` ).
+Changes can be received from stream as blocking( `com.aliyun.polardb2.replication.PGReplicationStream#read` ) or as
+non-blocking (`com.aliyun.polardb2.replication.PGReplicationStream#readPending` ).
 Both methods receive changes as a `java.nio.ByteBuffer` with the payload from the send output plugin. We can't receive
 part of message, only the full message that was sent by the output plugin. ByteBuffer contains message in format that is
 defined by the decoding output plugin, it can be simple String, json, or whatever the plugin determines. That's why
@@ -754,15 +754,15 @@ while (true) {
 
 As mentioned previously, replication stream should periodically send feedback to the database to prevent disconnect via
 timeout. Feedback is automatically sent when `read` or `readPending` are called if it's time to send feedback. Feedback
-can also be sent via `org.postgresql.replication.PGReplicationStream#forceUpdateStatus()` regardless of the timeout. Another
+can also be sent via `com.aliyun.polardb2.replication.PGReplicationStream#forceUpdateStatus()` regardless of the timeout. Another
 important duty of feedback is to provide the  server with the Logial Sequence Number (LSN) that has been successfully received
 and applied to consumer, it is necessary for monitoring and to truncate/archive WAL's that that are no longer needed. In the
 event that replication has been restarted, it's will start from last successfully processed LSN that was sent via feedback to database.
 
 The API provides the following feedback mechanism to indicate the successfully applied LSN by the current consumer. LSN's
-before this can be truncated or archived. `org.postgresql.replication.PGReplicationStream#setFlushedLSN` and
-`org.postgresql.replication.PGReplicationStream#setAppliedLSN` . You always can get last receive LSN via
-`org.postgresql.replication.PGReplicationStream#getLastReceiveLSN` .
+before this can be truncated or archived. `com.aliyun.polardb2.replication.PGReplicationStream#setFlushedLSN` and
+`com.aliyun.polardb2.replication.PGReplicationStream#setAppliedLSN` . You always can get last receive LSN via
+`com.aliyun.polardb2.replication.PGReplicationStream#getLastReceiveLSN` .
 
 ##### Example 9.13. Add feedback indicating a successfully process LSN
 
@@ -790,7 +790,7 @@ while (true) {
 ##### Example 9.14. Full example of logical replication
 
 ```java
-String url = "jdbc:postgresql://localhost:5432/test";
+String url = "jdbc:polardb://localhost:5432/test";
 Properties props = new Properties();
 PGProperty.USER.set(props, "postgres");
 PGProperty.PASSWORD.set(props, "postgres");
@@ -900,7 +900,7 @@ PostgreSQL® provides robust support for array data types as column types, funct
 and criteria in where clauses. There are several ways to create arrays with pgJDBC.
 
 The [java.sql. Connection.createArrayOf(String, Object\[\])](https://docs.oracle.com/javase/8/docs/api/java/sql/Connection.html#createArrayOf-java.lang.String-java.lang.Object:A-) can be used to create an [java.sql. Array](https://docs.oracle.com/javase/8/docs/api/java/sql/Array.html) from `Object[]` instances (Note: this includes both primitive and object multi-dimensional arrays).
-A similar method `org.postgresql.PGConnection.createArrayOf(String, Object)` provides support for primitive array types.
+A similar method `com.aliyun.polardb2.PGConnection.createArrayOf(String, Object)` provides support for primitive array types.
 The `java.sql.Array` object returned from these methods can be used in other methods, such as
 [PreparedStatement.setArray(int, Array)](https://docs.oracle.com/javase/8/docs/api/java/sql/PreparedStatement.html#setArray-int-java.sql.Array-).
 

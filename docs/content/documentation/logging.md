@@ -28,7 +28,7 @@ The Logging APIs offer both static and dynamic configuration control. Static con
 up a particular configuration and then re-launch the application with the new logging settings. Dynamic control allows
 for updates to the logging configuration within a currently running program.
 
-The root logger used by the pgJDBC driver is `org.postgresql` .
+The root logger used by the pgJDBC driver is `com.aliyun.polardb2` .
 
 ## Enable logging by using logging.properties file
 
@@ -56,7 +56,7 @@ java.util.logging.FileHandler.level = FINEST
 java.util.logging.SimpleFormatter.format = %1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n
 
 # Facility specific properties.
-org.postgresql.level = FINEST
+com.aliyun.polardb2.level = FINEST
 ```
 
 And when you run your application you pass the system property:
