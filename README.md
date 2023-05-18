@@ -11,8 +11,8 @@ PostgreSQL JDBC Driver (PgJDBC for short) allows Java programs to connect to a P
 [![License](https://img.shields.io/badge/License-BSD--2--Clause-blue.svg)](https://opensource.org/licenses/BSD-2-Clause)
 [![Join the chat at https://gitter.im/pgjdbc/pgjdbc](https://badges.gitter.im/pgjdbc/pgjdbc.svg)](https://gitter.im/pgjdbc/pgjdbc?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.postgresql/postgresql/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.postgresql/postgresql)
-[![Javadocs](http://javadoc.io/badge/org.postgresql/postgresql.svg)](http://javadoc.io/doc/org.postgresql/postgresql)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.aliyun.polardb2/postgresql/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.aliyun.polardb2/postgresql)
+[![Javadocs](http://javadoc.io/badge/com.aliyun.polardb2/postgresql.svg)](http://javadoc.io/doc/com.aliyun.polardb2/postgresql)
 
 ## Supported PostgreSQL and Java versions
 The current version of the driver should be compatible with **PostgreSQL 8.4 and higher** using the version 3.0 of the protocol and **Java 8** (JDBC 4.2) or above. Unless you have unusual requirements (running old applications or JVMs), this is the driver you should be using.
@@ -23,22 +23,22 @@ PgJDBC regression tests are run against all PostgreSQL versions since 9.1, inclu
 Most people do not need to compile PgJDBC. You can download the precompiled driver (jar) from the [PostgreSQL JDBC site](https://jdbc.postgresql.org/download.html) or using your chosen dependency management tool:
 
 ### Maven Central
-You can search on The Central Repository with GroupId and ArtifactId [org.postgresql:postgresql][mvn-search].
+You can search on The Central Repository with GroupId and ArtifactId [com.aliyun.polardb2:postgresql][mvn-search].
 
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.postgresql/postgresql/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.postgresql/postgresql)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.aliyun.polardb2/postgresql/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.aliyun.polardb2/postgresql)
 
 ```xml
 <!-- Add the following dependency to your pom.xml, -->
 <!-- replacing LATEST with specific version as required -->
 
 <dependency>
-  <groupId>org.postgresql</groupId>
+  <groupId>com.aliyun.polardb2</groupId>
   <artifactId>postgresql</artifactId>
   <version>LATEST</version>
 </dependency>
 ```
 
-[mvn-search]: https://search.maven.org/artifact/org.postgresql/postgresql "Search on Maven Central"
+[mvn-search]: https://search.maven.org/artifact/com.aliyun.polardb2/postgresql "Search on Maven Central"
 
 #### Development snapshots
 Snapshot builds (builds from `master` branch) are also deployed to OSS Sonatype Snapshot Repository, so you can test current development version (test some bugfix) by enabling the repository and using the latest [SNAPSHOT](https://oss.sonatype.org/content/repositories/snapshots/org/postgresql/postgresql/maven-metadata.xml) version.
@@ -53,36 +53,36 @@ For more information you can read [the PgJDBC driver documentation](https://jdbc
 
 | Implements                          | Class                                          |
 | ----------------------------------- | ---------------------------------------------- |
-| java.sql.Driver                     | **org.postgresql.Driver**                      |
-| javax.sql.DataSource                | org.postgresql.ds.PGSimpleDataSource           |
-| javax.sql.ConnectionPoolDataSource  | org.postgresql.ds.PGConnectionPoolDataSource   |
-| javax.sql.XADataSource              | org.postgresql.xa.PGXADataSource               |
+| java.sql.Driver                     | **com.aliyun.polardb2.Driver**                      |
+| javax.sql.DataSource                | com.aliyun.polardb2.ds.PGSimpleDataSource           |
+| javax.sql.ConnectionPoolDataSource  | com.aliyun.polardb2.ds.PGConnectionPoolDataSource   |
+| javax.sql.XADataSource              | com.aliyun.polardb2.xa.PGXADataSource               |
 
 ### Building the Connection URL
 The driver recognises JDBC URLs of the form:
 ```
-jdbc:postgresql:database
-jdbc:postgresql:
-jdbc:postgresql://host/database
-jdbc:postgresql://host/
-jdbc:postgresql://host:port/database
-jdbc:postgresql://host:port/
-jdbc:postgresql://?service=myservice
+jdbc:polardb:database
+jdbc:polardb:
+jdbc:polardb://host/database
+jdbc:polardb://host/
+jdbc:polardb://host:port/database
+jdbc:polardb://host:port/
+jdbc:polardb://?service=myservice
 ```
 The general format for a JDBC URL for connecting to a PostgreSQL server is as follows, with items in square brackets ([ ]) being optional:
 ```
-jdbc:postgresql:[//host[:port]/][database][?property1=value1[&property2=value2]...]
+jdbc:polardb:[//host[:port]/][database][?property1=value1[&property2=value2]...]
 ```
 where:
- * **jdbc:postgresql:** (Required) is known as the sub-protocol and is constant.
- * **host** (Optional) is the server address to connect. This could be a DNS or IP address, or it could be *localhost* or *127.0.0.1* for the local computer. To specify an IPv6 address your must enclose the host parameter with square brackets (jdbc:postgresql://[::1]:5740/accounting). Defaults to `localhost`.
+ * **jdbc:polardb:** (Required) is known as the sub-protocol and is constant.
+ * **host** (Optional) is the server address to connect. This could be a DNS or IP address, or it could be *localhost* or *127.0.0.1* for the local computer. To specify an IPv6 address your must enclose the host parameter with square brackets (jdbc:polardb://[::1]:5740/accounting). Defaults to `localhost`.
  * **port** (Optional) is the port number listening on the host. Defaults to `5432`.
  * **database** (Optional) is the database name. Defaults to the same name as the *user name* used in the connection.
  * **propertyX** (Optional) is one or more option connection properties. For more information see *Connection properties*.
 
 ### Logging
 PgJDBC uses java.util.logging for logging.
-To configure log levels and control log output destination (e.g. file or console), configure your java.util.logging properties accordingly for the org.postgresql logger.
+To configure log levels and control log output destination (e.g. file or console), configure your java.util.logging properties accordingly for the com.aliyun.polardb2 logger.
 Note that the most detailed log levels, "`FINEST`", may include sensitive information such as connection details, query SQL, or command parameters.
 
 #### Connection Properties
@@ -95,7 +95,7 @@ In addition to the standard connection parameters the driver supports a number o
 | options                       | String |          null           | Specify 'options' connection initialization parameter.                                                                                                                                                                                                                                                                                        |
 | service                       | String |          null           | Specify 'service' name described in pg_service.conf file. References: [The Connection Service File](https://www.postgresql.org/docs/current/libpq-pgservice.html) and [The Password File](https://www.postgresql.org/docs/current/libpq-pgpass.html). 'service' file can provide all properties including 'hostname=', 'port=' and 'dbname='. |
 | ssl                           | Boolean |          false          | Control use of SSL (true value causes SSL to be required)                                                                                                                                                                                                                                                                                    |
-| sslfactory                    | String | org.postgresql.ssl.LibPQFactory | Provide a SSLSocketFactory class when using SSL.                                                                                                                                                                                                                                                                                      |
+| sslfactory                    | String | com.aliyun.polardb2.ssl.LibPQFactory | Provide a SSLSocketFactory class when using SSL.                                                                                                                                                                                                                                                                                      |
 | sslfactoryarg (deprecated)    | String |          null           | Argument forwarded to constructor of SSLSocketFactory class.                                                                                                                                                                                                                                                                                  |
 | sslmode                       | String |         prefer          | Controls the preference for opening using an SSL encrypted connection.                                                                                                                                                                                                                                                                        |
 | sslcert                       | String |          null           | The location of the client's SSL certificate                                                                                                                                                                                                                                                                                                  |

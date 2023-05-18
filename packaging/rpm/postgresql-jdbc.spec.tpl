@@ -117,10 +117,10 @@ rm src/test/java/org/postgresql/test/jdbc2/DriverTest.java \
 
 # compat symlink: requested by dtardon (libreoffice), reverts part of
 # 0af97ce32de877 commit.
-%mvn_file org.postgresql:postgresql %{name}/postgresql %{name} postgresql
+%mvn_file com.aliyun.polardb2:postgresql %{name}/postgresql %{name} postgresql
 
 # For compat reasons, make Maven artifact available under older coordinates.
-%mvn_alias org.postgresql:postgresql postgresql:postgresql
+%mvn_alias com.aliyun.polardb2:postgresql postgresql:postgresql
 
 
 %build

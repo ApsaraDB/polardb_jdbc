@@ -3,10 +3,10 @@
  * See the LICENSE file in the project root for more information.
  */
 
-package org.postgresql.test.osgi;
+package com.aliyun.polardb2.test.osgi;
 
 import static org.ops4j.pax.exam.CoreOptions.options;
-import static org.postgresql.test.osgi.DefaultPgjdbcOsgiOptions.defaultPgjdbcOsgiOptions;
+import static com.aliyun.polardb2.test.osgi.DefaultPgjdbcOsgiOptions.defaultPgjdbcOsgiOptions;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -35,7 +35,7 @@ public class PlainOsgiTest {
 
   @Test
   public void driverVersionShouldBePositive() throws Exception {
-    Class<?> driverClass = Class.forName("org.postgresql.Driver");
+    Class<?> driverClass = Class.forName("com.aliyun.polardb2.Driver");
     Driver driver = (Driver) driverClass.getConstructor().newInstance();
 
     // We use regular assert instead of hamcrest since

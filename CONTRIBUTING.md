@@ -107,8 +107,8 @@ on a command line (the outputs are located in the relevant:
     ./gradlew autostyleCheck checkstyleAll # report code style violations
 
     ./gradlew test # execute tests
-    ./gradlew test --tests org.postgresql.test.ssl.SslTest # execute test by class
-    ./gradlew test -PincludeTestTags=!org.postgresql.test.SlowTests # skip slow tests
+    ./gradlew test --tests com.aliyun.polardb2.test.ssl.SslTest # execute test by class
+    ./gradlew test -PincludeTestTags=!com.aliyun.polardb2.test.SlowTests # skip slow tests
 
 Note: `clean` is not required, and the build automatically re-executes the tasks.
 However, Gradle caches the results of `test` execution as well, so if you want to
@@ -154,11 +154,11 @@ If you split logic into multiple methods, you might want verify null once, then 
 For fields that start as null and become non-null later, use `@MonotonicNonNull`.
 For fields that have already been checked against null, use `@RequiresNonNull`.
 
-* If you are absolutely sure the value is non-null, you might use `org.postgresql.util.internal.Nullness.castNonNull(T)`
-or `org.postgresql.util.internal.Nullness.castNonNull(T, String)`.
+* If you are absolutely sure the value is non-null, you might use `com.aliyun.polardb2.util.internal.Nullness.castNonNull(T)`
+or `com.aliyun.polardb2.util.internal.Nullness.castNonNull(T, String)`.
 
 * You can configure postfix completion in IntelliJ IDEA via `Preferences -> Editor -> General -> Postfix Completion`
-key: `cnn`, applicable element type: `non-primitive`, `org.postgresql.util.internal.Nullness.castNonNull($EXPR$)`.  
+key: `cnn`, applicable element type: `non-primitive`, `com.aliyun.polardb2.util.internal.Nullness.castNonNull($EXPR$)`.  
 
 * The Checker Framework comes with an annotated JDK, however, there might be invalid annotations.
 In that cases, stub files can be placed to `/config/checkerframework` to override the annotations.

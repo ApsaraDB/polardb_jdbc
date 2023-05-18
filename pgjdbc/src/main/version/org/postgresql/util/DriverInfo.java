@@ -3,7 +3,7 @@
  * See the LICENSE file in the project root for more information.
  */
 
-package org.postgresql.util;
+package com.aliyun.polardb2.util;
 
 /**
  * Utility class with constants of Driver information.
@@ -14,7 +14,7 @@ public final class DriverInfo {
   }
 
   // Driver name
-  public static final String DRIVER_NAME = "PostgreSQL JDBC Driver";
+  public static final String DRIVER_NAME = "PolarDB2 JDBC Driver";
   public static final String DRIVER_SHORT_NAME = "PgJDBC";
   public static final String DRIVER_VERSION = "/*$version$*/";
   public static final String DRIVER_FULL_NAME = DRIVER_NAME + " " + DRIVER_VERSION;

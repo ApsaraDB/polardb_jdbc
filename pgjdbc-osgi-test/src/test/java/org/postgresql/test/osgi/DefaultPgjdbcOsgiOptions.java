@@ -3,7 +3,7 @@
  * See the LICENSE file in the project root for more information.
  */
 
-package org.postgresql.test.osgi;
+package com.aliyun.polardb2.test.osgi;
 
 import static org.ops4j.pax.exam.CoreOptions.composite;
 import static org.ops4j.pax.exam.CoreOptions.junitBundles;
@@ -25,7 +25,7 @@ public class DefaultPgjdbcOsgiOptions {
         // This is a repository where osgi container would cache resolved maven artifacts
         systemProperty("org.ops4j.pax.url.mvn.localRepository")
             .value(System.getProperty("pgjdbc.org.ops4j.pax.url.mvn.localRepository")),
-        mavenBundle("org.postgresql", "postgresql").versionAsInProject(),
+        mavenBundle("com.aliyun.polardb2", "postgresql").versionAsInProject(),
         systemProperty("logback.configurationFile")
             .value(System.getProperty("logback.configurationFile")),
         mavenBundle("org.slf4j", "slf4j-api").versionAsInProject(),

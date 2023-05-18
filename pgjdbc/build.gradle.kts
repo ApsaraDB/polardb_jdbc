@@ -75,7 +75,7 @@ tasks.configureEach<Test> {
     }
 }
 
-val preprocessVersion by tasks.registering(org.postgresql.buildtools.JavaCommentPreprocessorTask::class) {
+val preprocessVersion by tasks.registering(com.aliyun.polardb2.buildtools.JavaCommentPreprocessorTask::class) {
     baseDir.set(projectDir)
     sourceFolders.add("src/main/version")
 }
@@ -121,7 +121,7 @@ val add_new_messages_to_po by tasks.registering(MsgMergeTask::class) {
 
 val generate_java_resources by tasks.registering(MsgFmtTask::class) {
     poFiles.from(add_new_messages_to_po)
-    targetBundle.set("org.postgresql.translation.messages")
+    targetBundle.set("com.aliyun.polardb2.translation.messages")
 }
 
 val generateGettextSources by tasks.registering {
@@ -182,8 +182,8 @@ val shadedLicenseFiles = licensesCopySpec(renderShadedLicense)
 
 tasks.configureEach<Jar> {
     manifest {
-        attributes["Main-Class"] = "org.postgresql.util.PGJDBCMain"
-        attributes["Automatic-Module-Name"] = "org.postgresql.jdbc"
+        attributes["Main-Class"] = "com.aliyun.polardb2.util.PGJDBCMain"
+        attributes["Automatic-Module-Name"] = "com.aliyun.polardb2.jdbc"
     }
 }
 
@@ -208,18 +208,18 @@ val osgiJar by tasks.registering(Bundle::class) {
     withConvention(BundleTaskConvention::class) {
         bnd(
             """
-            -exportcontents: !org.postgresql.shaded.*, org.postgresql.*
+            -exportcontents: !com.aliyun.polardb2.shaded.*, com.aliyun.polardb2.*
             -removeheaders: Created-By
             Bundle-Description: Java JDBC driver for PostgreSQL database
             Bundle-DocURL: https://jdbc.postgresql.org/
             Bundle-Vendor: PostgreSQL Global Development Group
             Import-Package: javax.sql, javax.transaction.xa, javax.naming, javax.security.sasl;resolution:=optional, *;resolution:=optional
-            Bundle-Activator: org.postgresql.osgi.PGBundleActivator
-            Bundle-SymbolicName: org.postgresql.jdbc
+            Bundle-Activator: com.aliyun.polardb2.osgi.PGBundleActivator
+            Bundle-SymbolicName: com.aliyun.polardb2.jdbc
             Bundle-Name: PostgreSQL JDBC Driver
             Bundle-Copyright: Copyright (c) 2003-2020, PostgreSQL Global Development Group
             Require-Capability: osgi.ee;filter:="(&(|(osgi.ee=J2SE)(osgi.ee=JavaSE))(version>=1.8))"
-            Provide-Capability: osgi.service;effective:=active;objectClass=org.osgi.service.jdbc.DataSourceFactory;osgi.jdbc.driver.class=org.postgresql.Driver;osgi.jdbc.driver.name=PostgreSQL JDBC Driver
+            Provide-Capability: osgi.service;effective:=active;objectClass=org.osgi.service.jdbc.DataSourceFactory;osgi.jdbc.driver.class=com.aliyun.polardb2.Driver;osgi.jdbc.driver.name=PostgreSQL JDBC Driver
             """
         )
     }

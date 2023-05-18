@@ -20,15 +20,15 @@ import java.sql.*;
 
 > **NOTE**
 >
-> You should not import the `org.postgresql` package unless you are using PostgreSQL® extensions to the JDBC API.
+> You should not import the `com.aliyun.polardb2` package unless you are using PostgreSQL® extensions to the JDBC API.
 
 ## Loading the Driver
 
-Applications do not need to explicitly load the org.postgresql. Driver class because the pgJDBC driver jar supports the Java Service Provider mechanism. The driver will be loaded by the JVM when the application connects to PostgreSQL® (as long as the driver's jar file is on the classpath).
+Applications do not need to explicitly load the com.aliyun.polardb2. Driver class because the pgJDBC driver jar supports the Java Service Provider mechanism. The driver will be loaded by the JVM when the application connects to PostgreSQL® (as long as the driver's jar file is on the classpath).
 
 > **NOTE**
 >
-> Prior to Java 1.6, the driver had to be loaded by the application: either by calling `Class.forName("org.postgresql.Driver");` or by passing the driver class name as a JVM parameter `java -Djdbc.drivers=org.postgresql.Driver example.ImageViewer`
+> Prior to Java 1.6, the driver had to be loaded by the application: either by calling `Class.forName("com.aliyun.polardb2.Driver");` or by passing the driver class name as a JVM parameter `java -Djdbc.drivers=com.aliyun.polardb2.Driver example.ImageViewer`
 
 These older methods of loading the driver are still supported, but they are no longer necessary.
 
@@ -36,16 +36,16 @@ These older methods of loading the driver are still supported, but they are no l
 
 With JDBC, a database is represented by a URL (Uniform Resource Locator). With PostgreSQL®, this takes one of the following forms:
 
-* jdbc:postgresql:database
-* jdbc:postgresql:/
-* jdbc:postgresql://host/database
-* jdbc:postgresql://host/
-* jdbc:postgresql://host:port/database
-* jdbc:postgresql://host:port/
+* jdbc:polardb:database
+* jdbc:polardb:/
+* jdbc:polardb://host/database
+* jdbc:polardb://host/
+* jdbc:polardb://host:port/database
+* jdbc:polardb://host:port/
 
 The parameters have the following meanings:
 
-* **`host`** = The host name of the server. Defaults to `localhost` . To specify an IPv6 address your must enclose the `host` parameter with square brackets, for example: `jdbc:postgresql://[::1]:5740/accounting`
+* **`host`** = The host name of the server. Defaults to `localhost` . To specify an IPv6 address your must enclose the `host` parameter with square brackets, for example: `jdbc:polardb://[::1]:5740/accounting`
 
 * **`port`** = The port number the server is listening on. Defaults to the PostgreSQL® standard port number (5432).
 
@@ -66,14 +66,14 @@ URL or an additional `Properties` object parameter to `DriverManager.getConnecti
 If a property is specified both in URL and in `Properties` object, the value from `Properties` object is ignored.
 
 ```java
-String url = "jdbc:postgresql://localhost/test";
+String url = "jdbc:polardb://localhost/test";
 Properties props = new Properties();
 props.setProperty("user", "fred");
 props.setProperty("password", "secret");
 props.setProperty("ssl", "true");
 Connection conn = DriverManager.getConnection(url, props);
 
-String url = "jdbc:postgresql://localhost/test?user=fred&password=secret&ssl=true";
+String url = "jdbc:polardb://localhost/test?user=fred&password=secret&ssl=true";
 Connection conn = DriverManager.getConnection(url);
 ```
 
@@ -94,7 +94,7 @@ Properties props = new Properties();
 props.setProperty("options", "-c search_path=test,public,pg_catalog -c statement_timeout=90000");
 Connection conn = DriverManager.getConnection(url, props);
 
-String url = "jdbc:postgresql://localhost:5432/postgres?options=-c%20search_path=test,public,pg_catalog%20-c%20statement_timeout=90000";
+String url = "jdbc:polardb://localhost:5432/postgres?options=-c%20search_path=test,public,pg_catalog%20-c%20statement_timeout=90000";
 Connection conn = DriverManager.getConnection(url);
 ```
 
@@ -103,7 +103,7 @@ Connect using SSL. The server must have been compiled with SSL support. This pro
 However, for compatibility with future versions, the value "true" is preferred. For more information see [Using SSL](/documentation/ssl/).\
 Setting up the certificates and keys for ssl connection can be tricky see [The test documentation](https://github.com/pgjdbc/pgjdbc/blob/master/certdir/README.md) for detailed examples.
 
-* **`sslfactory(`*String*`)`** *Default `org.postgresql.ssl.LibPQFactory`*\
+* **`sslfactory(`*String*`)`** *Default `com.aliyun.polardb2.ssl.LibPQFactory`*\
 The provided value is a class name to use as the `SSLSocketFactory` when establishing an SSL connection. 
 For more information see the section called [Custom SSLSocketFactory](/documentation/ssl/#custom-sslsocketfactory) defaults to LibPQFactory
 
@@ -139,10 +139,10 @@ If your key has a password, provide it using the `sslpassword` connection parame
 * **`sslrootcert (`*String*`)`** *Default `defaultdir/root.crt`*\
 File name of the SSL root certificate. It can be a PEM encoded X509v3 certificate.
 
-* **`sslhostnameverifier (`*String*`)`** *Default `org.postgresql.ssl.PGjdbcHostnameVerifier`*\
+* **`sslhostnameverifier (`*String*`)`** *Default `com.aliyun.polardb2.ssl.PGjdbcHostnameVerifier`*\
 Class name of hostname verifier.
 
-* **`sslpasswordcallback (`*String*`)`** *Default `org.postgresql.ssl.jdbc4.LibPQFactory.ConsoleCallbackHandler`*\
+* **`sslpasswordcallback (`*String*`)`** *Default `com.aliyun.polardb2.ssl.jdbc4.LibPQFactory.ConsoleCallbackHandler`*\
 Class name of the SSL password provider.
 
 * **`sslpassword (`*String*`)`** *Default `null`*\
@@ -449,16 +449,16 @@ To support simple connection fail-over it is possible to define multiple endpoin
 url separated by commas. The driver will try once to connect to each of them in order until the connection succeeds.
 If none succeeds a normal connection exception is thrown.
 
-The syntax for the connection url is: `jdbc:postgresql://host1:port1,host2:port2/database`
+The syntax for the connection url is: `jdbc:polardb://host1:port1,host2:port2/database`
 
 The simple connection fail-over is useful when running against a high availability postgres installation that has identical 
 data on each node. For example streaming replication postgres or postgres-xc cluster.
 
 For example an application can create two connection pools.
-One data source is for writes, another for reads. The write pool limits connections only to a primary node:`jdbc:postgresql://node1,node2,node3/accounting?targetServerType=primary` .
+One data source is for writes, another for reads. The write pool limits connections only to a primary node:`jdbc:polardb://node1,node2,node3/accounting?targetServerType=primary` .
 
 And the read pool balances connections between secondary nodes, but allows connections also to a primary if no secondaries
-are available: `jdbc:postgresql://node1,node2,node3/accounting?targetServerType=preferSecondary&loadBalanceHosts=true`
+are available: `jdbc:polardb://node1,node2,node3/accounting?targetServerType=preferSecondary&loadBalanceHosts=true`
 
 If a secondary fails, all secondaries in the list will be tried first. In the case that there are no available secondaries
 the primary will be tried. If all the servers are marked as "can't connect" in the cache then an attempt

@@ -1,7 +1,7 @@
 import org.junit.Assert
-import org.postgresql.PGProperty
-import org.postgresql.jdbc.GSSEncMode
-import org.postgresql.util.KerberosTicket
+import com.aliyun.polardb2.PGProperty
+import com.aliyun.polardb2.jdbc.GSSEncMode
+import com.aliyun.polardb2.util.KerberosTicket
 
 import javax.security.auth.login.AppConfigurationEntry
 import javax.security.auth.login.Configuration

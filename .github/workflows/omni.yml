@@ -142,13 +142,13 @@ jobs:
               switch (test_group) {
                 case 'replication':
                   // Only replication tests
-                  return 'org.postgresql.test.Replication';
+                  return 'com.aliyun.polardb2.test.Replication';
                 case 'fast':
                   // Fast group does not run slow or replication tests
-                  return '!org.postgresql.test.SlowTests & !org.postgresql.test.Replication';
+                  return '!com.aliyun.polardb2.test.SlowTests & !com.aliyun.polardb2.test.Replication';
                 case 'slow':
                   // Everything but replication tests (which includes all the really slow ones)
-                  return '!org.postgresql.test.Replication';
+                  return '!com.aliyun.polardb2.test.Replication';
                 case 'all':
                   // Everything
                   return ''
@@ -413,7 +413,7 @@ jobs:
       with:
         arguments: --no-parallel --no-daemon --scan jandex test jacocoReport -PskipJavadoc
         properties: |
-          includeTestTags=!org.postgresql.test.SlowTests & !org.postgresql.test.Replication
+          includeTestTags=!com.aliyun.polardb2.test.SlowTests & !com.aliyun.polardb2.test.Replication
     - name: 'Upload code coverage'
       uses: codecov/codecov-action@a1ed4b322b4b38cb846afb5a0ebfa17086917d27
       with:

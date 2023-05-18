@@ -3,13 +3,13 @@
  * See the LICENSE file in the project root for more information.
  */
 
-package org.postgresql.test.osgi;
+package com.aliyun.polardb2.test.osgi;
 
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.CoreOptions.options;
-import static org.postgresql.test.osgi.DefaultPgjdbcOsgiOptions.defaultPgjdbcOsgiOptions;
+import static com.aliyun.polardb2.test.osgi.DefaultPgjdbcOsgiOptions.defaultPgjdbcOsgiOptions;
 
-import org.postgresql.PGProperty;
+import com.aliyun.polardb2.PGProperty;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -41,7 +41,7 @@ import javax.sql.XAConnection;
 import javax.sql.XADataSource;
 
 /**
- * {@link org.postgresql.osgi.PGBundleActivator} should declare {@link
+ * {@link com.aliyun.polardb2.osgi.PGBundleActivator} should declare {@link
  * org.osgi.service.jdbc.DataSourceFactory} service, so the class deploys {@code postgresql} bundle
  * and verifies the factory.
  */
@@ -66,7 +66,7 @@ public class DataSourceFactoryTest {
 
   /**
    * Verify that {@link DataSourceFactory} service should be registered with {@code
-   * org.postgresql.Driver} driver class name.
+   * com.aliyun.polardb2.Driver} driver class name.
    */
   @Test
   public void dataSourceFactoryIsRegistered() throws Exception {
@@ -116,7 +116,7 @@ public class DataSourceFactoryTest {
   private String getUrl() {
     Properties p = loadPropertyFiles("build.properties");
 
-    return "jdbc:postgresql://"
+    return "jdbc:polardb://"
         + p.get("server") + ":"
         + p.get("port") + "/"
         + p.get("database")

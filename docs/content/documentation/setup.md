@@ -45,7 +45,7 @@ To run the application, we would use:
 export CLASSPATH=/usr/local/lib/myapp.jar:/usr/local/pgsql/share/java/postgresql-42.5.0.jar:. java MyApp
 ```
 
-Current Java applications will likely use maven, gradle or some other package manager. [Use this to search](https://mvnrepository.com/artifact/org.postgresql/postgresql) for the latest jars and how to include them in your project
+Current Java applications will likely use maven, gradle or some other package manager. [Use this to search](https://mvnrepository.com/artifact/com.aliyun.polardb2/postgresql) for the latest jars and how to include them in your project
 
 Loading the driver from within the application is covered in [Initializing the Driver](/documentation/use/).
 
