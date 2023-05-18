@@ -1030,5 +1030,21 @@ public abstract class AbstractArraysTest<A> {
     public boolean isOraMode() {
       return false;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isOracleCase() {
+      return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isOracleCaseStrict() {
+      return false;
+    }
   }
 }

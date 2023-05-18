@@ -1836,6 +1836,8 @@ public abstract class BaseDataSource implements CommonDataSource, Referenceable 
     return getReWriteBatchedInserts();
   }
 
+  /* ---------------------------------- POLAR --------------------------- */
+
   public boolean getResetNlsFormat() {
     return PGProperty.RESET_NLS_FORMAT.getBoolean(properties);
   }
@@ -1859,4 +1861,14 @@ public abstract class BaseDataSource implements CommonDataSource, Referenceable 
   public void setCompMode(boolean compMode) {
     PGProperty.COMP_MODE.set(properties, compMode);
   }
+
+  public String getOracleCase() {
+    return PGProperty.ORACLE_CASE.getOrDefault(properties);
+  }
+
+  public void setOracleCase(String oracleCase) {
+    PGProperty.ORACLE_CASE.set(properties, oracleCase);
+  }
+
+  /* ---------------------------------- POLAR --------------------------- */
 }

@@ -407,6 +407,14 @@ public enum PGProperty {
       null,
       "Specify 'options' connection initialization parameter."),
 
+  /* POLAR */
+  ORACLE_CASE(
+      "oracleCase",
+      "false",
+      "The column/table name is upper case or not.",
+      false,
+      new String[] {"true", "false", "strict"}),
+
   /**
    * Password to use when authenticating.
    */

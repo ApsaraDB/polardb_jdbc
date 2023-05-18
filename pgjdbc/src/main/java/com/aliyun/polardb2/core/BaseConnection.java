@@ -243,4 +243,8 @@ public interface BaseConnection extends PGConnection, Connection {
   boolean isMapDateToTimestamp();
 
   boolean isOraMode();
+
+  boolean isOracleCase();
+
+  boolean isOracleCaseStrict();
 }
