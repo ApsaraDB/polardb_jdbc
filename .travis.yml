@@ -20,12 +20,12 @@ before_install:
 
 script:
   # make sure previous build artifacts are not used for subsequent builds
-  - rm -rf $HOME/.m2/repository/org/postgresql || true
+  - rm -rf $HOME/.m2/repository/com/aliyun/polardb2 || true
   - ./.travis/travis_build.sh
   - ./.travis/travis_check_postgres_health.sh
   # To avoid useless S3 cache updates (https://github.com/travis-ci/travis-ci/issues/1441#issuecomment-67607074)
   #- mkdir /tmp/cache-trick
-  #- mv $HOME/.m2/repository/org/postgresql /tmp/cache-trick/
+  #- mv $HOME/.m2/repository/com/aliyun/polardb2 /tmp/cache-trick/
 
 before_cache:
   - F=CleanupGradleCache sh -x -c 'curl -O https://raw.githubusercontent.com/vlsi/cleanup-gradle-cache/v1.x/$F.java && javac -J-Xmx128m $F.java && java -Xmx128m $F'
@@ -33,7 +33,7 @@ before_cache:
   - rm -rf $HOME/.ivy2/cache/com.aliyun.polardb2/
   - find $HOME/.sbt -name "*.lock" -print0 | xargs -0 rm -v
   # No sense in caching current build artifacts
-  - rm -rf $HOME/.m2/repository/org/postgresql
+  - rm -rf $HOME/.m2/repository/com/aliyun/polardb2
 
 # Skip default "mvn install" issued by Travis
 # Root project cannot be compiled with older JDKs, so it makes sense to just skip the step

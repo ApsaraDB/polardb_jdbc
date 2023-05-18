@@ -10,4 +10,4 @@ The PostgreSQL® JDBC driver is not thread safe. The PostgreSQL server is not th
 on the server as such any concurrent requests to the process would have to be serialized. The driver makes no guarantees
 that methods on connections are synchronized. It will be up to the caller to synchronize calls to the driver.
 
-A notable exception is `org/postgresql/jdbc/TimestampUtils.java` which is threadsafe.
+A notable exception is `com/aliyun/polardb2/jdbc/TimestampUtils.java` which is threadsafe.

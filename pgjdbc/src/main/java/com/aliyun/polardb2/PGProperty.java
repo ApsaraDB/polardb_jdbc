@@ -154,6 +154,7 @@ public enum PGProperty {
       false,
       new String[] {"true", "false"}),
 
+  /* POLAR */
   COMP_MODE(
       "compMode",
       "true",
@@ -381,6 +382,7 @@ public enum PGProperty {
       "false",
       "When connections that are not explicitly closed are garbage collected, log the stacktrace from the opening of the connection to trace the leak source"),
 
+  /* POLAR */
   MAP_DATE_TO_TIMESTAMP(
       "mapDateToTimestamp",
       "true",
@@ -559,6 +561,7 @@ public enum PGProperty {
           + "from that database. "
           + "(backend >= 9.4)"),
 
+  /* POLAR */
   RESET_NLS_FORMAT(
       "resetNlsFormat",
       "true",

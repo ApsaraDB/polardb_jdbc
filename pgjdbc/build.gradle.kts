@@ -64,8 +64,8 @@ val enableGettext by props()
 
 if (skipReplicationTests) {
     tasks.configureEach<Test> {
-        exclude("org/postgresql/replication/**")
-        exclude("org/postgresql/test/jdbc2/CopyBothResponseTest*")
+        exclude("com/aliyun/polardb2/replication/**")
+        exclude("com/aliyun/polardb2/test/jdbc2/CopyBothResponseTest*")
     }
 }
 
@@ -126,14 +126,14 @@ val generate_java_resources by tasks.registering(MsgFmtTask::class) {
 
 val generateGettextSources by tasks.registering {
     group = LifecycleBasePlugin.BUILD_GROUP
-    description = "Updates .po, .pot, and .java files in src/main/java/org/postgresql/translation"
+    description = "Updates .po, .pot, and .java files in src/main/java/com/aliyun/polardb2/translation"
     dependsOn(add_new_messages_to_po)
     dependsOn(generate_java_resources)
     doLast {
         copy {
             into("src/main/java")
             from(generate_java_resources)
-            into("org/postgresql/translation") {
+            into("com/aliyun/polardb2/translation") {
                 from(update_pot_with_new_messages)
                 from(add_new_messages_to_po)
             }
@@ -341,18 +341,18 @@ val sourceDistribution by tasks.registering(Tar::class) {
         from("$withoutAnnotations/src/main") {
             exclude("resources/META-INF/LICENSE")
             exclude("checkstyle")
-            exclude("*/org/postgresql/osgi/**")
-            exclude("*/org/postgresql/sspi/NTDSAPI.java")
-            exclude("*/org/postgresql/sspi/NTDSAPIWrapper.java")
-            exclude("*/org/postgresql/sspi/SSPIClient.java")
+            exclude("*/com/aliyun/polardb2/osgi/**")
+            exclude("*/com/aliyun/polardb2/sspi/NTDSAPI.java")
+            exclude("*/com/aliyun/polardb2/sspi/NTDSAPIWrapper.java")
+            exclude("*/com/aliyun/polardb2/sspi/SSPIClient.java")
         }
     }
     into("src/test") {
         from("$withoutAnnotations/src/test") {
-            exclude("*/org/postgresql/test/osgi/**")
+            exclude("*/com/aliyun/polardb2/test/osgi/**")
             exclude("**/*Suite*")
-            exclude("*/org/postgresql/test/sspi/*.java")
-            exclude("*/org/postgresql/replication/**")
+            exclude("*/com/aliyun/polardb2/test/sspi/*.java")
+            exclude("*/com/aliyun/polardb2/replication/**")
         }
     }
     into("certdir") {

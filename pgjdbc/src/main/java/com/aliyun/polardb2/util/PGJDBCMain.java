@@ -11,7 +11,7 @@ public class PGJDBCMain {
 
   public static void main(String[] args) {
 
-    java.net.URL url = Driver.class.getResource("/org/postgresql/Driver.class");
+    java.net.URL url = Driver.class.getResource("/com/aliyun/polardb2/Driver.class");
     System.out.printf("%n%s%n", com.aliyun.polardb2.util.DriverInfo.DRIVER_FULL_NAME);
     System.out.printf("Found in: %s%n%n", url);
 

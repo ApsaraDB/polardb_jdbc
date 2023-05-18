@@ -403,7 +403,7 @@ allprojects {
                 )
             }
             tasks.configureEach<CheckForbiddenApis> {
-                exclude("**/org/postgresql/util/internal/Unsafe.class")
+                exclude("**/com/aliyun/polardb2/util/internal/Unsafe.class")
             }
         }
 
