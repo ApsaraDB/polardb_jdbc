@@ -25,6 +25,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
+import java.util.Locale;
 
 public class PgResultSetMetaData implements ResultSetMetaData, PGResultSetMetaData {
   protected final BaseConnection connection;
@@ -143,7 +144,15 @@ public class PgResultSetMetaData implements ResultSetMetaData, PGResultSetMetaDa
 
   public String getColumnLabel(int column) throws SQLException {
     Field field = getField(column);
-    return field.getColumnLabel();
+    String columnLabel = field.getColumnLabel();
+
+    /* POLAR */
+    if (columnLabel != null && (connection.isOracleCase()
+        || (connection.isOracleCaseStrict() && columnLabel.equals(columnLabel.toLowerCase(Locale.US))))) {
+      columnLabel = columnLabel.toUpperCase(Locale.US);
+    }
+
+    return columnLabel;
   }
 
   public String getColumnName(int column) throws SQLException {
@@ -296,7 +305,16 @@ public class PgResultSetMetaData implements ResultSetMetaData, PGResultSetMetaDa
     fetchFieldMetaData();
     Field field = getField(column);
     FieldMetadata metadata = field.getMetadata();
-    return metadata == null ? "" : metadata.tableName;
+
+    String tableLabel = metadata == null ? "" : metadata.tableName;
+
+    /* POLAR */
+    if (tableLabel != "" && (connection.isOracleCase()
+        || (connection.isOracleCaseStrict() && tableLabel.equals(tableLabel.toLowerCase(Locale.US))))) {
+      tableLabel = tableLabel.toUpperCase(Locale.US);
+    }
+
+    return tableLabel;
   }
 
   /**

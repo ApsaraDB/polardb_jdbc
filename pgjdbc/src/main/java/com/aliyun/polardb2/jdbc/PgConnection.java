@@ -182,6 +182,7 @@ public class PgConnection implements BaseConnection {
   /* POLAR DIFF */
   private boolean mapDateToTimestamp = false;
   private boolean isOraMode = false;
+  private int oracleCase = 0;
   /* POLAR DIFF END */
 
   // Current warnings; there might be more on queryExecutor too.
@@ -483,6 +484,12 @@ public class PgConnection implements BaseConnection {
     // new add parameters
     this.mapDateToTimestamp = PGProperty.MAP_DATE_TO_TIMESTAMP.getBoolean(info);
     this.isOraMode = PGProperty.COMP_MODE.getBoolean(info);
+    String oracleCaseLabel = PGProperty.ORACLE_CASE.getOrDefault(info);
+    if (oracleCaseLabel.equalsIgnoreCase("true")) {
+      this.oracleCase = 1;
+    } else if (oracleCaseLabel.equalsIgnoreCase("strict")) {
+      this.oracleCase = 2;
+    }
   }
 
   @Deprecated
@@ -1961,5 +1968,15 @@ public class PgConnection implements BaseConnection {
   @Override
   public boolean isOraMode() {
     return isOraMode;
+  }
+
+  @Override
+  public boolean isOracleCase() {
+    return oracleCase == 1;
+  }
+
+  @Override
+  public boolean isOracleCaseStrict() {
+    return oracleCase == 2;
   }
 }
