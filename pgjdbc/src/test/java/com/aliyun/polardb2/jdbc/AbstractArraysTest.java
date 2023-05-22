@@ -1046,5 +1046,21 @@ public abstract class AbstractArraysTest<A> {
     public boolean isOracleCaseStrict() {
       return false;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isAutoCommitSpecCompliant() {
+      return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isNamedParam() {
+      return false;
+    }
   }
 }

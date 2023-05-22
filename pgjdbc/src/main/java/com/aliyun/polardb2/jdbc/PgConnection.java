@@ -183,6 +183,8 @@ public class PgConnection implements BaseConnection {
   private boolean mapDateToTimestamp = false;
   private boolean isOraMode = false;
   private int oracleCase = 0;
+  private boolean autoCommitSpecCompliant = true;
+  private boolean namedParam = false;
   /* POLAR DIFF END */
 
   // Current warnings; there might be more on queryExecutor too.
@@ -490,6 +492,8 @@ public class PgConnection implements BaseConnection {
     } else if (oracleCaseLabel.equalsIgnoreCase("strict")) {
       this.oracleCase = 2;
     }
+    this.autoCommit = PGProperty.AUTO_COMMIT.getBoolean(info);
+    this.autoCommitSpecCompliant = PGProperty.AUTO_COMMIT_SPEC_COMPLIANT.getBoolean(info);
   }
 
   @Deprecated
@@ -963,7 +967,7 @@ public class PgConnection implements BaseConnection {
   public void commit() throws SQLException {
     checkClosed();
 
-    if (autoCommit) {
+    if (autoCommit && isAutoCommitSpecCompliant()) {
       throw new PSQLException(GT.tr("Cannot commit when autoCommit is enabled."),
           PSQLState.NO_ACTIVE_SQL_TRANSACTION);
     }
@@ -984,7 +988,7 @@ public class PgConnection implements BaseConnection {
   public void rollback() throws SQLException {
     checkClosed();
 
-    if (autoCommit) {
+    if (autoCommit && isAutoCommitSpecCompliant()) {
       throw new PSQLException(GT.tr("Cannot rollback when autoCommit is enabled."),
           PSQLState.NO_ACTIVE_SQL_TRANSACTION);
     }
@@ -1978,5 +1982,15 @@ public class PgConnection implements BaseConnection {
   @Override
   public boolean isOracleCaseStrict() {
     return oracleCase == 2;
+  }
+
+  @Override
+  public boolean isAutoCommitSpecCompliant() {
+    return autoCommitSpecCompliant;
+  }
+
+  @Override
+  public boolean isNamedParam() {
+    return namedParam;
   }
 }

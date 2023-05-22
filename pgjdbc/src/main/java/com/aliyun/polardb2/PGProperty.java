@@ -108,6 +108,22 @@ public enum PGProperty {
       false,
       new String[] {"always", "never", "conservative"}),
 
+  /* POLAR */
+  AUTO_COMMIT(
+      "autoCommit",
+      "true",
+      "Connection is autoCommit or not.",
+      false,
+      new String[]{"true", "false"}),
+
+  /* POLAR */
+  AUTO_COMMIT_SPEC_COMPLIANT(
+      "autoCommitSpecCompliant",
+      "true",
+      "Call commit compliant or not if autoCommit is on",
+      false,
+      new String[]{"true", "false"}),
+
   /**
    * Use binary format for sending and receiving data if possible.
    */
@@ -230,6 +246,13 @@ public enum PGProperty {
           + "In escapeSyntaxCallMode=call mode, the driver always uses a CALL statement (allowing procedure invocation only).",
       false,
       new String[] {"select", "callIfNoReturn", "call"}),
+
+  /* POLAR */
+  EXTRA_FLOAT_DIGITS(
+      "extraFloatDigits",
+      null,
+      "set extraFloatDigits",
+      false),
 
   /**
    * Group startup parameters in a transaction
@@ -397,6 +420,14 @@ public enum PGProperty {
       "maxResultBuffer",
       null,
       "Specifies size of buffer during fetching result set. Can be specified as specified size or percent of heap memory."),
+
+  /* POLAR */
+  NAMED_PARAM(
+      "namedParam",
+      "false",
+      "Use named parameters or not.",
+      false,
+      new String[]{"true", "false"}),
 
   /**
    * Specify 'options' connection initialization parameter.
