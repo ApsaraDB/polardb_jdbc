@@ -160,6 +160,9 @@ public class QueryExecutorImpl extends QueryExecutorBase {
 
   private boolean mapDateToTimeStamp = false;
 
+  /* POLARDB */
+  private boolean namedParam = false;
+
   @SuppressWarnings({"assignment.type.incompatible", "argument.type.incompatible",
       "method.invocation.invalid"})
   public QueryExecutorImpl(PGStream pgStream,
@@ -174,6 +177,7 @@ public class QueryExecutorImpl extends QueryExecutorBase {
     // assignment.type.incompatible, argument.type.incompatible
     this.replicationProtocol = new V3ReplicationProtocol(this, pgStream);
     this.mapDateToTimeStamp = PGProperty.MAP_DATE_TO_TIMESTAMP.getBoolean(info);
+    this.namedParam =  PGProperty.NAMED_PARAM.getBoolean(info);
     readStartupMessages();
   }
 
@@ -259,7 +263,7 @@ public class QueryExecutorImpl extends QueryExecutorBase {
   public Query createSimpleQuery(String sql) throws SQLException {
     List<NativeQuery> queries = Parser.parseJdbcSql(sql,
         getStandardConformingStrings(), false, true,
-        isReWriteBatchedInsertsEnabled(), getQuoteReturningIdentifiers());
+        isReWriteBatchedInsertsEnabled(), getQuoteReturningIdentifiers(), isNamedParam());
     return wrap(queries);
   }
 
@@ -3083,4 +3087,9 @@ public class QueryExecutorImpl extends QueryExecutorBase {
     return typeoid;
   }
   /* POLAR end */
+
+  /* POLAR */
+  public boolean isNamedParam() {
+    return namedParam;
+  }
 }

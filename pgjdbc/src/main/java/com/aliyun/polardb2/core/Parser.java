@@ -51,6 +51,7 @@ public class Parser {
       boolean withParameters, boolean splitStatements,
       boolean isBatchedReWriteConfigured,
       boolean quoteReturningIdentifiers,
+      boolean namedParam,
       String... returningColumnNames) throws SQLException {
     if (!withParameters && !splitStatements
         && returningColumnNames != null && returningColumnNames.length == 0) {
@@ -85,6 +86,7 @@ public class Parser {
     int keyWordCount = 0;
     int keywordStart = -1;
     int keywordEnd = -1;
+    boolean polarIsCast = false;
 
     String queryTemp = query.trim();
     queryTemp = queryTemp.replaceAll("\\s+", "\0");
@@ -286,6 +288,48 @@ public class Parser {
             }
           }
           break;
+
+        /* POLARDB DIFF: support named parameters. */
+        case ':':
+          if (namedParam) {
+            int namedParamLen = 1;
+            int namedParamIndex = i + 1;
+            if (!withParameters || namedParamIndex + 1 > aChars.length) {
+              break;
+            }
+
+            /* skip case ::xxx */
+            if (polarIsCast) {
+              polarIsCast = false;
+              break;
+            }
+            if (aChars[namedParamIndex] == ':') {
+              polarIsCast = true;
+              break;
+            }
+
+            if (!isIdentifierStartChar(aChars[namedParamIndex]) && !Character.isDigit(aChars[namedParamIndex])) {
+              break;
+            }
+            nativeSql.append(aChars, fragmentStart, i - fragmentStart);
+
+            /* Skip the named parameter. */
+            for (namedParamIndex = namedParamIndex + 1; namedParamIndex < aChars.length; namedParamIndex++) {
+              if (isIdentifierContChar(aChars[namedParamIndex]) || Character.isDigit(aChars[namedParamIndex])) {
+                namedParamLen++;
+              } else {
+                break;
+              }
+            }
+
+            if (bindPositions == null) {
+              bindPositions = new ArrayList<Integer>();
+            }
+            bindPositions.add(nativeSql.length());
+            nativeSql.append(NativeQuery.bindName(bindPositions.size()));
+            fragmentStart = i + namedParamLen + 1;
+            break;
+          }
 
         case 'b':
         case 'B':

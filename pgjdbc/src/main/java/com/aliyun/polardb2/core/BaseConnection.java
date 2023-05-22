@@ -247,4 +247,8 @@ public interface BaseConnection extends PGConnection, Connection {
   boolean isOracleCase();
 
   boolean isOracleCaseStrict();
+
+  boolean isAutoCommitSpecCompliant();
+
+  boolean isNamedParam();
 }

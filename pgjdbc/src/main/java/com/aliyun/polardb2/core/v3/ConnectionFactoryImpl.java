@@ -379,17 +379,27 @@ public class ConnectionFactoryImpl extends ConnectionFactory {
     paramList.add(new StartupParam("TimeZone", createPostgresTimeZone()));
 
     Version assumeVersion = ServerVersion.from(PGProperty.ASSUME_MIN_SERVER_VERSION.getOrDefault(info));
+    String extraFloatDigits = PGProperty.EXTRA_FLOAT_DIGITS.getOrDefault(info);
 
     if (assumeVersion.getVersionNum() >= ServerVersion.v9_0.getVersionNum()) {
       // User is explicitly telling us this is a 9.0+ server so set properties here:
-      paramList.add(new StartupParam("extra_float_digits", "3"));
+      /* POLAR */
+      if (extraFloatDigits != null) {
+        paramList.add(new StartupParam("extra_float_digits", extraFloatDigits));
+      } else {
+        paramList.add(new StartupParam("extra_float_digits", "3"));
+      }
       String appName = PGProperty.APPLICATION_NAME.getOrDefault(info);
       if (appName != null) {
         paramList.add(new StartupParam("application_name", appName));
       }
     } else {
-      // User has not explicitly told us that this is a 9.0+ server so stick to old default:
-      paramList.add(new StartupParam("extra_float_digits", "2"));
+      if (extraFloatDigits != null) {
+        paramList.add(new StartupParam("extra_float_digits", extraFloatDigits));
+      } else {
+        // User has not explicitly told us that this is a 9.0+ server so stick to old default:
+        paramList.add(new StartupParam("extra_float_digits", "2"));
+      }
     }
 
     String replication = PGProperty.REPLICATION.getOrDefault(info);
@@ -915,7 +925,12 @@ public class ConnectionFactoryImpl extends ConnectionFactory {
     }
 
     if (dbVersion >= ServerVersion.v9_0.getVersionNum()) {
-      SetupQueryRunner.run(queryExecutor, "SET extra_float_digits = 3", false);
+      String extraFloatDigits = PGProperty.EXTRA_FLOAT_DIGITS.getOrDefault(info);
+      if (extraFloatDigits != null) {
+        SetupQueryRunner.run(queryExecutor, "SET extra_float_digits = " + extraFloatDigits, false);
+      } else {
+        SetupQueryRunner.run(queryExecutor, "SET extra_float_digits = 3", false);
+      }
     }
 
     /*

@@ -610,4 +610,7 @@ public interface QueryExecutor extends TypeTransferModeRegistry {
    *                      Portal class.
    */
   void removeQueryFromAdaptiveFetchCache(boolean adaptiveFetch, ResultCursor cursor);
+
+  /* POLAR */
+  boolean isNamedParam();
 }

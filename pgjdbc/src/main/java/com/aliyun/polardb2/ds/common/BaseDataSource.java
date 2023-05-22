@@ -1870,5 +1870,37 @@ public abstract class BaseDataSource implements CommonDataSource, Referenceable 
     PGProperty.ORACLE_CASE.set(properties, oracleCase);
   }
 
+  public void setAutoCommit(boolean autoCommit) {
+    PGProperty.AUTO_COMMIT.set(properties, autoCommit);
+  }
+
+  public boolean isAutoCommit() {
+    return PGProperty.AUTO_COMMIT.getBoolean(properties);
+  }
+
+  public void setExtraFloatDigits(String extraFloatDigits) {
+    PGProperty.EXTRA_FLOAT_DIGITS.set(properties, extraFloatDigits);
+  }
+
+  public String getExtraFloatDigits() {
+    return PGProperty.EXTRA_FLOAT_DIGITS.getOrDefault(properties);
+  }
+
+  public boolean isAutoCommitSpecCompliant() {
+    return PGProperty.AUTO_COMMIT_SPEC_COMPLIANT.getBoolean(properties);
+  }
+
+  public void setAutoCommitSpecCompliant(boolean autoCommitSpecCompliant) {
+    PGProperty.AUTO_COMMIT_SPEC_COMPLIANT.set(properties, autoCommitSpecCompliant);
+  }
+
+  public boolean getNamedParam() {
+    return PGProperty.NAMED_PARAM.getBoolean(properties);
+  }
+
+  public void setNamedParam(boolean namedParam) {
+    PGProperty.NAMED_PARAM.set(properties, namedParam);
+  }
+
   /* ---------------------------------- POLAR --------------------------- */
 }
