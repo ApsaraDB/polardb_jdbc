@@ -615,6 +615,12 @@ public class PgStatement implements Statement, BaseStatement {
   public void addWarning(SQLWarning warn) {
     //copy reference to avoid NPE from concurrent modification of this.warnings
     final PSQLWarningWrapper warnWrap = this.warnings;
+
+    /* POLAR: collect warning or not. */
+    if (!connection.isCollectWarning()) {
+      return ;
+    }
+
     if (warnWrap == null) {
       this.warnings = new PSQLWarningWrapper(warn);
     } else {

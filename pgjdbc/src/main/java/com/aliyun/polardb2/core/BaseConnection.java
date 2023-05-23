@@ -251,4 +251,7 @@ public interface BaseConnection extends PGConnection, Connection {
   boolean isAutoCommitSpecCompliant();
 
   boolean isNamedParam();
+
+  boolean isCollectWarning();
+
 }

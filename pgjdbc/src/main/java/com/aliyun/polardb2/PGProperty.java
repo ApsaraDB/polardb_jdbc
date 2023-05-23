@@ -170,6 +170,13 @@ public enum PGProperty {
       false,
       new String[] {"true", "false"}),
 
+  COLLECT_WARNING(
+      "collectWarning",
+      "true",
+      "collect notice/warning in PLSQL",
+      false,
+      new String[] { "true", "false"}),
+
   /* POLAR */
   COMP_MODE(
       "compMode",

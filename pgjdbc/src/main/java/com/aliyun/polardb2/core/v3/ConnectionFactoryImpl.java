@@ -184,12 +184,21 @@ public class ConnectionFactoryImpl extends ConnectionFactory {
 
       newStream = enableGSSEncrypted(newStream, gssEncMode, hostSpec.getHost(), info, connectTimeout);
 
+      /* POLAR: Modify timeout on ssl startup packet */
+      int timeout = newStream.getSocket().getSoTimeout();
+      newStream.getSocket().setSoTimeout(connectTimeout);
+      /* POLAR end */
+
       // if we have a security context then gss negotiation succeeded. Do not attempt SSL
       // negotiation
       if (!newStream.isGssEncrypted()) {
         // Construct and send an ssl startup packet if requested.
         newStream = enableSSL(newStream, sslMode, info, connectTimeout);
       }
+
+      /* POLAR: Resume timeout on normal inputstream read */
+      newStream.getSocket().setSoTimeout(timeout);
+      /* POLAR end */
 
       // Make sure to set network timeout again, in case the stream changed due to GSS or SSL
       if (socketTimeout > 0) {
