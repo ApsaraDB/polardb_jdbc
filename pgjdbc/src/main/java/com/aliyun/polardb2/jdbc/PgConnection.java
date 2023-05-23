@@ -185,6 +185,7 @@ public class PgConnection implements BaseConnection {
   private int oracleCase = 0;
   private boolean autoCommitSpecCompliant = true;
   private boolean namedParam = false;
+  private boolean collectWarning = true;
   /* POLAR DIFF END */
 
   // Current warnings; there might be more on queryExecutor too.
@@ -494,6 +495,7 @@ public class PgConnection implements BaseConnection {
     }
     this.autoCommit = PGProperty.AUTO_COMMIT.getBoolean(info);
     this.autoCommitSpecCompliant = PGProperty.AUTO_COMMIT_SPEC_COMPLIANT.getBoolean(info);
+    this.collectWarning = PGProperty.COLLECT_WARNING.getBoolean(info);
   }
 
   @Deprecated
@@ -1993,4 +1995,10 @@ public class PgConnection implements BaseConnection {
   public boolean isNamedParam() {
     return namedParam;
   }
+
+  @Override
+  public boolean isCollectWarning() {
+    return collectWarning;
+  }
+
 }

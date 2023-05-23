@@ -1902,5 +1902,13 @@ public abstract class BaseDataSource implements CommonDataSource, Referenceable 
     PGProperty.NAMED_PARAM.set(properties, namedParam);
   }
 
+  public boolean getCollectWarning() {
+    return PGProperty.COLLECT_WARNING.getBoolean(properties);
+  }
+
+  public void setCollectWarning(boolean collectWarning) {
+    PGProperty.COLLECT_WARNING.set(properties, collectWarning);
+  }
+
   /* ---------------------------------- POLAR --------------------------- */
 }

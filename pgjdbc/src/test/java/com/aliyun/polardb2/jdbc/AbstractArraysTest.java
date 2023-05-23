@@ -1062,5 +1062,13 @@ public abstract class AbstractArraysTest<A> {
     public boolean isNamedParam() {
       return false;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isCollectWarning() {
+      return false;
+    }
   }
 }
