@@ -29,6 +29,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
+import java.util.Properties;
 
 /**
  * Some simple tests based on problems reported by users. Hopefully these will help prevent previous
@@ -42,7 +43,10 @@ public class BlobTest {
 
   @Before
   public void setUp() throws Exception {
-    con = TestUtil.openDB();
+    Properties props = new Properties();
+    props.put("blobAsBytea", "false");
+    props.put("clobAsText", "false");
+    con = TestUtil.openDB(props);
     TestUtil.createTable(con, "testblob", "id name,lo oid");
     con.setAutoCommit(false);
   }

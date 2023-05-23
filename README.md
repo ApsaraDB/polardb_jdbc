@@ -150,6 +150,8 @@ In addition to the standard connection parameters the driver supports a number o
 | authenticationPluginClassName | String |          null           | Fully qualified class name of the class implementing the AuthenticationPlugin interface. If this is null, the password value in the connection properties will be used.                                                                                                                                                                       |
 | unknownLength                 | Integer |   Integer.MAX_LENGTH    | Specifies the length to return for types of unknown length                                                                                                                                                                                                                                                                                    |
 | stringtype                    | String |          null           | Specify the type to use when binding `PreparedStatement` parameters set via `setString()`                                                                                                                                                                                                                                                     |
+| blobAsBytea                   | Boolean | false   | Treat Blobs as bytea fields instead of as LargeObjects |
+| clobAsText                    | Boolean | false  | Treat Clobs as text fields instead of as LargeObjects |
 
 ## Contributing
 For information on how to contribute to the project see the [Contributing Guidelines](CONTRIBUTING.md)

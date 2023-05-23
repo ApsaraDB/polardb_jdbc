@@ -11,6 +11,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import com.aliyun.polardb2.PGProperty;
 import com.aliyun.polardb2.core.ServerVersion;
 import com.aliyun.polardb2.test.TestUtil;
 import com.aliyun.polardb2.test.jdbc2.BaseTest4;
@@ -27,6 +28,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
+import java.util.Properties;
 
 /**
  * @author davec
@@ -37,6 +39,12 @@ public class Jdbc3CallableStatementTest extends BaseTest4 {
     try (Connection con = TestUtil.openDB();) {
       assumeCallableStatementsSupported(con);
     }
+  }
+
+  @Override
+  protected void updateProperties(Properties props) {
+    super.updateProperties(props);
+    PGProperty.BLOB_AS_BYTEA.set(props, false);
   }
 
   @Override

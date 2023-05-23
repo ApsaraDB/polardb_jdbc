@@ -64,6 +64,7 @@ public class ResultSetMetaDataTest extends BaseTest4 {
     if (databaseMetadataCacheFieldsMib != null) {
       PGProperty.DATABASE_METADATA_CACHE_FIELDS_MIB.set(props, databaseMetadataCacheFieldsMib);
     }
+    PGProperty.BLOB_AS_BYTEA.set(props, false);
   }
 
   @Override

@@ -24,6 +24,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Properties;
 
 /**
  * This test-case is only for JDBC4 blob methods. Take a look at
@@ -35,7 +36,9 @@ public class BlobTest {
 
   @Before
   public void setUp() throws Exception {
-    conn = TestUtil.openDB();
+    Properties props = new Properties();
+    props.put("blobAsBytea", "false");
+    conn = TestUtil.openDB(props);
     TestUtil.createTable(conn, "testblob", "id name,lo oid");
     conn.setAutoCommit(false);
   }

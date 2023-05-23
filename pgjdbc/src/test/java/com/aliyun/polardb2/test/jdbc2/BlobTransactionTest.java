@@ -24,6 +24,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
 import java.util.Arrays;
+import java.util.Properties;
 
 import javax.sql.rowset.serial.SerialBlob;
 
@@ -37,9 +38,11 @@ public class BlobTransactionTest {
 
   @Before
   public void setUp() throws Exception {
-    con = TestUtil.openDB();
+    Properties props = new Properties();
+    props.put("blobAsBytea", "false");
+    con = TestUtil.openDB(props);
     con.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
-    con2 = TestUtil.openDB();
+    con2 = TestUtil.openDB(props);
     con2.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
 
     TestUtil.createTable(con, "testblob", "id name,lo oid");

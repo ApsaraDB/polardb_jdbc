@@ -332,7 +332,12 @@ public class PgResultSetMetaData implements ResultSetMetaData, PGResultSetMetaDa
   }
 
   public int getColumnType(int column) throws SQLException {
-    return getSQLType(column);
+    int sqlType = getSQLType(column);
+
+    if (sqlType == Types.BINARY && connection.getBlobAsBytea()) {
+      return Types.BLOB;
+    }
+    return sqlType;
   }
 
   public int getFormat(int column) throws SQLException {
@@ -349,6 +354,10 @@ public class PgResultSetMetaData implements ResultSetMetaData, PGResultSetMetaDa
       } else if ("int2".equals(type) && connection.haveMinimumServerVersion(ServerVersion.v9_2)) {
         return "smallserial";
       }
+    }
+
+    if ("bytea".equals(type) && connection.getBlobAsBytea()) {
+      return "blob";
     }
 
     return castNonNull(type);

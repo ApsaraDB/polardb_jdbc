@@ -1070,5 +1070,21 @@ public abstract class AbstractArraysTest<A> {
     public boolean isCollectWarning() {
       return false;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean getClobAsText() {
+      return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean getBlobAsBytea() {
+      return false;
+    }
   }
 }
