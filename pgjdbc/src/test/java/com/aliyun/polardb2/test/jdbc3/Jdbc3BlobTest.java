@@ -25,6 +25,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Properties;
 
 public class Jdbc3BlobTest {
   private static final String TABLE = "blobtest";
@@ -35,7 +36,9 @@ public class Jdbc3BlobTest {
 
   @Before
   public void setUp() throws Exception {
-    conn = TestUtil.openDB();
+    Properties props = new Properties();
+    props.put("blobAsBytea", "false");
+    conn = TestUtil.openDB(props);
     TestUtil.createTable(conn, TABLE, "ID INT PRIMARY KEY, DATA OID");
     conn.setAutoCommit(false);
   }

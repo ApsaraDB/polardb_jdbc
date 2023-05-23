@@ -48,6 +48,7 @@ import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.Properties;
 import java.util.TimeZone;
 import java.util.UUID;
 
@@ -64,7 +65,10 @@ public class GetObjectTest {
 
   @Before
   public void setUp() throws Exception {
-    conn = TestUtil.openDB();
+    Properties props = new Properties();
+    props.put("blobAsBytea", "false");
+    props.put("clobAsText", "false");
+    conn = TestUtil.openDB(props);
     TestUtil.createTable(conn, "table1", "varchar_column varchar(16), "
             + "char_column char(10), "
             + "boolean_column boolean,"

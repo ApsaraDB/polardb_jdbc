@@ -240,18 +240,62 @@ public interface BaseConnection extends PGConnection, Connection {
   /**
    * POLARDB DIFF
    */
+
+  /**
+   * Returns the mapDateToTimestamp connection setting.
+   *
+   * @return mapDateToTimestamp setting
+   */
   boolean isMapDateToTimestamp();
 
+  /**
+   * Returns the compMode connection setting.
+   *
+   * @return compMode setting
+   */
   boolean isOraMode();
 
+  /**
+   * Returns the oracleCase connection setting.
+   *
+   * @return oracleCase setting
+   */
   boolean isOracleCase();
 
+  /**
+   * Returns the oracleCase connection setting.
+   *
+   * @return oracleCase setting
+   */
   boolean isOracleCaseStrict();
 
+  /**
+   * Returns the autoCommitSpecCompliant connection setting.
+   *
+   * @return autoCommitSpecCompliant setting
+   */
   boolean isAutoCommitSpecCompliant();
 
+  /**
+   * Returns the namedParam connection setting.
+   *
+   * @return namedParam setting
+   */
   boolean isNamedParam();
 
   boolean isCollectWarning();
 
+  /**
+   * Returns the clobAsText connection setting.
+   *
+   * @return clobAsText setting
+   */
+  boolean getClobAsText();
+
+  /**
+   * Returns the blobAsBytea connection setting.
+   *
+   * @return blobAsBytea setting
+   */
+  boolean getBlobAsBytea();
 }

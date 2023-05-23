@@ -240,6 +240,11 @@ public class PgResultSet implements ResultSet, com.aliyun.polardb2.PGRefCursorRe
       case Types.TIMESTAMP:
         return getTimestamp(columnIndex, null);
       case Types.BINARY:
+        /* POLAR: treat binary as blob */
+        if (connection.getBlobAsBytea()) {
+          return getBlob(columnIndex);
+        }
+        /* POLAR end */
       case Types.VARBINARY:
       case Types.LONGVARBINARY:
         return getBytes(columnIndex);
@@ -447,6 +452,10 @@ public class PgResultSet implements ResultSet, com.aliyun.polardb2.PGRefCursorRe
 
   @Pure
   public @Nullable Blob getBlob(int i) throws SQLException {
+    if (connection.getBlobAsBytea()) {
+      return new PgBlobBytea(getBytes(i));
+    }
+
     byte[] value = getRawValue(i);
     if (value == null) {
       return null;
@@ -484,6 +493,10 @@ public class PgResultSet implements ResultSet, com.aliyun.polardb2.PGRefCursorRe
 
   @Pure
   public @Nullable Clob getClob(int i) throws SQLException {
+    if (connection.getClobAsText()) {
+      return new PgClobText(getString(i));
+    }
+
     byte[] value = getRawValue(i);
     if (value == null) {
       return null;
@@ -3711,7 +3724,7 @@ public class PgResultSet implements ResultSet, com.aliyun.polardb2.PGRefCursorRe
                 PSQLState.INVALID_PARAMETER_VALUE);
       }
     } else if (type == Clob.class) {
-      if (sqlType == Types.CLOB || sqlType == Types.BIGINT) {
+      if (sqlType == Types.CLOB || (sqlType == Types.BIGINT && ! connection.getClobAsText())) {
         return type.cast(getClob(columnIndex));
       } else {
         throw new PSQLException(GT.tr("conversion to {0} from {1} not supported", type, getPGType(columnIndex)),

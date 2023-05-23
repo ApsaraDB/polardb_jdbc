@@ -186,6 +186,10 @@ public class PgConnection implements BaseConnection {
   private boolean autoCommitSpecCompliant = true;
   private boolean namedParam = false;
   private boolean collectWarning = true;
+  // use bytea for BLOBs instead of Postgres LOs?
+  private boolean blobAsBytea = false;
+  // use text for CLOBs instead of Postgres LOs?
+  private boolean clobAsText = false;
   /* POLAR DIFF END */
 
   // Current warnings; there might be more on queryExecutor too.
@@ -496,6 +500,8 @@ public class PgConnection implements BaseConnection {
     this.autoCommit = PGProperty.AUTO_COMMIT.getBoolean(info);
     this.autoCommitSpecCompliant = PGProperty.AUTO_COMMIT_SPEC_COMPLIANT.getBoolean(info);
     this.collectWarning = PGProperty.COLLECT_WARNING.getBoolean(info);
+    this.blobAsBytea = PGProperty.BLOB_AS_BYTEA.getBoolean(info);
+    this.clobAsText = PGProperty.CLOB_AS_TEXT.getBoolean(info);
   }
 
   @Deprecated
@@ -1444,14 +1450,20 @@ public class PgConnection implements BaseConnection {
 
   @Override
   public Clob createClob() throws SQLException {
-    checkClosed();
-    throw com.aliyun.polardb2.Driver.notImplemented(this.getClass(), "createClob()");
+    if (clobAsText) {
+      return new PgClobText();
+    } else {
+      throw com.aliyun.polardb2.Driver.notImplemented(this.getClass(), "createClob()");
+    }
   }
 
   @Override
   public Blob createBlob() throws SQLException {
-    checkClosed();
-    throw com.aliyun.polardb2.Driver.notImplemented(this.getClass(), "createBlob()");
+    if (blobAsBytea) {
+      return new PgBlobBytea();
+    } else {
+      throw com.aliyun.polardb2.Driver.notImplemented(this.getClass(), "createBlob()");
+    }
   }
 
   @Override
@@ -2001,4 +2013,15 @@ public class PgConnection implements BaseConnection {
     return collectWarning;
   }
 
+  // clob_as_text getter
+  @Override
+  public boolean getClobAsText() {
+    return clobAsText;
+  }
+
+  // blob_as_bytea getter
+  @Override
+  public boolean getBlobAsBytea() {
+    return blobAsBytea;
+  }
 }

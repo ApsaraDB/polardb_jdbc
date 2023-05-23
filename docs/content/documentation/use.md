@@ -422,6 +422,12 @@ If we quote them, then we end up sending ""colname"" to the backend instead of "
 Fully qualified class name of the class implementing the AuthenticationPlugin interface. If this is null, the password 
 value in the connection properties will be used.
 
+* **`blobAsBytea (`*boolean*`)`** *Default `false`*\
+When true, Blobs are treated as bytea fields, instead of as Large Objects, By default blobAsBytea is false.
+
+* **`clobAsText (`*boolean*`)`** *Default `false`*\
+When true, Clobs are treated as text fields, instead of as Large Objects, By default clobAsText is false.
+
 ### Unix sockets
 
 By adding junixsocket you can obtain a socket factory that works with the driver.

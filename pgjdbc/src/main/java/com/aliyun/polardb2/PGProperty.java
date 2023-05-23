@@ -150,6 +150,17 @@ public enum PGProperty {
       "Comma separated list of types to enable binary transfer. Either OID numbers or names"),
 
   /**
+   * POLAR: Use the Blob API for bytea fields (if true) or for Postgres
+   * Large Objects (if false). Default is false.
+   */
+  BLOB_AS_BYTEA(
+    "blobAsBytea",
+    "true",
+    "Treat BLOB as bytea rather than as PostgreSQL Large Objects",
+    false,
+    new String[] {"true", "false"}),
+
+  /**
    * Cancel command is sent out of band over its own connection, so cancel message can itself get
    * stuck.
    * This property controls "connect timeout" and "socket timeout" used for cancel commands.
@@ -170,6 +181,18 @@ public enum PGProperty {
       false,
       new String[] {"true", "false"}),
 
+  /**
+   * POLAR: Use the Clob API for text fields (if true) or for Postgres
+   * Large Objects (if false). Default is false.
+   */
+  CLOB_AS_TEXT(
+      "clobAsText",
+      "true",
+      "Treat CLOB as text rather than as PostgreSQL Large Objects",
+      false,
+      new String[]{"true", "false"}),
+
+  /* POLAR */
   COLLECT_WARNING(
       "collectWarning",
       "true",
