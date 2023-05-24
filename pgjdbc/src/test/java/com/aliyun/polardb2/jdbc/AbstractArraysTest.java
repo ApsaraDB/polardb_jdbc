@@ -1086,5 +1086,13 @@ public abstract class AbstractArraysTest<A> {
     public boolean getBlobAsBytea() {
       return false;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int defaultPolarMaxFetchSize() {
+      return 0;
+    }
   }
 }

@@ -298,4 +298,12 @@ public interface BaseConnection extends PGConnection, Connection {
    * @return blobAsBytea setting
    */
   boolean getBlobAsBytea();
+
+  /**
+   * Returns the defaultPolarMaxFetchSize connection setting.
+   *
+   * @return defaultPolarMaxFetchSize setting
+   */
+  int defaultPolarMaxFetchSize();
+
 }

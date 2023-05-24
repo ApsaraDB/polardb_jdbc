@@ -1942,5 +1942,13 @@ public abstract class BaseDataSource implements CommonDataSource, Referenceable 
     PGProperty.CLOB_AS_TEXT.set(properties, useText);
   }
 
+  public void setDefaultPolarMaxFetchSize(String defaultMaxFetchSize) {
+    PGProperty.DEFAULT_POLAR_MAX_FETCH_SIZE.set(properties, defaultMaxFetchSize);
+  }
+
+  public String getDefaultPolarMaxFetchSize() {
+    return PGProperty.DEFAULT_POLAR_MAX_FETCH_SIZE.getOrDefault(properties);
+  }
+
   /* ---------------------------------- POLAR --------------------------- */
 }

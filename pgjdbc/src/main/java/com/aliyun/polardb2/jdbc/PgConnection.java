@@ -190,6 +190,7 @@ public class PgConnection implements BaseConnection {
   private boolean blobAsBytea = false;
   // use text for CLOBs instead of Postgres LOs?
   private boolean clobAsText = false;
+  private int defaultPolarMaxFetchSize;
   /* POLAR DIFF END */
 
   // Current warnings; there might be more on queryExecutor too.
@@ -502,6 +503,7 @@ public class PgConnection implements BaseConnection {
     this.collectWarning = PGProperty.COLLECT_WARNING.getBoolean(info);
     this.blobAsBytea = PGProperty.BLOB_AS_BYTEA.getBoolean(info);
     this.clobAsText = PGProperty.CLOB_AS_TEXT.getBoolean(info);
+    this.defaultPolarMaxFetchSize = PGProperty.DEFAULT_POLAR_MAX_FETCH_SIZE.getIntNoCheck(info);
   }
 
   @Deprecated
@@ -2023,5 +2025,10 @@ public class PgConnection implements BaseConnection {
   @Override
   public boolean getBlobAsBytea() {
     return blobAsBytea;
+  }
+
+  @Override
+  public int defaultPolarMaxFetchSize() {
+    return defaultPolarMaxFetchSize;
   }
 }

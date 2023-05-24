@@ -430,7 +430,10 @@ public class PgStatement implements Statement, BaseStatement {
     closeForNextExecution();
 
     // Enable cursor-based resultset if possible.
-    if (fetchSize > 0 && !wantsScrollableResultSet() && !connection.getAutoCommit()
+    /* POLAR: if polarMaxFetchSize is set, use this flag to enable usePortal */
+    int polarMaxFetchSize = connection.defaultPolarMaxFetchSize();
+    if ((fetchSize > 0  || polarMaxFetchSize > 0) && !wantsScrollableResultSet()
+        && (!connection.getAutoCommit() || polarMaxFetchSize > 0)
         && !wantsHoldableResultSet()) {
       flags |= QueryExecutor.QUERY_FORWARD_CURSOR;
     }
@@ -494,7 +497,7 @@ public class PgStatement implements Statement, BaseStatement {
     try {
       startTimer();
       connection.getQueryExecutor().execute(queryToExecute, queryParameters, handler, maxrows,
-          fetchSize, flags, adaptiveFetch);
+          connection.getAutoCommit() ? 0 : fetchSize, flags, adaptiveFetch);
     } finally {
       killTimerTask();
     }

@@ -245,6 +245,14 @@ public enum PGProperty {
       "Specifies the maximum size (in megabytes) of fields to be cached per connection. A value of {@code 0} disables the cache."),
 
   /**
+   * A value of {@code 0} means that no limit to fetch size
+   */
+  DEFAULT_POLAR_MAX_FETCH_SIZE(
+      "defaultPolarMaxFetchSize",
+      "0",
+      "Max limit number of rows that should be fetched from the database when more rows are needed for ResultSet by each fetch iteration"),
+
+  /**
    * Default parameter for {@link java.sql.Statement#getFetchSize()}. A value of {@code 0} means
    * that need fetch all rows at once
    */
