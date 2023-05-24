@@ -163,6 +163,8 @@ public class QueryExecutorImpl extends QueryExecutorBase {
   /* POLARDB */
   private boolean namedParam = false;
 
+  private int defaultPolarMaxFetchSize = 0;
+
   @SuppressWarnings({"assignment.type.incompatible", "argument.type.incompatible",
       "method.invocation.invalid"})
   public QueryExecutorImpl(PGStream pgStream,
@@ -178,6 +180,7 @@ public class QueryExecutorImpl extends QueryExecutorBase {
     this.replicationProtocol = new V3ReplicationProtocol(this, pgStream);
     this.mapDateToTimeStamp = PGProperty.MAP_DATE_TO_TIMESTAMP.getBoolean(info);
     this.namedParam =  PGProperty.NAMED_PARAM.getBoolean(info);
+    this.defaultPolarMaxFetchSize = PGProperty.DEFAULT_POLAR_MAX_FETCH_SIZE.getIntNoCheck(info);
     readStartupMessages();
   }
 
@@ -1915,12 +1918,19 @@ public class QueryExecutorImpl extends QueryExecutorBase {
     // extended queries always use a portal
     // the usePortal flag controls whether or not we use a *named* portal
     boolean usePortal = (flags & QueryExecutor.QUERY_FORWARD_CURSOR) != 0 && !noResults && !noMeta
-        && fetchSize > 0 && !describeOnly;
+        && (fetchSize > 0 || defaultPolarMaxFetchSize > 0) && !describeOnly;
     boolean oneShot = (flags & QueryExecutor.QUERY_ONESHOT) != 0;
     boolean noBinaryTransfer = (flags & QUERY_NO_BINARY_TRANSFER) != 0;
     boolean forceDescribePortal = (flags & QUERY_FORCE_DESCRIBE_PORTAL) != 0;
 
     // Work out how many rows to fetch in this pass.
+
+    /* POLAR: use the smaller one(0 is inf) */
+    if (fetchSize == 0 || defaultPolarMaxFetchSize == 0) {
+      fetchSize = Math.max(fetchSize, defaultPolarMaxFetchSize);
+    } else {
+      fetchSize = Math.min(fetchSize, defaultPolarMaxFetchSize);
+    }
 
     int rows;
     if (noResults) {

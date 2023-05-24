@@ -2137,7 +2137,15 @@ public class PgResultSet implements ResultSet, com.aliyun.polardb2.PGRefCursorRe
       // Ask for some more data.
       rowOffset += rows.size(); // We are discarding some data.
 
-      int fetchRows = fetchSize;
+      /* POLAR: use the smaller one(0 is inf) */
+      int fetchRows;
+      int polarMaxFetchSize = connection.defaultPolarMaxFetchSize();
+      if (fetchSize == 0 || polarMaxFetchSize == 0) {
+        fetchRows = Math.max(fetchSize, polarMaxFetchSize);
+      } else {
+        fetchRows = Math.min(fetchSize, polarMaxFetchSize);
+      }
+
       int adaptiveFetchRows = connection.getQueryExecutor()
           .getAdaptiveFetchSize(adaptiveFetch, cursor);
 
