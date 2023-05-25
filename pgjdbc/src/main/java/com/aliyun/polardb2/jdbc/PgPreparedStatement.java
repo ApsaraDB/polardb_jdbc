@@ -19,6 +19,7 @@ import com.aliyun.polardb2.core.TypeInfo;
 import com.aliyun.polardb2.core.v3.BatchedQuery;
 import com.aliyun.polardb2.largeobject.LargeObject;
 import com.aliyun.polardb2.largeobject.LargeObjectManager;
+import com.aliyun.polardb2.polarora.UnNamedProc;
 import com.aliyun.polardb2.util.ByteConverter;
 import com.aliyun.polardb2.util.ByteStreamWriter;
 import com.aliyun.polardb2.util.GT;
@@ -181,6 +182,8 @@ class PgPreparedStatement extends PgStatement implements PreparedStatement {
   }
 
   public boolean executeWithFlags(int flags) throws SQLException {
+    UnNamedProc proc = preparedQuery.unProc;
+
     try {
       synchronized (this) {
         checkClosed();
@@ -189,11 +192,24 @@ class PgPreparedStatement extends PgStatement implements PreparedStatement {
           flags |= QueryExecutor.QUERY_EXECUTE_AS_SIMPLE;
         }
 
+        if (proc != null && proc.isUnamedProc()) {
+          proc.polar_unamed_proc_process_begin(preparedParameters, (PgConnection) connection);
+        }
+
         execute(preparedQuery, preparedParameters, flags);
+
+        if (proc != null && proc.isUnamedProc()) {
+          proc.polar_unamed_proc_process_end((PgConnection) connection, false);
+        }
 
         checkClosed();
         return (result != null && result.getResultSet() != null);
       }
+    } catch (SQLException e) {
+      if (proc != null && proc.isUnamedProc()) {
+        proc.polar_unamed_proc_process_end((PgConnection) connection, true);
+      }
+      throw e;
     } finally {
       defaultTimeZone = null;
     }

@@ -144,4 +144,7 @@ public interface TypeInfo {
    * @return the non-negative value of this oid, stored as a java long.
    */
   long intOidToLong(int oid);
+
+  /* POLAR */
+  Integer getOidFromSqlType(Integer sqlType);
 }

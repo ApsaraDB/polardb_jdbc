@@ -850,6 +850,13 @@ public enum PGProperty {
       Integer.toString(Integer.MAX_VALUE),
       "Specifies the length to return for types of unknown length"),
 
+  /* POLAR */
+  UNNAMED_PROC(
+      "unnamedProc",
+      "true", "Support prepared statement anonymous transaction block.",
+      false,
+      new String [] {"true", "false"}),
+
   /**
    * Username to connect to the database as.
    */

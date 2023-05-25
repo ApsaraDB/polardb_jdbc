@@ -58,7 +58,6 @@ public class DefaultMaxFetchSize extends BaseTest4 {
       for (int fetchSize : sizes) {
         String msg =
             "maxRows=" + maxRows + " fetchsize=" + fetchSize + " maxfetchsize=" + maxFetchSize;
-        System.out.println(msg);
         Statement stmt = con.createStatement(ResultSet.TYPE_FORWARD_ONLY,
             ResultSet.CONCUR_UPDATABLE);
         stmt.setMaxRows(maxRows);
@@ -90,7 +89,6 @@ public class DefaultMaxFetchSize extends BaseTest4 {
       for (int fetchSize : sizes) {
         String msg =
             "maxRows=" + maxRows + " fetchsize=" + fetchSize + " maxfetchsize=" + maxFetchSize;
-        System.out.println(msg);
         Statement stmt = con.createStatement(ResultSet.TYPE_FORWARD_ONLY,
             ResultSet.CONCUR_UPDATABLE);
         stmt.setMaxRows(maxRows);
@@ -127,7 +125,6 @@ public class DefaultMaxFetchSize extends BaseTest4 {
       for (int fetchSize : sizes) {
         String msg =
             "maxRows=" + maxRows + " fetchsize=" + fetchSize + " maxfetchsize=" + maxFetchSize;
-        System.out.println(msg);
         Statement stmt = con.createStatement(ResultSet.TYPE_FORWARD_ONLY,
             ResultSet.CONCUR_UPDATABLE);
         stmt.setMaxRows(maxRows);

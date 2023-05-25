@@ -164,6 +164,7 @@ public class QueryExecutorImpl extends QueryExecutorBase {
   private boolean namedParam = false;
 
   private int defaultPolarMaxFetchSize = 0;
+  private boolean unnamedProc;
 
   @SuppressWarnings({"assignment.type.incompatible", "argument.type.incompatible",
       "method.invocation.invalid"})
@@ -181,6 +182,7 @@ public class QueryExecutorImpl extends QueryExecutorBase {
     this.mapDateToTimeStamp = PGProperty.MAP_DATE_TO_TIMESTAMP.getBoolean(info);
     this.namedParam =  PGProperty.NAMED_PARAM.getBoolean(info);
     this.defaultPolarMaxFetchSize = PGProperty.DEFAULT_POLAR_MAX_FETCH_SIZE.getIntNoCheck(info);
+    this.unnamedProc = PGProperty.UNNAMED_PROC.getBoolean(info);
     readStartupMessages();
   }
 
@@ -3101,5 +3103,10 @@ public class QueryExecutorImpl extends QueryExecutorBase {
   /* POLAR */
   public boolean isNamedParam() {
     return namedParam;
+  }
+
+  /* POLAR */
+  public boolean supportUnnamedProc() {
+    return unnamedProc;
   }
 }

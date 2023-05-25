@@ -35,7 +35,7 @@ import java.util.Arrays;
  *
  * @author Oliver Jowett (oliver@opencloud.com)
  */
-class SimpleParameterList implements V3ParameterList {
+public class SimpleParameterList implements V3ParameterList {
 
   private static final byte IN = 1;
   private static final byte OUT = 2;
@@ -53,7 +53,7 @@ class SimpleParameterList implements V3ParameterList {
   }
 
   @Override
-  public void registerOutParameter(int index, int sqlType) throws SQLException {
+  public void registerOutParameter(int index, int oid) throws SQLException {
     if (index < 1 || index > paramValues.length) {
       throw new PSQLException(
           GT.tr("The column index is out of range: {0}, number of columns: {1}.",
@@ -62,6 +62,11 @@ class SimpleParameterList implements V3ParameterList {
     }
 
     flags[index - 1] |= OUT;
+
+    /* In/INOUT has set the OID value, only process for OUT param */
+    if ((flags[index - 1] & IN) == 0) {
+      paramTypes[index - 1] = oid;
+    }
   }
 
   private void bind(int index, Object value, int oid, byte binary) throws SQLException {
@@ -503,6 +508,26 @@ class SimpleParameterList implements V3ParameterList {
     }
     ts.append("]>");
     return ts.toString();
+  }
+
+  /* POLAR */
+  public String getTypeToString(int index) {
+    return Oid.toString(paramTypes[index]);
+  }
+
+  /* POLAR */
+  public boolean isInOutParam(int index) {
+    return (((flags[index] & IN) != 0) && (flags[index] & OUT) != 0);
+  }
+
+  /* POLAR */
+  public boolean isInParam(int index) {
+    return ((flags[index] & IN) != 0);
+  }
+
+  /* POLAR */
+  public boolean isOutParam(int index) {
+    return ((flags[index] & OUT) != 0);
   }
 
   private final @Nullable Object[] paramValues;

@@ -54,6 +54,11 @@ class PgCallableStatement extends PgPreparedStatement implements CallableStateme
     super(connection, connection.borrowCallableQuery(sql), rsType, rsConcurrency, rsHoldability);
     this.isFunction = preparedQuery.isFunction;
 
+    /* POLAR: get the unamed SQL */
+    if (this.preparedQuery.unProc != null && this.preparedQuery.unProc.isUnamedProc()) {
+      sql = this.preparedQuery.unProc.getUnamedProcSql();
+    }
+
     if (this.isFunction) {
       int inParamCount = this.preparedParameters.getInParameterCount() + 1;
       this.testReturn = new int[inParamCount];
@@ -228,7 +233,9 @@ class PgCallableStatement extends PgPreparedStatement implements CallableStateme
           PSQLState.STATEMENT_NOT_ALLOWED_IN_FUNCTION_CALL);
     }
 
-    preparedParameters.registerOutParameter(parameterIndex, sqlType);
+    /* POLAR: get oid from sqlType */
+    Integer oid = connection.getTypeInfo().getOidFromSqlType(new Integer(sqlType));
+    preparedParameters.registerOutParameter(parameterIndex, oid.intValue());
     // functionReturnType contains the user supplied value to check
     // testReturn contains a modified version to make it easier to
     // check the getXXX methods..

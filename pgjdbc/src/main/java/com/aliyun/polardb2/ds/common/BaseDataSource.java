@@ -1950,5 +1950,13 @@ public abstract class BaseDataSource implements CommonDataSource, Referenceable 
     return PGProperty.DEFAULT_POLAR_MAX_FETCH_SIZE.getOrDefault(properties);
   }
 
+  public void setUnnamedProc(String unNamedProc) {
+    PGProperty.DEFAULT_POLAR_MAX_FETCH_SIZE.set(properties, unNamedProc);
+  }
+
+  public String getUnnamedProc() {
+    return PGProperty.DEFAULT_POLAR_MAX_FETCH_SIZE.getOrDefault(properties);
+  }
+
   /* ---------------------------------- POLAR --------------------------- */
 }

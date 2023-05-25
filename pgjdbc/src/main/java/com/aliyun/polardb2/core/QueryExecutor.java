@@ -613,4 +613,7 @@ public interface QueryExecutor extends TypeTransferModeRegistry {
 
   /* POLAR */
   boolean isNamedParam();
+
+  /* POLAR */
+  boolean supportUnnamedProc();
 }

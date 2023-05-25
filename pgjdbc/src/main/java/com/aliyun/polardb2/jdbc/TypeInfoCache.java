@@ -63,6 +63,9 @@ public class TypeInfoCache implements TypeInfo {
   // array type oid -> base type array element delimiter
   private Map<Integer, Character> arrayOidToDelimiter;
 
+  // POLAR: SqlType -> OID in postgres
+  private Map<Integer, Integer> sqlTypeToOid;
+
   private final BaseConnection conn;
   private final int unknownLength;
   private @Nullable PreparedStatement getOidStatementSimple;
@@ -153,6 +156,7 @@ public class TypeInfoCache implements TypeInfo {
     // from getPGTypeNamesWithSQLTypes()
     pgNameToSQLType = Collections.synchronizedMap(new HashMap<String, Integer>((int) Math.round(types.length * 1.5)));
     oidToSQLType = Collections.synchronizedMap(new HashMap<Integer, Integer>((int) Math.round(types.length * 1.5)));
+    sqlTypeToOid = Collections.synchronizedMap(new HashMap<Integer, Integer>((int) Math.round(types.length * 1.5)));
 
     for (Object[] type : types) {
       String pgTypeName = (String) type[0];
@@ -176,6 +180,7 @@ public class TypeInfoCache implements TypeInfo {
     pgArrayToPgType.put(arrayOid, oid);
     pgNameToSQLType.put(pgTypeName, sqlType);
     oidToSQLType.put(oid, sqlType);
+    sqlTypeToOid.put(sqlType, oid);
 
     // Currently we hardcode all core types array delimiter
     // to a comma. In a stock install the only exception is
@@ -1030,5 +1035,14 @@ public class TypeInfoCache implements TypeInfo {
   @Override
   public long intOidToLong(int oid) {
     return ((long) oid) & 0xFFFFFFFFL;
+  }
+
+  /* POLAR */
+  public Integer getOidFromSqlType(Integer sqlType) {
+    Integer oid = (Integer) sqlTypeToOid.get(sqlType);
+    if (oid == null) {
+      oid = new Integer(Oid.UNSPECIFIED);
+    }
+    return oid;
   }
 }

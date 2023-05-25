@@ -7,7 +7,9 @@ package com.aliyun.polardb2.core;
 
 import static com.aliyun.polardb2.util.internal.Nullness.castNonNull;
 
+import com.aliyun.polardb2.jdbc.EscapeSyntaxCallMode;
 import com.aliyun.polardb2.jdbc.PreferQueryMode;
+import com.aliyun.polardb2.polarora.UnNamedProc;
 import com.aliyun.polardb2.util.LruCache;
 
 import java.sql.SQLException;
@@ -38,6 +40,19 @@ class CachedQueryCreateAction implements LruCache.CreateAction<Object, CachedQue
       queryKey = null;
       parsedSql = (String) key;
     }
+
+    /*
+     * POLAR: register unNamed Proc if request
+     */
+    UnNamedProc proc = null;
+    if (queryExecutor.supportUnnamedProc()) {
+      proc = new UnNamedProc(parsedSql, (key instanceof CallableQueryKey));
+
+      if (proc.isUnamedProc()) {
+        parsedSql = proc.getUnamedProcSql();
+      }
+    }
+
     if (key instanceof String || castNonNull(queryKey).escapeProcessing) {
       parsedSql =
           Parser.replaceProcessing(parsedSql, true, queryExecutor.getStandardConformingStrings());
@@ -46,7 +61,7 @@ class CachedQueryCreateAction implements LruCache.CreateAction<Object, CachedQue
     if (key instanceof CallableQueryKey) {
       JdbcCallParseInfo callInfo =
           Parser.modifyJdbcCall(parsedSql, queryExecutor.getStandardConformingStrings(),
-              queryExecutor.getServerVersionNum(), queryExecutor.getProtocolVersion(), queryExecutor.getEscapeSyntaxCallMode());
+              queryExecutor.getServerVersionNum(), queryExecutor.getProtocolVersion(), (proc != null && proc.isUnamedProc()) ? EscapeSyntaxCallMode.of("call") : queryExecutor.getEscapeSyntaxCallMode());
       parsedSql = callInfo.getSql();
       isFunction = callInfo.isFunction();
     } else {
@@ -70,6 +85,6 @@ class CachedQueryCreateAction implements LruCache.CreateAction<Object, CachedQue
         );
 
     Query query = queryExecutor.wrap(queries);
-    return new CachedQuery(key, query, isFunction);
+    return new CachedQuery(key, query, isFunction, proc);
   }
 }
