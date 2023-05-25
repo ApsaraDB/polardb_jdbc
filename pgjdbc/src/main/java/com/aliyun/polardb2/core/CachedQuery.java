@@ -5,6 +5,7 @@
 
 package com.aliyun.polardb2.core;
 
+import com.aliyun.polardb2.polarora.UnNamedProc;
 import com.aliyun.polardb2.util.CanEstimateSize;
 
 /**
@@ -21,13 +22,17 @@ public class CachedQuery implements CanEstimateSize {
 
   private int executeCount;
 
-  public CachedQuery(Object key, Query query, boolean isFunction) {
+  /* POLAR */
+  public UnNamedProc unProc;
+
+  public CachedQuery(Object key, Query query, boolean isFunction, UnNamedProc proc) {
     assert key instanceof String || key instanceof CanEstimateSize
         : "CachedQuery.key should either be String or implement CanEstimateSize."
         + " Actual class is " + key.getClass();
     this.key = key;
     this.query = query;
     this.isFunction = isFunction;
+    this.unProc = proc;
   }
 
   public void increaseExecuteCount() {
