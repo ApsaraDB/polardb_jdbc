@@ -1,0 +1,102 @@
+package com.aliyun.polardb2.test.polarora;
+
+import com.aliyun.polardb2.jdbc.PgConnection;
+import com.aliyun.polardb2.test.TestUtil;
+
+import org.junit.Assert;
+import org.junit.Test;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+
+public class DriverPrefix {
+  private Connection conn;
+
+  @Test
+  public void testGetURL1() throws Exception {
+    conn = DriverManager.getConnection(String.format("jdbc:polardb://%s:%s/%s?" + "user=%s"
+        + "&password=%s", TestUtil.getServer(), TestUtil.getPort(), TestUtil.getDatabase(),
+        TestUtil.getUser(), TestUtil.getPassword()));
+
+    Assert.assertNotNull(conn);
+    Assert.assertTrue(((PgConnection) conn).getURL().startsWith("jdbc:polardb://"));
+  }
+
+  @Test
+  public void testGetURL2() throws Exception {
+    conn = DriverManager.getConnection(String.format("jdbc:oracle://%s:%s/%s?" + "user=%s"
+        + "&password=%s", TestUtil.getServer(), TestUtil.getPort(), TestUtil.getDatabase(),
+        TestUtil.getUser(), TestUtil.getPassword()));
+
+    Assert.assertNotNull(conn);
+    Assert.assertTrue(((PgConnection) conn).getURL().startsWith("jdbc:oracle://"));
+  }
+
+  @Test
+  public void testGetURL3() throws Exception {
+    conn = DriverManager.getConnection(String.format("jdbc:oracle:thin://%s:%s/%s?" + "user=%s"
+        + "&password=%s", TestUtil.getServer(), TestUtil.getPort(), TestUtil.getDatabase(),
+        TestUtil.getUser(), TestUtil.getPassword()));
+
+    Assert.assertNotNull(conn);
+    Assert.assertTrue(((PgConnection) conn).getURL().startsWith("jdbc:oracle:thin://"));
+  }
+
+  @Test
+  public void testGetURL4() throws Exception {
+    conn = DriverManager.getConnection(String.format("jdbc:postgresql://%s:%s/%s?" + "user=%s"
+        + "&password=%s", TestUtil.getServer(), TestUtil.getPort(), TestUtil.getDatabase(),
+        TestUtil.getUser(), TestUtil.getPassword()));
+
+    Assert.assertNotNull(conn);
+    Assert.assertTrue(((PgConnection) conn).getURL().startsWith("jdbc:postgresql://"));
+  }
+
+  @Test
+  public void testGetURL5() {
+
+    try {
+      conn = DriverManager.getConnection(String.format("jdbc:postgresql://%s:%s/%s?" + "user=%s"
+              + "&password=%s&forceDriverType=pg14", TestUtil.getServer(), TestUtil.getPort(), TestUtil.getDatabase(),
+          TestUtil.getUser(), TestUtil.getPassword()));
+      Assert.fail("No suitable driver found for jdbc:postgresql://");
+    } catch (Exception exp) {
+      System.out.println(exp.getMessage().toString());
+      Assert.assertTrue(exp.getMessage().startsWith("No suitable driver found for jdbc:postgresql://"));
+    }
+  }
+
+  @Test
+  public void testGetURL6() {
+
+    try {
+      conn = DriverManager.getConnection(String.format("jdbc:polardb://%s:%s/%s?" + "user=%s"
+              + "&password=%s&forceDriverType=xxxx", TestUtil.getServer(), TestUtil.getPort(), TestUtil.getDatabase(),
+          TestUtil.getUser(), TestUtil.getPassword()));
+      Assert.fail("No suitable driver found for jdbc:polardb://");
+    } catch (Exception exp) {
+      System.out.println(exp.getMessage().toString());
+      Assert.assertTrue(exp.getMessage().startsWith("No suitable driver found for jdbc:polardb://"));
+    }
+  }
+
+  @Test
+  public void testGetURL7() throws Exception {
+    conn = DriverManager.getConnection(String.format("jdbc:postgresql://%s:%s/%s?" + "user=%s"
+        + "&password=%s&forceDriverType=ora14", TestUtil.getServer(), TestUtil.getPort(), TestUtil.getDatabase(),
+        TestUtil.getUser(), TestUtil.getPassword()));
+
+    Assert.assertNotNull(conn);
+    Assert.assertTrue(((PgConnection) conn).getURL().startsWith("jdbc:postgresql://"));
+  }
+
+  @Test
+  public void testGetURL8() throws Exception {
+    conn = DriverManager.getConnection(String.format("jdbc:postgresql://%s:%s/%s?" + "user=%s"
+            + "&password=%s&forceDriverType=", TestUtil.getServer(), TestUtil.getPort(), TestUtil.getDatabase(),
+        TestUtil.getUser(), TestUtil.getPassword()));
+
+    Assert.assertNotNull(conn);
+    Assert.assertTrue(((PgConnection) conn).getURL().startsWith("jdbc:postgresql://"));
+  }
+}

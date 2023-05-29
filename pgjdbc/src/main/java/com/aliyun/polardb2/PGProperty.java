@@ -200,14 +200,6 @@ public enum PGProperty {
       false,
       new String[] { "true", "false"}),
 
-  /* POLAR */
-  COMP_MODE(
-      "compMode",
-      "true",
-      "PolarDB compatibility mode",
-      false,
-      new String[] { "true", "false"}),
-
   /**
    * <p>The timeout value used for socket connect operations. If connecting to the server takes longer
    * than this value, the connection is broken.</p>
@@ -269,6 +261,13 @@ public enum PGProperty {
       "false",
       "Enable optimization that disables column name sanitiser"),
 
+  DRIVER_PREFIX(
+      "driverPrefix",
+      "polardb",
+      "PolarDB dirver prefix",
+      false,
+      new String[] { "oracle", "polardb", "postgresql"}),
+
   /**
    * Specifies how the driver transforms JDBC escape call syntax into underlying SQL, for invoking procedures or functions. (backend &gt;= 11)
    * In {@code escapeSyntaxCallMode=select} mode (the default), the driver always uses a SELECT statement (allowing function invocation only).
@@ -291,6 +290,11 @@ public enum PGProperty {
       null,
       "set extraFloatDigits",
       false),
+
+  FORCE_DRIVER_TYPE(
+      "forceDriverType",
+      null,
+      "PolarDB force type 11/14 pg; 11 ora; 14 ora"),
 
   /**
    * Group startup parameters in a transaction

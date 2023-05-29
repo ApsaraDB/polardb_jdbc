@@ -20,6 +20,7 @@ import com.aliyun.polardb2.core.Version;
 import com.aliyun.polardb2.fastpath.Fastpath;
 import com.aliyun.polardb2.jdbc.FieldMetadata.Key;
 import com.aliyun.polardb2.largeobject.LargeObjectManager;
+import com.aliyun.polardb2.polarora.PolarDriverPrefix;
 import com.aliyun.polardb2.replication.PGReplicationConnection;
 import com.aliyun.polardb2.util.LruCache;
 import com.aliyun.polardb2.util.PGobject;
@@ -1027,14 +1028,6 @@ public abstract class AbstractArraysTest<A> {
      * {@inheritDoc}
      */
     @Override
-    public boolean isOraMode() {
-      return false;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public boolean isOracleCase() {
       return false;
     }
@@ -1093,6 +1086,22 @@ public abstract class AbstractArraysTest<A> {
     @Override
     public int defaultPolarMaxFetchSize() {
       return 0;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public PolarDriverPrefix getDriverPrefix() {
+      return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getForceDriverType() {
+      return null;
     }
   }
 }
