@@ -10,6 +10,7 @@ import static com.aliyun.polardb2.util.internal.Nullness.castNonNull;
 import com.aliyun.polardb2.jdbc.PgConnection;
 import com.aliyun.polardb2.jdbcurlresolver.PgPassParser;
 import com.aliyun.polardb2.jdbcurlresolver.PgServiceConfParser;
+import com.aliyun.polardb2.polarora.PolarDriverPrefix;
 import com.aliyun.polardb2.util.DriverInfo;
 import com.aliyun.polardb2.util.GT;
 import com.aliyun.polardb2.util.HostSpec;
@@ -242,8 +243,9 @@ public class Driver implements java.sql.Driver {
     }
     // get defaults
     Properties defaults;
+    PolarDriverPrefix driverPrefix = PolarDriverPrefix.buildCompMode(url);
 
-    if (!url.startsWith("jdbc:polardb:")) {
+    if (driverPrefix == null) {
       return null;
     }
     try {
@@ -268,6 +270,8 @@ public class Driver implements java.sql.Driver {
         props.setProperty(propName, propValue);
       }
     }
+
+    props.setProperty("driverPrefix", driverPrefix.getMode());
     // parse URL and add more properties
     if ((props = parseURL(url, props)) == null) {
       throw new PSQLException(
@@ -432,8 +436,17 @@ public class Driver implements java.sql.Driver {
    */
   private static Connection makeConnection(String url, Properties props) throws SQLException {
     PgConnection conn = new PgConnection(hostSpecs(props), props, url);
+    String  driverType = conn.getForceDriverType();
 
-    if (conn.getDBVersionNumber().startsWith("14")) {
+    if (driverType != null && !driverType.isEmpty()) {
+      // if get force type, depend on it
+      if (driverType.equalsIgnoreCase("ora14")) {
+        return conn;
+      } else {
+        return null;
+      }
+    } else if (conn.getDBVersionNumber().startsWith("14") && conn.getParameterStatus(
+        "polar_compatibility_mode").equalsIgnoreCase("ora")) {
       return conn;
     } else {
       return null;
@@ -537,6 +550,7 @@ public class Driver implements java.sql.Driver {
 
     String urlServer = url;
     String urlArgs = "";
+    PolarDriverPrefix driverPrefix = PolarDriverPrefix.buildCompMode(urlServer);
 
     int qPos = url.indexOf('?');
     if (qPos != -1) {
@@ -544,11 +558,11 @@ public class Driver implements java.sql.Driver {
       urlArgs = url.substring(qPos + 1);
     }
 
-    if (!urlServer.startsWith("jdbc:polardb:")) {
-      LOGGER.log(Level.FINE, "JDBC URL must start with \"jdbc:polardb:\" but was: {0}", url);
+    if (driverPrefix == null) {
+      LOGGER.log(Level.FINE, "JDBC URL must start with \"jdbc:polardb:\" or \"jdbc:oracle:\"but was: {0}", url);
       return null;
     }
-    urlServer = urlServer.substring("jdbc:polardb:".length());
+    urlServer = urlServer.substring(driverPrefix.getPrefixLen());
 
     if (urlServer.equals("//") || urlServer.equals("///")) {
       urlServer = "";
@@ -605,6 +619,12 @@ public class Driver implements java.sql.Driver {
       if (value == null) {
         return null;
       }
+
+      if (driverPrefix == PolarDriverPrefix.ORACLE && urlServer.startsWith(":thin")) {
+        LOGGER.log(Level.WARNING, "PolarDB do support url start with \"jdbc:oracle:thin\"");
+        return null;
+      }
+
       priority1Url.setProperty(PGProperty.PG_DBNAME.getName(), value);
     }
 
@@ -677,6 +697,8 @@ public class Driver implements java.sql.Driver {
       }
     }
     //
+
+    result.setProperty("driverPrefix", driverPrefix.getMode());
     return result;
   }
 

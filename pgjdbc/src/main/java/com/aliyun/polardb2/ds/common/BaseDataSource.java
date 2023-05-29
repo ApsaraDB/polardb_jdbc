@@ -10,6 +10,7 @@ import static com.aliyun.polardb2.util.internal.Nullness.castNonNull;
 import com.aliyun.polardb2.PGProperty;
 import com.aliyun.polardb2.jdbc.AutoSave;
 import com.aliyun.polardb2.jdbc.PreferQueryMode;
+import com.aliyun.polardb2.polarora.PolarDriverPrefix;
 import com.aliyun.polardb2.util.ExpressionProperties;
 import com.aliyun.polardb2.util.GT;
 import com.aliyun.polardb2.util.PSQLException;
@@ -1327,7 +1328,8 @@ public abstract class BaseDataSource implements CommonDataSource, Referenceable 
    */
   public String getUrl() {
     StringBuilder url = new StringBuilder(100);
-    url.append("jdbc:polardb://");
+    PolarDriverPrefix driverPrefix = PolarDriverPrefix.forName(getDriverPrefix());
+    url.append(driverPrefix.getPrefix() + "//");
     for (int i = 0; i < serverNames.length; i++) {
       if (i > 0) {
         url.append(",");
@@ -1854,12 +1856,12 @@ public abstract class BaseDataSource implements CommonDataSource, Referenceable 
     PGProperty.MAP_DATE_TO_TIMESTAMP.set(properties, mapDateToTimestamp);
   }
 
-  public boolean getCompMode() {
-    return PGProperty.COMP_MODE.getBoolean(properties);
+  public String getDriverPrefix() {
+    return PGProperty.DRIVER_PREFIX.getOrDefault(properties);
   }
 
-  public void setCompMode(boolean compMode) {
-    PGProperty.COMP_MODE.set(properties, compMode);
+  public void setDriverPrefix(String driverPrefix) {
+    PGProperty.DRIVER_PREFIX.set(properties, driverPrefix);
   }
 
   public String getOracleCase() {
@@ -1956,6 +1958,14 @@ public abstract class BaseDataSource implements CommonDataSource, Referenceable 
 
   public String getUnnamedProc() {
     return PGProperty.DEFAULT_POLAR_MAX_FETCH_SIZE.getOrDefault(properties);
+  }
+
+  public void setForceDriverType(String forceDriverType) {
+    PGProperty.FORCE_DRIVER_TYPE.set(properties, forceDriverType);
+  }
+
+  public String getForceDriverType() {
+    return PGProperty.FORCE_DRIVER_TYPE.getOrDefault(properties);
   }
 
   /* ---------------------------------- POLAR --------------------------- */

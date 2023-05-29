@@ -29,6 +29,7 @@ import com.aliyun.polardb2.core.Utils;
 import com.aliyun.polardb2.core.Version;
 import com.aliyun.polardb2.fastpath.Fastpath;
 import com.aliyun.polardb2.largeobject.LargeObjectManager;
+import com.aliyun.polardb2.polarora.PolarDriverPrefix;
 import com.aliyun.polardb2.replication.PGReplicationConnection;
 import com.aliyun.polardb2.replication.PGReplicationConnectionImpl;
 import com.aliyun.polardb2.util.GT;
@@ -181,7 +182,6 @@ public class PgConnection implements BaseConnection {
 
   /* POLAR DIFF */
   private boolean mapDateToTimestamp = false;
-  private boolean isOraMode = false;
   private int oracleCase = 0;
   private boolean autoCommitSpecCompliant = true;
   private boolean namedParam = false;
@@ -191,6 +191,8 @@ public class PgConnection implements BaseConnection {
   // use text for CLOBs instead of Postgres LOs?
   private boolean clobAsText = false;
   private int defaultPolarMaxFetchSize;
+  private PolarDriverPrefix driverPrefix = PolarDriverPrefix.POLARDB;
+  private String forceDriverType = null;
   /* POLAR DIFF END */
 
   // Current warnings; there might be more on queryExecutor too.
@@ -491,7 +493,6 @@ public class PgConnection implements BaseConnection {
   private void polarSetParameters(Properties info) {
     // new add parameters
     this.mapDateToTimestamp = PGProperty.MAP_DATE_TO_TIMESTAMP.getBoolean(info);
-    this.isOraMode = PGProperty.COMP_MODE.getBoolean(info);
     String oracleCaseLabel = PGProperty.ORACLE_CASE.getOrDefault(info);
     if (oracleCaseLabel.equalsIgnoreCase("true")) {
       this.oracleCase = 1;
@@ -504,6 +505,8 @@ public class PgConnection implements BaseConnection {
     this.blobAsBytea = PGProperty.BLOB_AS_BYTEA.getBoolean(info);
     this.clobAsText = PGProperty.CLOB_AS_TEXT.getBoolean(info);
     this.defaultPolarMaxFetchSize = PGProperty.DEFAULT_POLAR_MAX_FETCH_SIZE.getIntNoCheck(info);
+    this.driverPrefix = PolarDriverPrefix.forName(PGProperty.DRIVER_PREFIX.getOrDefault(info));
+    this.forceDriverType = PGProperty.FORCE_DRIVER_TYPE.getOrDefault(info);
   }
 
   @Deprecated
@@ -1986,8 +1989,8 @@ public class PgConnection implements BaseConnection {
   }
 
   @Override
-  public boolean isOraMode() {
-    return isOraMode;
+  public PolarDriverPrefix getDriverPrefix() {
+    return driverPrefix;
   }
 
   @Override
@@ -2030,5 +2033,10 @@ public class PgConnection implements BaseConnection {
   @Override
   public int defaultPolarMaxFetchSize() {
     return defaultPolarMaxFetchSize;
+  }
+
+  @Override
+  public String getForceDriverType() {
+    return forceDriverType;
   }
 }

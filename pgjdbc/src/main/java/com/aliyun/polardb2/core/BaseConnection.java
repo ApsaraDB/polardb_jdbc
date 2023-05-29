@@ -9,6 +9,7 @@ import com.aliyun.polardb2.PGConnection;
 import com.aliyun.polardb2.PGProperty;
 import com.aliyun.polardb2.jdbc.FieldMetadata;
 import com.aliyun.polardb2.jdbc.TimestampUtils;
+import com.aliyun.polardb2.polarora.PolarDriverPrefix;
 import com.aliyun.polardb2.util.LruCache;
 import com.aliyun.polardb2.xml.PGXmlFactoryFactory;
 
@@ -249,13 +250,6 @@ public interface BaseConnection extends PGConnection, Connection {
   boolean isMapDateToTimestamp();
 
   /**
-   * Returns the compMode connection setting.
-   *
-   * @return compMode setting
-   */
-  boolean isOraMode();
-
-  /**
    * Returns the oracleCase connection setting.
    *
    * @return oracleCase setting
@@ -305,5 +299,19 @@ public interface BaseConnection extends PGConnection, Connection {
    * @return defaultPolarMaxFetchSize setting
    */
   int defaultPolarMaxFetchSize();
+
+  /**
+   * Returns the PolarDriverPrefix connection setting.
+   *
+   * @return PolarDriverPrefix setting
+   */
+  PolarDriverPrefix getDriverPrefix();
+
+  /**
+   * Returns the Driver type connection setting.
+   *
+   * @return getForceDriverType setting
+   */
+  String getForceDriverType();
 
 }
