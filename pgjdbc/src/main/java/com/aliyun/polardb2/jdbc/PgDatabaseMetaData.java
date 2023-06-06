@@ -1227,7 +1227,8 @@ public class PgDatabaseMetaData implements DatabaseMetaData {
       if ("c".equals(returnTypeType) || ("p".equals(returnTypeType) && argModesArray != null)) {
         String columnsql = "SELECT a.attname,a.atttypid FROM pg_catalog.pg_attribute a "
                            + " WHERE a.attrelid = " + returnTypeRelid
-                           + " AND NOT a.attisdropped AND a.attnum > 0 ORDER BY a.attnum ";
+                           + " AND NOT a.attisdropped AND a.attnum > 0 "
+                           + " AND NOT pg_catalog.polar_is_sys_rowid(a.attname) ORDER BY a.attnum ";
         Statement columnstmt = connection.createStatement();
         ResultSet columnrs = columnstmt.executeQuery(columnsql);
         while (columnrs.next()) {
@@ -1565,7 +1566,8 @@ public class PgDatabaseMetaData implements DatabaseMetaData {
            + " LEFT JOIN pg_catalog.pg_description dsc ON (c.oid=dsc.objoid AND a.attnum = dsc.objsubid) "
            + " LEFT JOIN pg_catalog.pg_class dc ON (dc.oid=dsc.classoid AND dc.relname='pg_class') "
            + " LEFT JOIN pg_catalog.pg_namespace dn ON (dc.relnamespace=dn.oid AND dn.nspname='pg_catalog') "
-           + " WHERE c.relkind in ('r','p','v','f','m') and a.attnum > 0 AND NOT a.attisdropped ";
+           + " WHERE c.relkind in ('r','p','v','f','m') and a.attnum > 0 AND NOT a.attisdropped "
+           + " AND NOT pg_catalog.polar_is_sys_rowid(a.attname) ";
 
     if (schemaPattern != null && !schemaPattern.isEmpty()) {
       sql += " AND n.nspname LIKE " + escapeQuotes(schemaPattern);
@@ -1741,7 +1743,8 @@ public class PgDatabaseMetaData implements DatabaseMetaData {
           + " AND c.relowner = r.oid "
           + " AND c.oid = a.attrelid "
           + " AND c.relkind = 'r' "
-          + " AND a.attnum > 0 AND NOT a.attisdropped ";
+          + " AND a.attnum > 0 AND NOT a.attisdropped "
+          + " AND NOT pg_catalog.polar_is_sys_rowid(a.attname) ";
 
     if (schema != null && !schema.isEmpty()) {
       sql += " AND n.nspname = " + escapeQuotes(schema);
@@ -2540,6 +2543,9 @@ public class PgDatabaseMetaData implements DatabaseMetaData {
         sql += " AND i.indisunique ";
       }
 
+      /* POLAR */
+      sql += " AND ci.relname not like 'polar_rowid%' ";
+
       sql = "SELECT "
                 + "    tmp.TABLE_CAT, "
                 + "    tmp.TABLE_SCHEM, "
@@ -3042,7 +3048,7 @@ public class PgDatabaseMetaData implements DatabaseMetaData {
       if ("c".equals(returnTypeType) || ("p".equals(returnTypeType) && argModesArray != null)) {
         String columnsql = "SELECT a.attname,a.atttypid FROM pg_catalog.pg_attribute a "
             + " WHERE a.attrelid = " + returnTypeRelid
-            + " AND NOT a.attisdropped AND a.attnum > 0 ORDER BY a.attnum ";
+            + " AND NOT a.attisdropped AND a.attnum > 0 AND NOT pg_catalog.polar_is_sys_rowid(a.attname) ORDER BY a.attnum ";
         Statement columnstmt = connection.createStatement();
         ResultSet columnrs = columnstmt.executeQuery(columnsql);
         while (columnrs.next()) {
