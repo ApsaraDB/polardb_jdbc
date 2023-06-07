@@ -307,11 +307,4 @@ public interface BaseConnection extends PGConnection, Connection {
    */
   PolarDriverPrefix getDriverPrefix();
 
-  /**
-   * Returns the Driver type connection setting.
-   *
-   * @return getForceDriverType setting
-   */
-  String getForceDriverType();
-
 }

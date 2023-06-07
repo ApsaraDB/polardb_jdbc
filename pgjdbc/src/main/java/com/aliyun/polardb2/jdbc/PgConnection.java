@@ -192,7 +192,6 @@ public class PgConnection implements BaseConnection {
   private boolean clobAsText = false;
   private int defaultPolarMaxFetchSize;
   private PolarDriverPrefix driverPrefix = PolarDriverPrefix.POLARDB;
-  private String forceDriverType = null;
   /* POLAR DIFF END */
 
   // Current warnings; there might be more on queryExecutor too.
@@ -506,7 +505,6 @@ public class PgConnection implements BaseConnection {
     this.clobAsText = PGProperty.CLOB_AS_TEXT.getBoolean(info);
     this.defaultPolarMaxFetchSize = PGProperty.DEFAULT_POLAR_MAX_FETCH_SIZE.getIntNoCheck(info);
     this.driverPrefix = PolarDriverPrefix.forName(PGProperty.DRIVER_PREFIX.getOrDefault(info));
-    this.forceDriverType = PGProperty.FORCE_DRIVER_TYPE.getOrDefault(info);
   }
 
   @Deprecated
@@ -2033,10 +2031,5 @@ public class PgConnection implements BaseConnection {
   @Override
   public int defaultPolarMaxFetchSize() {
     return defaultPolarMaxFetchSize;
-  }
-
-  @Override
-  public String getForceDriverType() {
-    return forceDriverType;
   }
 }

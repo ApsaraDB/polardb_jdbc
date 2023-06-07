@@ -1095,13 +1095,5 @@ public abstract class AbstractArraysTest<A> {
     public PolarDriverPrefix getDriverPrefix() {
       return null;
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getForceDriverType() {
-      return null;
-    }
   }
 }

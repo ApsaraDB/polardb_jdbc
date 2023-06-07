@@ -248,6 +248,12 @@ public class Driver implements java.sql.Driver {
     if (driverPrefix == null) {
       return null;
     }
+
+    // forbid prefix :polardb1, :postgresql
+    if (driverPrefix == PolarDriverPrefix.POLARDB1 || driverPrefix == PolarDriverPrefix.POSTGRES) {
+      return null;
+    }
+
     try {
       defaults = getDefaultProperties();
     } catch (IOException ioe) {
@@ -278,6 +284,14 @@ public class Driver implements java.sql.Driver {
           GT.tr("Unable to parse URL {0}", url),
           PSQLState.UNEXPECTED_ERROR);
     }
+
+    // POLAR static judge for driver
+    String driverType = PGProperty.FORCE_DRIVER_TYPE.getOrDefault(props);
+    if (driverType != null && !driverType.isEmpty() && !driverType.equalsIgnoreCase("ora14")) {
+      // if get force type, depend on it
+      return null;
+    }
+
     try {
 
       LOGGER.log(Level.FINE, "Connecting with URL: {0}", url);
@@ -436,16 +450,8 @@ public class Driver implements java.sql.Driver {
    */
   private static Connection makeConnection(String url, Properties props) throws SQLException {
     PgConnection conn = new PgConnection(hostSpecs(props), props, url);
-    String  driverType = conn.getForceDriverType();
 
-    if (driverType != null && !driverType.isEmpty()) {
-      // if get force type, depend on it
-      if (driverType.equalsIgnoreCase("ora14")) {
-        return conn;
-      } else {
-        return null;
-      }
-    } else if (conn.getDBVersionNumber().startsWith("14") && conn.getParameterStatus(
+    if (conn.getDBVersionNumber().startsWith("14") && conn.getParameterStatus(
         "polar_compatibility_mode").equalsIgnoreCase("ora")) {
       return conn;
     } else {
