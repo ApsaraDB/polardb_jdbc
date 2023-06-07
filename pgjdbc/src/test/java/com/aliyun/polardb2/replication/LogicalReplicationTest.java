@@ -70,6 +70,11 @@ public class LogicalReplicationTest {
     sqlConnection = TestUtil.openPrivilegedDB();
     //DriverManager.setLogWriter(new PrintWriter(System.out));
     replConnection = TestUtil.openReplicationConnection();
+
+    Statement st = sqlConnection.createStatement();
+    st.execute("set polar_default_with_rowid to off");
+    st.close();
+
     TestUtil.createTable(sqlConnection, "test_logic_table",
         "pk serial primary key, name varchar(100)");
 
