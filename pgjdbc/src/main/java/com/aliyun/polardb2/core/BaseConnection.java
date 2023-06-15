@@ -307,4 +307,10 @@ public interface BaseConnection extends PGConnection, Connection {
    */
   PolarDriverPrefix getDriverPrefix();
 
+  /**
+   * Set the PolarDriverPrefix connection setting.
+   *
+   */
+  void setDriverPrefix(PolarDriverPrefix polarDriverPrefix);
+
 }

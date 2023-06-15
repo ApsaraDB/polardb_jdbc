@@ -249,11 +249,6 @@ public class Driver implements java.sql.Driver {
       return null;
     }
 
-    // forbid prefix :polardb1, :postgresql
-    if (driverPrefix == PolarDriverPrefix.POLARDB1 || driverPrefix == PolarDriverPrefix.POSTGRES) {
-      return null;
-    }
-
     try {
       defaults = getDefaultProperties();
     } catch (IOException ioe) {
@@ -283,13 +278,6 @@ public class Driver implements java.sql.Driver {
       throw new PSQLException(
           GT.tr("Unable to parse URL {0}", url),
           PSQLState.UNEXPECTED_ERROR);
-    }
-
-    // POLAR static judge for driver
-    String driverType = PGProperty.FORCE_DRIVER_TYPE.getOrDefault(props);
-    if (driverType != null && !driverType.isEmpty() && !driverType.equalsIgnoreCase("ora14")) {
-      // if get force type, depend on it
-      return null;
     }
 
     try {
@@ -450,13 +438,31 @@ public class Driver implements java.sql.Driver {
    */
   private static Connection makeConnection(String url, Properties props) throws SQLException {
     PgConnection conn = new PgConnection(hostSpecs(props), props, url);
+    String       oraMode = conn.getParameterStatus("polar_compatibility_mode");
 
-    if (conn.getDBVersionNumber().startsWith("14") && conn.getParameterStatus(
-        "polar_compatibility_mode").equalsIgnoreCase("ora")) {
-      return conn;
+    /*
+     *                    postgres1.0  postgres2.0  polardb1.0  polardb2.0
+     * jdbc:postgresql:       f             f            f          ora
+     * jdbc:polardb:          pg            pg           f          ora
+     * jdbc:polardb1:         f             f            f           f
+     * jdbc:polardb2:         pg            pg           f          ora
+     */
+    if (conn.getDriverPrefix() == PolarDriverPrefix.POSTGRES) {
+      if (conn.getDBVersionNumber().startsWith("14") && oraMode != null && oraMode.equalsIgnoreCase("ora")) {
+        conn.setDriverPrefix(PolarDriverPrefix.forName("polardb"));
+        return conn;
+      }
     } else {
-      return null;
+      if ((oraMode != null && oraMode.equalsIgnoreCase("pg")) || (conn.getDBVersionNumber().startsWith("11")
+          && conn.getParameterStatus("db_dialect") == null)) {
+        conn.setDriverPrefix(PolarDriverPrefix.forName("postgresql"));
+      }
+
+      if (conn.getDBVersionNumber().startsWith("14") || conn.getParameterStatus("db_dialect") == null) {
+        return conn;
+      }
     }
+    return null;
   }
 
   /**

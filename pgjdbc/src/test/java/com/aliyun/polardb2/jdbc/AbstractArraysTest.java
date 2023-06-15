@@ -1095,5 +1095,13 @@ public abstract class AbstractArraysTest<A> {
     public PolarDriverPrefix getDriverPrefix() {
       return null;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setDriverPrefix(PolarDriverPrefix polarDriverPrefix) {
+      throw new UnsupportedOperationException();
+    }
   }
 }

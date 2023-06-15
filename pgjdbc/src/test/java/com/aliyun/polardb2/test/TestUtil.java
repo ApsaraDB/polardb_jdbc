@@ -93,7 +93,12 @@ public class TestUtil {
       ssl = "&ssl=" + getSSL();
     }
 
-    return "jdbc:polardb://"
+    String jdbcHeader = "polardb";
+    if (getJdbcHeader() != null) {
+      jdbcHeader = getJdbcHeader();
+    }
+
+    return "jdbc:" + jdbcHeader + "://"
         + hostport + "/"
         + database
         + "?ApplicationName=Driver Tests"
@@ -204,6 +209,10 @@ public class TestUtil {
 
   public static String getSSL() {
     return System.getProperty("ssl");
+  }
+
+  public static String getJdbcHeader() {
+    return System.getProperty("jdbcHeader");
   }
 
   static {

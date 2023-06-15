@@ -291,11 +291,6 @@ public enum PGProperty {
       "set extraFloatDigits",
       false),
 
-  FORCE_DRIVER_TYPE(
-      "forceDriverType",
-      null,
-      "PolarDB force type 11/14 pg; 11 ora; 14 ora"),
-
   /**
    * Group startup parameters in a transaction
    * This is important in pool-by-transaction scenarios in order to make sure that all the statements

@@ -10,6 +10,7 @@ import static com.aliyun.polardb2.util.internal.Nullness.castNonNull;
 import com.aliyun.polardb2.Driver;
 import com.aliyun.polardb2.core.ParameterList;
 import com.aliyun.polardb2.core.Query;
+import com.aliyun.polardb2.polarora.PolarDriverPrefix;
 import com.aliyun.polardb2.util.GT;
 import com.aliyun.polardb2.util.PSQLException;
 import com.aliyun.polardb2.util.PSQLState;
@@ -148,12 +149,12 @@ class PgCallableStatement extends PgPreparedStatement implements CallableStateme
             // For backwards compatibility reasons we support that ref cursors can be
             // registered with both Types.OTHER and Types.REF_CURSOR so we allow
             // this specific mismatch
-          } else if (columnType == Types.NUMERIC && functionReturnType[j] == Types.INTEGER) {
+          } else if (connection.getDriverPrefix() != PolarDriverPrefix.POSTGRES && columnType == Types.NUMERIC && functionReturnType[j] == Types.INTEGER) {
             // POLAR: support OUT number compatiable with INTEGER
             if (callResult[j] != null) {
               callResult[j] = ((BigDecimal) callResult[j]).intValue();
             }
-          } else if (columnType == Types.INTEGER && functionReturnType[j] == Types.NUMERIC) {
+          } else if (connection.getDriverPrefix() != PolarDriverPrefix.POSTGRES && columnType == Types.INTEGER && functionReturnType[j] == Types.NUMERIC) {
             if (callResult[j] != null) {
               callResult[j] = BigDecimal.valueOf((Integer) callResult[j]);
             }
@@ -297,10 +298,12 @@ class PgCallableStatement extends PgPreparedStatement implements CallableStateme
   public int getInt(@Positive int parameterIndex) throws SQLException {
 
     /* POLAR: allow getInt from number */
-    int testReturn = this.testReturn != null ? this.testReturn[parameterIndex - 1] : -1;
+    if (connection.getDriverPrefix() != PolarDriverPrefix.POSTGRES) {
+      int testReturn = this.testReturn != null ? this.testReturn[parameterIndex - 1] : -1;
 
-    if (testReturn == Types.NUMERIC) {
-      return ((BigDecimal) callResult[parameterIndex - 1]).intValue();
+      if (testReturn == Types.NUMERIC) {
+        return ((BigDecimal) callResult[parameterIndex - 1]).intValue();
+      }
     }
 
     Object result = checkIndex(parameterIndex, Types.INTEGER, "Int");

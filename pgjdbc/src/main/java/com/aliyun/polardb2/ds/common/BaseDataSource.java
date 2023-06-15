@@ -1960,13 +1960,5 @@ public abstract class BaseDataSource implements CommonDataSource, Referenceable 
     return PGProperty.DEFAULT_POLAR_MAX_FETCH_SIZE.getOrDefault(properties);
   }
 
-  public void setForceDriverType(String forceDriverType) {
-    PGProperty.FORCE_DRIVER_TYPE.set(properties, forceDriverType);
-  }
-
-  public String getForceDriverType() {
-    return PGProperty.FORCE_DRIVER_TYPE.getOrDefault(properties);
-  }
-
   /* ---------------------------------- POLAR --------------------------- */
 }

@@ -8,7 +8,6 @@ import java.util.Locale;
 public enum PolarDriverPrefix {
   POSTGRES("postgresql", "jdbc:postgresql:", "POSTGRES Database"),
   POLARDB("polardb", "jdbc:polardb:", "POLARDB Database Compatible with Oracle"),
-  POLARDB1("polardb1", "jdbc:polardb1:", "POLARDB Database Compatible with Oracle 1.0"),
   POLARDB2("polardb2", "jdbc:polardb2:", "POLARDB Database Compatible with Oracle 2.0"),
   ORACLE_THIN("oracle", "jdbc:oracle:thin:", "Oracle"),
   ORACLE("oracle", "jdbc:oracle:", "Oracle");

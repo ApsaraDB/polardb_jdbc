@@ -27,6 +27,7 @@ import com.aliyun.polardb2.hostchooser.HostStatus;
 import com.aliyun.polardb2.jdbc.GSSEncMode;
 import com.aliyun.polardb2.jdbc.SslMode;
 import com.aliyun.polardb2.plugin.AuthenticationRequestType;
+import com.aliyun.polardb2.polarora.PolarDriverPrefix;
 import com.aliyun.polardb2.sspi.ISSPIClient;
 import com.aliyun.polardb2.util.GT;
 import com.aliyun.polardb2.util.HostSpec;
@@ -947,7 +948,7 @@ public class ConnectionFactoryImpl extends ConnectionFactory {
      * correct Setting this via SQL instead of the standard StartupMessages (like dateStyle) is to
      * ensure compatibility with older versions.
      */
-    if (PGProperty.RESET_NLS_FORMAT.getBoolean(info)) {
+    if (PGProperty.RESET_NLS_FORMAT.getBoolean(info) && PolarDriverPrefix.forName(PGProperty.DRIVER_PREFIX.getOrDefault(info)) != PolarDriverPrefix.POSTGRES) {
       String paramSetSql =
           "SELECT pg_catalog.set_config(name,'%s','f') FROM pg_catalog.pg_settings WHERE name = '%s' ";
 
