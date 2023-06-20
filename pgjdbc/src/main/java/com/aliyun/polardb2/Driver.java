@@ -462,6 +462,10 @@ public class Driver implements java.sql.Driver {
         return conn;
       }
     }
+
+    // in prevent of connnection leak
+    conn.close();
+
     return null;
   }
 
