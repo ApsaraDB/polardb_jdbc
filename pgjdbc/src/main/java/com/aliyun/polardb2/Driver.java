@@ -280,6 +280,14 @@ public class Driver implements java.sql.Driver {
           PSQLState.UNEXPECTED_ERROR);
     }
 
+    // POLAR static judge for driver
+    String driverType = PGProperty.FORCE_DRIVER_TYPE.getOrDefault(props);
+    if (driverType != null && !driverType.isEmpty() && !(driverType.equalsIgnoreCase("ora14")
+        || driverType.equalsIgnoreCase("ora"))) {
+      // if get force type, depend on it
+      return null;
+    }
+
     try {
 
       LOGGER.log(Level.FINE, "Connecting with URL: {0}", url);

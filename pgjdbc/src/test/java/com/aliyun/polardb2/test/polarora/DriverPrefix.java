@@ -53,6 +53,52 @@ public class DriverPrefix {
   }
 
   @Test
+  public void testGetURL5() {
+    try {
+      conn = DriverManager.getConnection(String.format("jdbc:polardb://%s:%s/%s?" + "user=%s"
+              + "&password=%s&forceDriverType=pg", TestUtil.getServer(), TestUtil.getPort(), TestUtil.getDatabase(),
+          TestUtil.getUser(), TestUtil.getPassword()));
+      Assert.fail("No suitable driver found for jdbc:polardb://");
+    } catch (Exception exp) {
+      System.out.println(exp.getMessage().toString());
+      Assert.assertTrue(exp.getMessage().startsWith("No suitable driver found for jdbc:polardb://"));
+    }
+  }
+
+  @Test
+  public void testGetURL6() throws Exception {
+    conn = DriverManager.getConnection(String.format("jdbc:polardb://%s:%s/%s?" + "user=%s"
+        + "&password=%s&forceDriverType=ora", TestUtil.getServer(), TestUtil.getPort(), TestUtil.getDatabase(),
+        TestUtil.getUser(), TestUtil.getPassword()));
+
+    Assert.assertNotNull(conn);
+    Assert.assertTrue(((PgConnection) conn).getURL().startsWith("jdbc:polardb://"));
+  }
+
+  @Test
+  public void testGetURL7() {
+    try {
+      conn = DriverManager.getConnection(String.format("jdbc:polardb://%s:%s/%s?" + "user=%s"
+              + "&password=%s&forceDriverType=ora11", TestUtil.getServer(), TestUtil.getPort(), TestUtil.getDatabase(),
+          TestUtil.getUser(), TestUtil.getPassword()));
+      Assert.fail("No suitable driver found for jdbc:polardb://");
+    } catch (Exception exp) {
+      System.out.println(exp.getMessage().toString());
+      Assert.assertTrue(exp.getMessage().startsWith("No suitable driver found for jdbc:polardb://"));
+    }
+  }
+
+  @Test
+  public void testGetURL8() throws Exception {
+    conn = DriverManager.getConnection(String.format("jdbc:polardb://%s:%s/%s?" + "user=%s"
+        + "&password=%s&forceDriverType=ora14", TestUtil.getServer(), TestUtil.getPort(), TestUtil.getDatabase(),
+        TestUtil.getUser(), TestUtil.getPassword()));
+
+    Assert.assertNotNull(conn);
+    Assert.assertTrue(((PgConnection) conn).getURL().startsWith("jdbc:polardb://"));
+  }
+
+  @Test
   public void testGetURL10() {
     try {
       conn = DriverManager.getConnection(String.format("jdbc:polardb1://%s:%s/%s?" + "user=%s"
