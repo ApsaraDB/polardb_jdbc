@@ -49,7 +49,7 @@ public enum PolarDriverPrefix {
     }
 
     for (PolarDriverPrefix mode : PolarDriverPrefix.values()) {
-      if (url.startsWith(mode.getPrefix())) {
+      if (mode != PolarDriverPrefix.POSTGRES && url.startsWith(mode.getPrefix())) {
         ret = mode;
         break;
       }
