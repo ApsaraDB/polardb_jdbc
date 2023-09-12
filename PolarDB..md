@@ -23,6 +23,5 @@ host    all             all             0.0.0.0/0               md5
 host    all             postgres        0.0.0.0/0               trust
 
 #### 测试参数
-polar_enable_stmt_transaction_rollback = off;
 wal_level = logical
 nls_timestamp_tz_format = "YYYY-MM-DD HH24:MI:SS.FFTZO"
