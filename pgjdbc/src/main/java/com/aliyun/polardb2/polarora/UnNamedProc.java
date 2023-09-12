@@ -81,10 +81,6 @@ public class UnNamedProc {
   }
 
   public void polar_unamed_proc_process_end(PgConnection connection, boolean error) throws SQLException {
-    if (error && !connection.getAutoCommit() && connection.getParameterStatus(
-        "polar_enable_stmt_transaction_rollback").equals("off")) {
-      this.polar_execute_oneshot_sql(connection, "ROLLBACK");
-    }
     this.polar_execute_oneshot_sql(connection, "drop procedure " + unamedProcName + ";");
   }
 

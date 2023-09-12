@@ -688,6 +688,7 @@ public class Parser {
         case "PROCEDURE":
         case "FUNCTION":
         case "DECLARE":
+        case "TRIGGER":
           return true;
         case "CREATE":
           if (i == 0) {

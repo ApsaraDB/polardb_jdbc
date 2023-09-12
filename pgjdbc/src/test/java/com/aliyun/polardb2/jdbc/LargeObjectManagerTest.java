@@ -47,6 +47,9 @@ class LargeObjectManagerTest {
           assertEquals(PSQLState.UNDEFINED_OBJECT.getState(), e.getSQLState());
         }
 
+        // POLAR: change by stmt_level transaction
+        con.rollback();
+
         // Should be reset to original application name
         assertEquals(originalApplicationName, con.getParameterStatus("application_name"));
       }
