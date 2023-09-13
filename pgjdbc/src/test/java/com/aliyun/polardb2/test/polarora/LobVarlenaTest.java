@@ -17,6 +17,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -329,6 +330,18 @@ public class LobVarlenaTest {
     } finally {
       rs.close();
     }
+  }
+
+  @Test
+  public void testResultSetClobLong() throws SQLException, IOException {
+    // https://aone.alibaba-inc.com/v2/project/903276/bug/52114671
+    Reader input = new FileReader("src/test/resources/test-file.xml");
+
+    PreparedStatement stmt = conn.prepareStatement("select ? from dual");
+    stmt.setClob(1, input, 20);
+    stmt.execute();
+    ResultSet rs = stmt.getResultSet();
+    TestUtil.printResultSet(rs);
   }
 
 }

@@ -1603,7 +1603,11 @@ class PgPreparedStatement extends PgStatement implements PreparedStatement {
   public void setCharacterStream(@Positive int parameterIndex,
       @Nullable Reader value, @NonNegative long length)
       throws SQLException {
-    throw Driver.notImplemented(this.getClass(), "setCharacterStream(int, Reader, long)");
+    if (connection.getClobAsText()) {
+      setCharacterStream(parameterIndex, value, (int) length);
+    } else {
+      throw Driver.notImplemented(this.getClass(), "setCharacterStream(int, Reader, long)");
+    }
   }
 
   public void setCharacterStream(@Positive int parameterIndex,
