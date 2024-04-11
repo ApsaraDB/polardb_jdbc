@@ -346,7 +346,7 @@ public class Parser {
           break;
         case 'e':
         case 'E':
-          if (i + 2 < aChars.length) {
+          if (i + 2 < aChars.length && i > 1 && !Character.isJavaIdentifierPart(aChars[i - 1])) {
             if ("N".equalsIgnoreCase(String.valueOf(aChars[i + 1]))
                 && "D".equalsIgnoreCase(String.valueOf(aChars[i + 2]))) {
               int[] result = parseEnd(i, aChars, inBeginEnd);
