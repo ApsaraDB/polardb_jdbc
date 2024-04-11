@@ -320,8 +320,14 @@ class PgPreparedStatement extends PgStatement implements PreparedStatement {
 
   public void setBoolean(@Positive int parameterIndex, boolean x) throws SQLException {
     checkClosed();
-    // The key words TRUE and FALSE are the preferred (SQL-compliant) usage.
-    bindLiteral(parameterIndex, x ? "TRUE" : "FALSE", Oid.BOOL);
+
+    /* POLAR */
+    if (connection.isBoolAsInt()) {
+      bindLiteral(parameterIndex, x ? "1" : "0", Oid.INT2);
+    } else {
+      // The key words TRUE and FALSE are the preferred (SQL-compliant) usage.
+      bindLiteral(parameterIndex, x ? "TRUE" : "FALSE", Oid.BOOL);
+    }
   }
 
   public void setByte(@Positive int parameterIndex, byte x) throws SQLException {

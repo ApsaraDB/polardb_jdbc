@@ -313,4 +313,11 @@ public interface BaseConnection extends PGConnection, Connection {
    */
   void setDriverPrefix(PolarDriverPrefix polarDriverPrefix);
 
+  /**
+   * Returns isBoolAsInt connection setting.
+   *
+   * @return isBoolAsInt setting
+   */
+  boolean isBoolAsInt();
+
 }

@@ -25,3 +25,6 @@ host    all             postgres        0.0.0.0/0               trust
 #### 测试参数
 wal_level = logical
 nls_timestamp_tz_format = "YYYY-MM-DD HH24:MI:SS.FFTZO"
+polar_enable_refcursor_implicit_inout = off
+polar_enable_stmt_transaction_rollback = off
+polar_enable_ddl_implicit_commit= off

@@ -1103,5 +1103,13 @@ public abstract class AbstractArraysTest<A> {
     public void setDriverPrefix(PolarDriverPrefix polarDriverPrefix) {
       throw new UnsupportedOperationException();
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isBoolAsInt() {
+      return false;
+    }
   }
 }

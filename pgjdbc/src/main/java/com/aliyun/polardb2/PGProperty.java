@@ -161,6 +161,16 @@ public enum PGProperty {
     new String[] {"true", "false"}),
 
   /**
+   * POLAR: Boolean used as Integer
+   */
+  BOOL_AS_INT(
+    "boolAsInt",
+    "false",
+    "Treat bool as int or not.",
+    false,
+    new String[] {"true", "false"}),
+
+  /**
    * Cancel command is sent out of band over its own connection, so cancel message can itself get
    * stuck.
    * This property controls "connect timeout" and "socket timeout" used for cancel commands.

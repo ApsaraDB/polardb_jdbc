@@ -192,6 +192,7 @@ public class PgConnection implements BaseConnection {
   private boolean clobAsText = false;
   private int defaultPolarMaxFetchSize;
   private PolarDriverPrefix driverPrefix = PolarDriverPrefix.POLARDB;
+  private boolean boolAsInt = false;
   /* POLAR DIFF END */
 
   // Current warnings; there might be more on queryExecutor too.
@@ -506,6 +507,7 @@ public class PgConnection implements BaseConnection {
       this.blobAsBytea = PGProperty.BLOB_AS_BYTEA.getBoolean(info);
       this.clobAsText = PGProperty.CLOB_AS_TEXT.getBoolean(info);
       this.defaultPolarMaxFetchSize = PGProperty.DEFAULT_POLAR_MAX_FETCH_SIZE.getIntNoCheck(info);
+      this.boolAsInt = PGProperty.BOOL_AS_INT.getBoolean(info);
     } else {
       this.mapDateToTimestamp = false;
       this.oracleCase = 0;
@@ -514,6 +516,7 @@ public class PgConnection implements BaseConnection {
       this.blobAsBytea = false;
       this.clobAsText = false;
       this.defaultPolarMaxFetchSize = 0;
+      this.boolAsInt = false;
     }
   }
 
@@ -1999,6 +2002,12 @@ public class PgConnection implements BaseConnection {
   @Override
   public PolarDriverPrefix getDriverPrefix() {
     return driverPrefix;
+  }
+
+  /* POLAR */
+  @Override
+  public boolean isBoolAsInt() {
+    return boolAsInt;
   }
 
   @Override

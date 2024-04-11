@@ -1968,5 +1968,13 @@ public abstract class BaseDataSource implements CommonDataSource, Referenceable 
     return PGProperty.FORCE_DRIVER_TYPE.getOrDefault(properties);
   }
 
+  public boolean getBoolAsInt() {
+    return PGProperty.BOOL_AS_INT.getBoolean(properties);
+  }
+
+  public void setBoolAsInt(boolean boolAsInt) {
+    PGProperty.BOOL_AS_INT.set(properties, boolAsInt);
+  }
+
   /* ---------------------------------- POLAR --------------------------- */
 }
