@@ -347,7 +347,7 @@ public class SimpleParameterList implements V3ParameterList {
 
   void setResolvedType(@Positive int index, int oid) {
     // only allow overwriting an unknown value
-    if (paramTypes[index - 1] == Oid.UNSPECIFIED) {
+    if (paramTypes[index - 1] == Oid.UNSPECIFIED || paramTypes[index - 1] == Oid.VOID) {
       paramTypes[index - 1] = oid;
     } else if (paramTypes[index - 1] != oid) {
       throw new IllegalArgumentException("Can't change resolved type for param: " + index + " from "
