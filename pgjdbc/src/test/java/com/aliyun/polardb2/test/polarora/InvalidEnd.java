@@ -43,4 +43,24 @@ public class InvalidEnd {
 
     ps.execute();
   }
+
+  @Test
+  public void testPkgRes2() throws Exception {
+    CallableStatement ps = conn.prepareCall("CREATE or replace PACKAGE rae_test_pkg2 AS\n"
+        + "        FUNCTION createstkinbypickex(pinum character varying) RETURN numeric;\n"
+        + "        end;");
+
+    ps.execute();
+
+    ps = conn.prepareCall("CREATE or replace PACKAGE body rae_test_pkg2 AS\n"
+        + "        FUNCTION createstkinbypickex(pinum character varying) RETURN numeric IS\n"
+        + "        CURSOR c_delete_table IS select 1 / 2 from dual;"
+        + "        Begin\n"
+        + "            If 1 then Goto One_Goods_End;  End If;\n"
+        + "            perform 1 / 1;\n"
+        + "        end;\n"
+        + "        END;");
+
+    ps.execute();
+  }
 }

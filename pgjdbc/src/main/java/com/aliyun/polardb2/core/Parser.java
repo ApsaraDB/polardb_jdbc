@@ -62,6 +62,7 @@ public class Parser {
     int fragmentStart = 0;
     int inParen = 0;
     int inBeginEnd = 0;
+    int inAsBegin = 0;
 
     char[] aChars = query.toCharArray();
 
@@ -129,7 +130,7 @@ public class Parser {
           if (i > 1 && "*".equals(String.valueOf(aChars[i - 1]))) {
             break;
           }
-          if (inBeginEnd > 0) {
+          if (inBeginEnd > 0 || inAsBegin > 0) {
             break;
           }
           if (!haveSpecialKeyword) {
@@ -167,6 +168,7 @@ public class Parser {
                   }
 
                   inBeginEnd = 0;
+                  inAsBegin = 0;
                   nativeQueries
                       .add(new NativeQuery(nativeSql.toString(), toIntArray(bindPositions), false,
                           SqlCommand.createStatementTypeInfo(currentCommandType,
@@ -341,17 +343,29 @@ public class Parser {
                 && isSpecialCharacters(aChars[i - 1])
                 && isSpecialCharacters(aChars[i + 5])) {
               inBeginEnd++;
+              inAsBegin = 0;
             }
           }
           break;
         case 'e':
         case 'E':
-          if (i + 2 < aChars.length && i > 1 && !Character.isJavaIdentifierPart(aChars[i - 1])) {
-            if ("N".equalsIgnoreCase(String.valueOf(aChars[i + 1]))
-                && "D".equalsIgnoreCase(String.valueOf(aChars[i + 2]))) {
+        case 'I':
+        case 'i':
+        case 'A':
+        case 'a':
+          if ("E".equalsIgnoreCase(String.valueOf(aChars[i]))) {
+            if (i + 2 < aChars.length && i > 1 && !Character.isJavaIdentifierPart(aChars[i - 1])
+                  && "N".equalsIgnoreCase(String.valueOf(aChars[i + 1]))
+                  && "D".equalsIgnoreCase(String.valueOf(aChars[i + 2]))) {
               int[] result = parseEnd(i, aChars, inBeginEnd);
               i = result[0];
               inBeginEnd = result[1];
+            }
+          } else if ("I".equalsIgnoreCase(String.valueOf(aChars[i])) || "A".equalsIgnoreCase(String.valueOf(aChars[i]))) {
+            if (i + 2 < aChars.length && i > 1 && inBeginEnd == 0 && "S".equalsIgnoreCase(String.valueOf(aChars[i + 1]))
+                && isSpecialCharacters(aChars[i - 1])
+                && isSpecialCharacters(aChars[i + 2])) {
+              inAsBegin++;
             }
           }
 
