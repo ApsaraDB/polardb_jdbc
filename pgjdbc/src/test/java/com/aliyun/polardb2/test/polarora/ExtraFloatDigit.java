@@ -65,4 +65,15 @@ public class ExtraFloatDigit {
     Assert.assertEquals("0.12345678901234568", rs.getString(1));
   }
 
+  @Test
+  public void testNstring1() throws Exception {
+    Properties props = new Properties();
+    conn = TestUtil.openDB(props);
+    Statement stmt = conn.createStatement();
+
+    ResultSet rs = stmt.executeQuery("select 'abcdef';");
+    Assert.assertTrue(rs.next());
+    Assert.assertEquals("abcdef", rs.getNString(1));
+  }
+
 }

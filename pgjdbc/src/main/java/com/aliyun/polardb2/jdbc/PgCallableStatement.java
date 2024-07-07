@@ -671,7 +671,8 @@ class PgCallableStatement extends PgPreparedStatement implements CallableStateme
   }
 
   public String getNString(@Positive int parameterIndex) throws SQLException {
-    throw Driver.notImplemented(this.getClass(), "getNString(int)");
+    Object result = checkIndex(parameterIndex, Types.VARCHAR, "String");
+    return (String) result;
   }
 
   public @Nullable String getNString(String parameterName) throws SQLException {

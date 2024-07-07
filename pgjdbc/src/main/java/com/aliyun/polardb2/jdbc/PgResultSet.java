@@ -3958,8 +3958,7 @@ public class PgResultSet implements ResultSet, com.aliyun.polardb2.PGRefCursorRe
   }
 
   public @Nullable String getNString(@Positive int columnIndex) throws SQLException {
-    connection.getLogger().log(Level.FINEST, "  getNString columnIndex: {0}", columnIndex);
-    throw com.aliyun.polardb2.Driver.notImplemented(this.getClass(), "getNString(int)");
+    return getString(columnIndex);
   }
 
   public @Nullable String getNString(String columnName) throws SQLException {
