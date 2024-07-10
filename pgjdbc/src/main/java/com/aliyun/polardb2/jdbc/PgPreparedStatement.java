@@ -1532,7 +1532,10 @@ class PgPreparedStatement extends PgStatement implements PreparedStatement {
         oid = Oid.TIMESTAMPTZ;
         cal = pgTimestamp.getCalendar();
       }
+    } else if (t instanceof Timestamp) {
+      oid = Oid.TIMESTAMP;
     }
+
     if (cal == null) {
       cal = getDefaultCalendar();
     }
