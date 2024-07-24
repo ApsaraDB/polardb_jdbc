@@ -148,7 +148,7 @@ public class PgDatabaseMetaData implements DatabaseMetaData {
    */
   @Override
   public String getDatabaseProductName() throws SQLException {
-    return "PostgreSQL";
+    return "POLARDB2 Database Compatible with Oracle";
   }
 
   @Override
