@@ -149,14 +149,22 @@ class PgCallableStatement extends PgPreparedStatement implements CallableStateme
             // For backwards compatibility reasons we support that ref cursors can be
             // registered with both Types.OTHER and Types.REF_CURSOR so we allow
             // this specific mismatch
-          } else if (connection.getDriverPrefix() != PolarDriverPrefix.POSTGRES && columnType == Types.NUMERIC && functionReturnType[j] == Types.INTEGER) {
+          } else if (columnType == Types.NUMERIC && functionReturnType[j] == Types.INTEGER) {
             // POLAR: support OUT number compatiable with INTEGER
             if (callResult[j] != null) {
               callResult[j] = ((BigDecimal) callResult[j]).intValue();
             }
-          } else if (connection.getDriverPrefix() != PolarDriverPrefix.POSTGRES && columnType == Types.INTEGER && functionReturnType[j] == Types.NUMERIC) {
+          } else if (columnType == Types.INTEGER && functionReturnType[j] == Types.NUMERIC) {
             if (callResult[j] != null) {
               callResult[j] = BigDecimal.valueOf((Integer) callResult[j]);
+            }
+          } else if (columnType == Types.NUMERIC && functionReturnType[j] == Types.DOUBLE) {
+            if (callResult[j] != null) {
+              callResult[j] = ((BigDecimal) callResult[j]).doubleValue();
+            }
+          } else if (columnType == Types.DOUBLE && functionReturnType[j] == Types.NUMERIC) {
+            if (callResult[j] != null) {
+              callResult[j] = BigDecimal.valueOf((Double) callResult[j]);
             }
           } else {
             throw new PSQLException(GT.tr(
