@@ -28,11 +28,21 @@ public class NumericIntComp {
         + "  \tc = a + b;\n"
         + "    b = a;\n"
         + "END;");
+
+    conn = TestUtil.openDB();
+    TestUtil.execute(conn, "CREATE or replace PROCEDURE test_procedure2(a inout char, b inout varchar) AS \n"
+        + "DECLARE\n"
+        + "userid int;\n"
+        + "BEGIN\n"
+        + "  a = 'xxx' || a;\n"
+        + "  b = 'yyyy' || b;\n"
+        + "END;");
   }
 
   @After
   public void tearDown() throws Exception {
     TestUtil.execute(conn, "drop procedure test_procedure;");
+    TestUtil.execute(conn, "drop procedure test_procedure2;");
   }
 
   @Test
@@ -59,6 +69,32 @@ public class NumericIntComp {
 
     Assert.assertEquals(1, ps.getInt(2));
     Assert.assertEquals(3, ps.getInt(3));
+  }
+
+  @Test
+  public void testGetColumns3() throws Exception {
+    CallableStatement ps = conn.prepareCall("call test_procedure2(?,?)");
+    ps.setString(1, "aaa");
+    ps.setString(2, "bbbb");
+    ps.registerOutParameter(1, Types.VARCHAR);
+    ps.registerOutParameter(2, Types.VARCHAR);
+    ps.execute();
+
+    Assert.assertEquals("xxxaaa", ps.getString(1));
+    Assert.assertEquals("yyyybbbb", ps.getString(2));
+  }
+
+  @Test
+  public void testGetColumns4() throws Exception {
+    CallableStatement ps = conn.prepareCall("call test_procedure2(?,?)");
+    ps.setString(1, "aaa");
+    ps.setString(2, "bbbb");
+    ps.registerOutParameter(1, Types.CHAR);
+    ps.registerOutParameter(2, Types.CHAR);
+    ps.execute();
+
+    Assert.assertEquals("xxxaaa", ps.getString(1));
+    Assert.assertEquals("yyyybbbb", ps.getString(2));
   }
 
 }

@@ -166,6 +166,10 @@ class PgCallableStatement extends PgPreparedStatement implements CallableStateme
             if (callResult[j] != null) {
               callResult[j] = BigDecimal.valueOf((Double) callResult[j]);
             }
+          } else if (columnType == Types.CHAR && functionReturnType[j] == Types.VARCHAR) {
+              /* you don't need to perform explicit type conversions, as JDBC handles these type conversions automatically. */
+          } else if (columnType == Types.VARCHAR && functionReturnType[j] == Types.CHAR) {
+            /* you don't need to perform explicit type conversions, as JDBC handles these type conversions automatically. */
           } else {
             throw new PSQLException(GT.tr(
                 "A CallableStatement function was executed and the out parameter {0} was of type {1} however type {2} was registered.",
