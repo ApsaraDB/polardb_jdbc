@@ -867,7 +867,8 @@ public enum PGProperty {
   /* POLAR */
   UNNAMED_PROC(
       "unnamedProc",
-      "true", "Support prepared statement anonymous transaction block.",
+      "false",
+      "Support prepared statement anonymous transaction block.",
       false,
       new String [] {"true", "false"}),
 

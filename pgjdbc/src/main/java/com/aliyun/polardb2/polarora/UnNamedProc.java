@@ -71,8 +71,6 @@ public class UnNamedProc {
       if (i != simpleParamemterList.getParameterCount() - 1) {
         procSql += ",";
       }
-
-      procBody = procBody.replaceFirst("[?]", "par_" + i);
     }
 
     procSql += ")\nis\n" + procBody;
@@ -86,6 +84,7 @@ public class UnNamedProc {
 
   private void polar_init_unnamed_proc() {
     String sqlLowerCase = originalSql.toLowerCase(Locale.US).trim();
+    StringBuilder os = new StringBuilder();
     int declareStartIndex = sqlLowerCase.indexOf("declare");
     int beginStartIndex = sqlLowerCase.toLowerCase(Locale.US).indexOf("begin");
     int endStartIndex = sqlLowerCase.indexOf("end");
@@ -95,7 +94,7 @@ public class UnNamedProc {
     if (beginStartIndex >= 0) {
       String beginFollow = sqlLowerCase.substring(beginStartIndex + "begin".length()).trim();
       if (beginFollow.length() > 0 && beginFollow.charAt(0) == ';') {
-        return ;
+        return;
       }
     }
 
@@ -107,6 +106,14 @@ public class UnNamedProc {
       int randomSeq = rd.nextInt(1000000);
       String fakeCallStmtSql = "";
       boolean containParam = false;
+      boolean inSingleQuote = false;
+      boolean inDoubleQuote = false;
+      boolean inLineComment = false;
+      boolean inComment = false;
+      boolean inDollarQuota = false;
+      char previousChar = 0;
+      int     osPosition = 0;
+      int     paramNumber = 0;
 
       if (isCallableQuery) {
         fakeCallStmtSql += "{";
@@ -115,10 +122,68 @@ public class UnNamedProc {
 
       for (int i = 0; i < originalSql.length(); ++i) {
         char ch = originalSql.charAt(i);
-        if (ch == '?') {
-          containParam = true;
-          fakeCallStmtSql = fakeCallStmtSql + "?,";
+
+        switch (ch) {
+          case '\'':
+            if (!inDoubleQuote && !inDollarQuota) {
+              inSingleQuote = !inSingleQuote;
+            }
+            break;
+
+          case '"':
+            if (!inSingleQuote && !inDollarQuota) {
+              inDoubleQuote = !inDoubleQuote;
+            }
+            break;
+
+          case '$':
+            if (previousChar == '$' && !inSingleQuote && !inDoubleQuote) {
+              inDollarQuota = !inDollarQuota;
+            }
+            break;
+
+          case '-':
+            if (previousChar == '-' && !inSingleQuote && !inDoubleQuote && !inDollarQuota) {
+              inLineComment = true;
+            }
+            break;
+
+          case '/':
+            if (!inSingleQuote && !inDoubleQuote && !inDollarQuota) {
+              if (previousChar == '/') {
+                inLineComment = true;
+              } else if (previousChar == '*') {
+                inComment = false;
+              }
+            }
+            break;
+
+          case '\r':
+          case '\n':
+            if (!inSingleQuote && !inDoubleQuote && !inDollarQuota) {
+              inLineComment = false;
+            }
+            break;
+
+          case '*':
+            if (previousChar == '/' && !inSingleQuote && !inDoubleQuote && !inDollarQuota) {
+              inComment = true;
+            }
+            break;
+
+          case '?':
+            if (!inSingleQuote && !inDoubleQuote && !inLineComment && !inComment && !inDollarQuota) {
+              containParam = true;
+              paramNumber = paramNumber + 1;
+              fakeCallStmtSql = fakeCallStmtSql + "?,";
+              os.append(originalSql.substring(osPosition, i));
+              os.append("$" + paramNumber);
+              osPosition = i + 1;
+            }
+            break;
         }
+
+        previousChar = ch;
       }
 
       if (containParam) {
@@ -131,6 +196,13 @@ public class UnNamedProc {
 
       fakeUnamedProcSql = fakeCallStmtSql;
       unamedProcName = "polar_unamed_proc_" + randomSeq;
+
+      if (!containParam) {
+        isUnamedProc = false;
+      } else {
+        os.append(originalSql.substring(osPosition, originalSql.length()));
+        originalSql = os.toString();
+      }
     }
   }
 

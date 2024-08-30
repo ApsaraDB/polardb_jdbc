@@ -10,6 +10,7 @@
 package com.aliyun.polardb2.test.polarora;
 
 import com.aliyun.polardb2.test.TestUtil;
+import com.aliyun.polardb2.test.jdbc2.BaseTest4;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -23,22 +24,29 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
+import java.util.Properties;
 
 /**
  * polar unamed procedure test.
  */
-public class UnNamedProc {
+public class UnNamedProc extends BaseTest4 {
   private Connection con;
 
   @Before
   public void setUp() throws Exception {
-    con = TestUtil.openDB();
+    Properties props = new Properties();
+    props.put("unnamedProc", "true");
+    con = TestUtil.openDB(props);
+    TestUtil.createTable(con, "cleantableconfig", "configname varchar, tablename varchar, "
+        + "executesql varchar, keepdays int, batchSize int, enabled int");
     con.setAutoCommit(false);
   }
 
   @After
-  public void tearDown() throws Exception {
-    TestUtil.closeDB(con);
+  public void tearDown() throws SQLException {
+    TestUtil.dropTable(con, "cleantableconfig");
+    con.commit();
+    super.tearDown();
   }
 
   @Test
@@ -127,6 +135,121 @@ public class UnNamedProc {
       st.next();
       //Assert.assertEquals(0, st.getInt(1));
       System.out.println("Polar Unamed Procedure test 6 success");
+      con.setAutoCommit(false);
     }
+  }
+
+  @Test
+  public void testComments1() throws Exception {
+    String sql = "declare\n"
+        + "  vCount int;\n"
+        + "begin\n"
+        + "  select count(1) into vCount from cleantableconfig where configname = 'VDRAGMTNOTICE' "
+        + "and TABLENAME = 'VDRAGMTDTLINVNOTICE' and rownum < 2;\n"
+        + "  if vCount = 0 then\n"
+        + "    insert into cleantableconfig(configname, tablename, executesql, keepdays, batchSize,"
+        + "\n"
+        + "      enabled)\n"
+        + "\t  values ('VDRAGMTNOTICE', 'VDRAGMTDTLINVNOTICE', 'delete from vdragmtdtlinvnotice "
+        + "where uuid in (select o.uuid from vdragmtdtlinvnotice o where o.createTime < ?)', 30, "
+        + "10000,\n"
+        + "\t    0);\n"
+        + "  end if;\n"
+        + "  commit;\n"
+        + "end;\n";
+
+    CallableStatement callstmt = con.prepareCall(sql);
+    callstmt.execute();
+    con.commit();
+    System.out.println("Polar Unamed Procedure test 4 success");
+  }
+
+  @Test
+  public void testComments2() throws Exception {
+    String sql = "declare\n"
+        + "  vCount int;\n"
+        + "begin\n"
+        + "  select count(1) into vCount from cleantableconfig where configname = 'VDRAGMTNOTICE' "
+        + "and TABLENAME = 'VDRAGMTDTLINVNOTICE' and rownum < 2;\n"
+        + "  if vCount = 0 then\n"
+        + "    insert into cleantableconfig(configname, tablename, executesql, keepdays, batchSize,"
+        + "\n"
+        + "      enabled)\n"
+        + "\t  values ('VDRAGMTNOTICE', 'VDRAGMTDTLINVNOTICE', 'delete from vdragmtdtlinvnotice "
+        + "where uuid in (select o.uuid from vdragmtdtlinvnotice o where o.createTime < ?)', 30, "
+        + "10000,\n"
+        + "\t    0);\n"
+        + "  end if;\n"
+        + "  dbms_output.put_line(?); "
+        + "  commit;\n"
+        + "end;\n";
+    CallableStatement callstmt = con.prepareCall(sql);
+    callstmt.setInt(1, 200);
+    callstmt.execute();
+    con.commit();
+    System.out.println("Polar Unamed Procedure test 4 success");
+  }
+
+  @Test
+  public void testComments3() throws Exception {
+    String sql = "declare\n"
+        + "  vCount int;\n"
+        + "begin\n"
+        + "  select count(1) into vCount from cleantableconfig where configname = 'VDRAGMTNOTICE' "
+        + "and TABLENAME = 'VDRAGMTDTLINVNOTICE' and rownum < 2;\n"
+        + "  if vCount = 0 then\n"
+        + "    insert into cleantableconfig(configname, tablename, executesql, keepdays, batchSize,"
+        + "\n"
+        + "      enabled)\n"
+        + "\t  values ('VDRAGMTNOTICE', 'VDRAGMTDTLINVNOTICE', 'delete from vdragmtdtlinvnotice "
+        + "where uuid in (select o.uuid from vdragmtdtlinvnotice o where o.createTime < ?)', 30, "
+        + "10000,\n"
+        + "\t    0);\n"
+        + "  end if;\n"
+        + " -- // qwrqweqwew? qweqw qwqw  qw qw  qw???????\n "
+        + " -- qwrqweqwew? qweqw -- qwqw  -- ?????qw qw  qw???????\n "
+        + " /* qwrqweqwew? qweqw -- qwqw  -- ?????qw qw  qw??????? */\n"
+        + " raise notice ' qwrqweqwew? qweqw -- qwqw  -- ?????qw qw  qw??????? ';\n"
+        + " raise notice '\" qwrqweqwew? qwe??qw -- qwqw  -- ?????qw qw  qw??????? \"';\n"
+        + "  dbms_output.put_line(?); "
+        + "  commit;\n"
+        + "end;\n";
+    CallableStatement callstmt = con.prepareCall(sql);
+    callstmt.setInt(1, 200);
+    callstmt.execute();
+    con.commit();
+    System.out.println("Polar Unamed Procedure test 4 success");
+  }
+
+  @Test
+  public void testComments4() throws Exception {
+    String sql = "declare\n"
+        + "  vCount int;\n"
+        + "begin\n"
+        + "  select count(1) into vCount from cleantableconfig where configname = 'VDRAGMTNOTICE' "
+        + "and TABLENAME = 'VDRAGMTDTLINVNOTICE' and rownum < 2;\n"
+        + "  if vCount = 0 then\n"
+        + "    insert into cleantableconfig(configname, tablename, executesql, keepdays, batchSize,"
+        + "\n"
+        + "      enabled)\n"
+        + "\t  values ('VDRAGMTNOTICE', 'VDRAGMTDTLINVNOTICE', 'delete from vdragmtdtlinvnotice "
+        + "where uuid in (select o.uuid from vdragmtdtlinvnotice o where o.createTime < ?)', 30, "
+        + "10000,\n"
+        + "\t    0);\n"
+        + "  end if;\n"
+        + " -- // qwrqweqwew? qweqw qwqw  qw qw  qw???????\n "
+        + " -- qwrqweqwew? qweqw -- qwqw  -- ?????qw qw  qw???????\n "
+        + " /* qwrqweqwew? qweqw -- qwqw  -- ?????qw qw  qw??????? */\n"
+        + " raise notice $$asdjkq'wj\"qwe--je//qw\\???/**/qwqwqw$$;"
+        + " raise notice ' qwrqweqwew? qweqw -- qwqw  -- ?????qw qw  qw??????? ';\n"
+        + " raise notice '\" qwrqweqwew? qwe??qw -- qwqw  -- ?????qw qw  qw??????? \"';\n"
+        + "  dbms_output.put_line(?); "
+        + "  commit;\n"
+        + "end;\n";
+    CallableStatement callstmt = con.prepareCall(sql);
+    callstmt.setInt(1, 200);
+    callstmt.execute();
+    con.commit();
+    System.out.println("Polar Unamed Procedure test 4 success");
   }
 }
