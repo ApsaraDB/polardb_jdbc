@@ -56,7 +56,7 @@ public final class LogSequenceNumber implements Comparable<LogSequenceNumber> {
     ByteBuffer buf = ByteBuffer.allocate(8);
     buf.putInt(logicalXlog);
     buf.putInt(segment);
-    buf.position(0);
+    ((java.nio.Buffer) buf).position(0);
     long value = buf.getLong();
 
     return LogSequenceNumber.valueOf(value);
@@ -76,7 +76,7 @@ public final class LogSequenceNumber implements Comparable<LogSequenceNumber> {
   public String asString() {
     ByteBuffer buf = ByteBuffer.allocate(8);
     buf.putLong(value);
-    buf.position(0);
+    ((java.nio.Buffer) buf).position(0);
 
     int logicalXlog = buf.getInt();
     int segment = buf.getInt();
