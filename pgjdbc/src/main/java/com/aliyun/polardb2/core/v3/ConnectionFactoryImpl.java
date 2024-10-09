@@ -27,7 +27,6 @@ import com.aliyun.polardb2.hostchooser.HostStatus;
 import com.aliyun.polardb2.jdbc.GSSEncMode;
 import com.aliyun.polardb2.jdbc.SslMode;
 import com.aliyun.polardb2.plugin.AuthenticationRequestType;
-import com.aliyun.polardb2.polarora.PolarDriverPrefix;
 import com.aliyun.polardb2.sspi.ISSPIClient;
 import com.aliyun.polardb2.util.GT;
 import com.aliyun.polardb2.util.HostSpec;
@@ -426,6 +425,18 @@ public class ConnectionFactoryImpl extends ConnectionFactory {
     if (options != null) {
       paramList.add(new StartupParam("options", options));
     }
+
+    /*
+     * POLARDB DIFF Reset nls_xxx_format like dateStyle to make sys.date\timestamp\timestamptz data
+     * correct Setting this via SQL instead of the standard StartupMessages (like dateStyle) is to
+     * ensure compatibility with older versions.
+     */
+    if (PGProperty.RESET_NLS_FORMAT.getBoolean(info)) {
+      paramList.add(new StartupParam("nls_date_format", "YYYY-MM-DD HH24:MI:SS"));
+      paramList.add(new StartupParam("nls_timestamp_format", "YYYY-MM-DD HH24:MI:SS.FF"));
+      paramList.add(new StartupParam("nls_timestamp_tz_format", "YYYY-MM-DD HH24:MI:SS.FFOF"));
+    }
+    /* POLARDB end */
 
     return paramList;
   }
@@ -942,25 +953,6 @@ public class ConnectionFactoryImpl extends ConnectionFactory {
         SetupQueryRunner.run(queryExecutor, "SET extra_float_digits = 3", false);
       }
     }
-
-    /*
-     * POLARDB DIFF Reset nls_xxx_format like dateStyle to make sys.date\timestamp\timestamptz data
-     * correct Setting this via SQL instead of the standard StartupMessages (like dateStyle) is to
-     * ensure compatibility with older versions.
-     */
-    if (PGProperty.RESET_NLS_FORMAT.getBoolean(info) && PolarDriverPrefix.forName(PGProperty.DRIVER_PREFIX.getOrDefault(info)) != PolarDriverPrefix.POSTGRES) {
-      String paramSetSql =
-          "SELECT pg_catalog.set_config(name,'%s','f') FROM pg_catalog.pg_settings WHERE name = '%s' ";
-
-      SetupQueryRunner.run(queryExecutor,
-          String.format(paramSetSql, "YYYY-MM-DD HH24:MI:SS", "nls_date_format"), false);
-      SetupQueryRunner.run(queryExecutor,
-          String.format(paramSetSql, "YYYY-MM-DD HH24:MI:SS.FF", "nls_timestamp_format"), false);
-      SetupQueryRunner.run(queryExecutor,
-          String.format(paramSetSql, "YYYY-MM-DD HH24:MI:SS.FFOF", "nls_timestamp_tz_format"),
-          false);
-    }
-    /* POLARDB end */
 
     String appName = PGProperty.APPLICATION_NAME.getOrDefault(info);
     if (appName != null && dbVersion >= ServerVersion.v9_0.getVersionNum()) {
