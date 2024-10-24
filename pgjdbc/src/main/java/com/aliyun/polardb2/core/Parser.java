@@ -354,12 +354,18 @@ public class Parser {
         case 'A':
         case 'a':
           if ("E".equalsIgnoreCase(String.valueOf(aChars[i]))) {
-            if (i + 2 < aChars.length && i > 1 && !Character.isJavaIdentifierPart(aChars[i - 1])
-                  && "N".equalsIgnoreCase(String.valueOf(aChars[i + 1]))
+            if (i + 2 < aChars.length && "N".equalsIgnoreCase(String.valueOf(aChars[i + 1]))
                   && "D".equalsIgnoreCase(String.valueOf(aChars[i + 2]))) {
-              int[] result = parseEnd(i, aChars, inBeginEnd);
-              i = result[0];
-              inBeginEnd = result[1];
+              int p = i - 1;
+              while (p > 0 && isSpace(aChars[p])) {
+                p = p - 1;
+              }
+
+              if (p > 0 && !Character.isJavaIdentifierPart(aChars[p])) {
+                int[] result = parseEnd(i, aChars, inBeginEnd);
+                i = result[0];
+                inBeginEnd = result[1];
+              }
             }
           } else if ("I".equalsIgnoreCase(String.valueOf(aChars[i])) || "A".equalsIgnoreCase(String.valueOf(aChars[i]))) {
             if (i + 2 < aChars.length && i > 1 && inBeginEnd == 0 && "S".equalsIgnoreCase(String.valueOf(aChars[i + 1]))
