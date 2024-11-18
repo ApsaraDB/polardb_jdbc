@@ -183,6 +183,10 @@ or 'statement XXX is not valid' so JDBC driver rolls back and retries
 * **`cleanupSavepoints (`*boolean*`)`** *Default `false`*\
 Determines if the SAVEPOINT created in autosave mode is released prior to the statement. This is done to avoid running out of shared buffers on the server in the case where 1000's of queries are performed.
 
+* **`channelBinding (`*String*`)`** *Default `prefer`*\
+This option controls the client's use of channel binding. A setting of `require` means that the connection must employ channel binding, `prefer` means that the client will choose channel binding if available, and `disable` prevents the use of channel binding. The default is `prefer` if PostgreSQL is compiled with SSL support; otherwise the default is `disable`.
+Channel binding is a method for the server to authenticate itself to the client. It is only supported over SSL connections with PostgreSQL 11 or later servers using the SCRAM authentication method.
+
 * **`binaryTransfer (`*boolean*`)`** *Default `true`*\
 Use binary format for sending and receiving data if possible. Setting this to false disables any binary transfer.
 

@@ -152,6 +152,7 @@ In addition to the standard connection parameters the driver supports a number o
 | stringtype                    | String |          null           | Specify the type to use when binding `PreparedStatement` parameters set via `setString()`                                                                                                                                                                                                                                                     |
 | blobAsBytea                   | Boolean | false   | Treat Blobs as bytea fields instead of as LargeObjects |
 | clobAsText                    | Boolean | false  | Treat Clobs as text fields instead of as LargeObjects |
+| channelBinding                 | String |   prefer    | This option controls the client's use of channel binding. `require` means that the connection must employ channel binding, `prefer` means that the client will choose channel binding if available, and `disable` prevents the use of channel binding. |
 
 ## Contributing
 For information on how to contribute to the project see the [Contributing Guidelines](CONTRIBUTING.md)

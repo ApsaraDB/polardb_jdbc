@@ -53,7 +53,7 @@ val String.v: String get() = rootProject.extra["$this.version"] as String
 
 dependencies {
     shaded(platform(project(":bom")))
-    shaded("com.ongres.scram:client")
+    shaded("com.ongres.scram:scram-client:3.1")
 
     implementation("org.checkerframework:checker-qual")
     testImplementation("se.jiderhamn:classloader-leak-test-framework")
@@ -154,10 +154,10 @@ tasks.compileJava {
 val getShadedDependencyLicenses by tasks.registering(GatherLicenseTask::class) {
     configuration(shaded)
     extraLicenseDir.set(file("$rootDir/licenses"))
-    overrideLicense("com.ongres.scram:common") {
+    overrideLicense("com.ongres.scram:scram-common") {
         licenseFiles = "scram"
     }
-    overrideLicense("com.ongres.scram:client") {
+    overrideLicense("com.ongres.scram:scram-client") {
         licenseFiles = "scram"
     }
     overrideLicense("com.ongres.stringprep:saslprep") {
@@ -190,6 +190,10 @@ tasks.configureEach<Jar> {
 tasks.shadowJar {
     configurations = listOf(shaded)
     exclude("META-INF/maven/**")
+    // ignore module-info.class not used in shaded dependency
+    exclude("META-INF/versions/9/module-info.class")
+    // ignore service file not used in shaded dependency
+    exclude("META-INF/services/com.ongres.stringprep.Profile")
     exclude("META-INF/LICENSE*")
     exclude("META-INF/NOTICE*")
     into("META-INF") {
