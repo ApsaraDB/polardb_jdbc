@@ -45,6 +45,7 @@ public class Jdbc3CallableStatementTest extends BaseTest4 {
   protected void updateProperties(Properties props) {
     super.updateProperties(props);
     PGProperty.BLOB_AS_BYTEA.set(props, false);
+    PGProperty.ESCAPE_SYNTAX_CALL_MODE.set(props, "select");
   }
 
   @Override

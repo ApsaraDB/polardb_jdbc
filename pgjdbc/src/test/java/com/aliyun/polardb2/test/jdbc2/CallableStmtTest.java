@@ -11,6 +11,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import com.aliyun.polardb2.PGProperty;
 import com.aliyun.polardb2.test.TestUtil;
 
 import org.junit.BeforeClass;
@@ -24,6 +25,7 @@ import java.sql.SQLException;
 import java.sql.SQLWarning;
 import java.sql.Statement;
 import java.sql.Types;
+import java.util.Properties;
 
 /*
  * CallableStatement tests.
@@ -82,6 +84,12 @@ public class CallableStmtTest extends BaseTest4 {
         "CREATE OR REPLACE FUNCTION testspg__insertInt(int) RETURNS int as "
         + "'BEGIN INSERT INTO int_table(id) VALUES ($1); RETURN 1; END;' LANGUAGE plpgsql");
     stmt.close();
+  }
+
+  @Override
+  protected void updateProperties(Properties props) {
+    super.updateProperties(props);
+    PGProperty.ESCAPE_SYNTAX_CALL_MODE.set(props, "select");
   }
 
   @Override

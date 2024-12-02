@@ -298,7 +298,7 @@ public enum PGProperty {
    */
   ESCAPE_SYNTAX_CALL_MODE(
       "escapeSyntaxCallMode",
-      "select",
+      "callIfNoReturn",
       "Specifies how the driver transforms JDBC escape call syntax into underlying SQL, for invoking procedures or functions. (backend >= 11)"
           + "In escapeSyntaxCallMode=select mode (the default), the driver always uses a SELECT statement (allowing function invocation only)."
           + "In escapeSyntaxCallMode=callIfNoReturn mode, the driver uses a CALL statement (allowing procedure invocation) if there is no return parameter specified, otherwise the driver uses a SELECT statement."
