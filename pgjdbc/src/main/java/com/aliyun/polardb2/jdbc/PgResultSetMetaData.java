@@ -11,7 +11,6 @@ import com.aliyun.polardb2.PGResultSetMetaData;
 import com.aliyun.polardb2.core.BaseConnection;
 import com.aliyun.polardb2.core.Field;
 import com.aliyun.polardb2.core.ServerVersion;
-import com.aliyun.polardb2.polarora.PolarDriverPrefix;
 import com.aliyun.polardb2.util.GT;
 import com.aliyun.polardb2.util.Gettable;
 import com.aliyun.polardb2.util.GettableHashMap;
@@ -208,11 +207,7 @@ public class PgResultSetMetaData implements ResultSetMetaData, PGResultSetMetaDa
             + "a.attnotnull OR (t.typtype = 'd' AND t.typnotnull), ");
 
     if ( connection.haveMinimumServerVersion(ServerVersion.v10)) {
-      if (connection.getDriverPrefix() != PolarDriverPrefix.POSTGRES) {
-        sql.append("a.attidentity is not null OR pg_catalog.pg_get_expr(d.adbin, d.adrelid) LIKE '%nextval(%' ");
-      } else {
-        sql.append("a.attidentity != '' OR pg_catalog.pg_get_expr(d.adbin, d.adrelid) LIKE '%nextval(%' ");
-      }
+      sql.append("length(a.attidentity) > 0 OR pg_catalog.pg_get_expr(d.adbin, d.adrelid) LIKE '%nextval(%' ");
     } else {
       sql.append("pg_catalog.pg_get_expr(d.adbin, d.adrelid) LIKE '%nextval(%' ");
     }
