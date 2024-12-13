@@ -222,6 +222,13 @@ public enum PGProperty {
       false,
       new String[] { "true", "false"}),
 
+  COMMENT_STYLE(
+      "commentStyle",
+      "true",
+      "comment Style in oracle mode or not.",
+      false,
+      new String[] { "true", "false"}),
+
   /**
    * <p>The timeout value used for socket connect operations. If connecting to the server takes longer
    * than this value, the connection is broken.</p>

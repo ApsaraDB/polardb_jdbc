@@ -163,6 +163,7 @@ public class QueryExecutorImpl extends QueryExecutorBase {
 
   /* POLARDB */
   private boolean namedParam = false;
+  private boolean commentStyle = false;
 
   private int defaultPolarMaxFetchSize = 0;
   private boolean unnamedProc;
@@ -182,6 +183,7 @@ public class QueryExecutorImpl extends QueryExecutorBase {
     this.replicationProtocol = new V3ReplicationProtocol(this, pgStream);
 
     PolarDriverPrefix driverPrefix = PolarDriverPrefix.forName(PGProperty.DRIVER_PREFIX.getOrDefault(info));
+    this.commentStyle =  PGProperty.COMMENT_STYLE.getBoolean(info);
 
     if (driverPrefix != PolarDriverPrefix.POSTGRES) {
       this.mapDateToTimeStamp = PGProperty.MAP_DATE_TO_TIMESTAMP.getBoolean(info);
@@ -280,7 +282,7 @@ public class QueryExecutorImpl extends QueryExecutorBase {
   public Query createSimpleQuery(String sql) throws SQLException {
     List<NativeQuery> queries = Parser.parseJdbcSql(sql,
         getStandardConformingStrings(), false, true,
-        isReWriteBatchedInsertsEnabled(), getQuoteReturningIdentifiers(), isNamedParam());
+        isReWriteBatchedInsertsEnabled(), getQuoteReturningIdentifiers(), isNamedParam(), isOraCommentStyle());
     return wrap(queries);
   }
 
@@ -3115,6 +3117,11 @@ public class QueryExecutorImpl extends QueryExecutorBase {
   /* POLAR */
   public boolean isNamedParam() {
     return namedParam;
+  }
+
+  /* POLAR */
+  public boolean isOraCommentStyle() {
+    return commentStyle;
   }
 
   /* POLAR */

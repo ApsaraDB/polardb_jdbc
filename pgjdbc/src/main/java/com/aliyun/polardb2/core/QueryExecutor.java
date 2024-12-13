@@ -615,5 +615,8 @@ public interface QueryExecutor extends TypeTransferModeRegistry {
   boolean isNamedParam();
 
   /* POLAR */
+  boolean isOraCommentStyle();
+
+  /* POLAR */
   boolean supportUnnamedProc();
 }

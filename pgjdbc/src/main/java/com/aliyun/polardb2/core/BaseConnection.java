@@ -277,6 +277,18 @@ public interface BaseConnection extends PGConnection, Connection {
    */
   boolean isNamedParam();
 
+  /**
+   * Returns the isOraCommentStyle connection setting.
+   *
+   * @return isOraCommentStyle setting
+   */
+  boolean isOraCommentStyle();
+
+  /**
+   * Returns the isCollectWarning connection setting.
+   *
+   * @return isCollectWarning setting
+   */
   boolean isCollectWarning();
 
   /**

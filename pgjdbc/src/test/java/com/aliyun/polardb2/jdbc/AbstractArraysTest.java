@@ -1060,6 +1060,14 @@ public abstract class AbstractArraysTest<A> {
      * {@inheritDoc}
      */
     @Override
+    public boolean isOraCommentStyle() {
+      return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public boolean isCollectWarning() {
       return false;
     }

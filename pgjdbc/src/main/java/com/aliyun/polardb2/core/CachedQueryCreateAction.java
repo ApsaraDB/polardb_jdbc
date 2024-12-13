@@ -80,7 +80,7 @@ class CachedQueryCreateAction implements LruCache.CreateAction<Object, CachedQue
     List<NativeQuery> queries = Parser.parseJdbcSql(parsedSql,
         queryExecutor.getStandardConformingStrings(), isParameterized, splitStatements,
         queryExecutor.isReWriteBatchedInsertsEnabled(), queryExecutor.getQuoteReturningIdentifiers(),
-        queryExecutor.isNamedParam(),
+        queryExecutor.isNamedParam(), queryExecutor.isOraCommentStyle(),
         returningColumns
         );
 

@@ -83,4 +83,25 @@ public class InvalidEnd {
         + "End;");
     ps.execute();
   }
+
+  @Test
+  public void testProc2() throws Exception {
+    CallableStatement ps = conn.prepareCall("Create Or Replace Procedure Test_Polardb_Proc (\n"
+        + "   piInput In Varchar2\n"
+        + ") IS\n"
+        + "  Cursor CDtl Is Select 1 Total From Dual;\n"
+        + "  v_ModuleNo Int;\n"
+        + "Begin\n"
+        + "  v_ModuleNo := Case When piInput = '1' Then 3 When piInput = '2' Then 4 Else Null End;\n"
+        + "/* /* /* xxxx /* */"
+        + "  For R In CDtl Loop\n"
+        + "    If 1 = 1 Then\n"
+        + "      If 1 = 1 Then\n"
+        + "        R.Total := 2 / 3;\n"
+        + "      End If;\n"
+        + "    End If;\n"
+        + "  End Loop;\n"
+        + "End;");
+    ps.execute();
+  }
 }

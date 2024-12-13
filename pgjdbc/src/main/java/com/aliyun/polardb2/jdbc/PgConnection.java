@@ -193,6 +193,7 @@ public class PgConnection implements BaseConnection {
   private int defaultPolarMaxFetchSize;
   private PolarDriverPrefix driverPrefix = PolarDriverPrefix.POLARDB;
   private boolean boolAsInt = false;
+  private boolean commentStyle = false;
   /* POLAR DIFF END */
 
   // Current warnings; there might be more on queryExecutor too.
@@ -2033,6 +2034,11 @@ public class PgConnection implements BaseConnection {
   @Override
   public boolean isNamedParam() {
     return namedParam;
+  }
+
+  @Override
+  public boolean isOraCommentStyle() {
+    return commentStyle;
   }
 
   @Override

@@ -31,6 +31,7 @@ import java.util.Locale;
 public class Parser {
   private static final int[] NO_BINDS = new int[0];
   private static final char[] chars = new char[]{' ', '\n', '\r', '\t'};
+  private static boolean isOraCommentStyle;
 
   /**
    * Parses JDBC query into PostgreSQL's native format. Several queries might be given if separated
@@ -52,6 +53,7 @@ public class Parser {
       boolean isBatchedReWriteConfigured,
       boolean quoteReturningIdentifiers,
       boolean namedParam,
+      boolean commentStyle,
       String... returningColumnNames) throws SQLException {
     if (!withParameters && !splitStatements
         && returningColumnNames != null && returningColumnNames.length == 0) {
@@ -93,6 +95,7 @@ public class Parser {
     queryTemp = queryTemp.replaceAll("\\s+", "\0");
     String[] queryArr = queryTemp.split("\0");
     boolean haveSpecialKeyword = isContainSpecialKeyword(queryArr);
+    isOraCommentStyle = commentStyle;
 
     /*
     loop through looking for keywords, single quotes, double quotes, comments, dollar quotes,
@@ -831,7 +834,12 @@ public class Parser {
         switch (query[offset - 1]) {
           case '*':
             if (query[offset] == '/') {
-              --level;
+              // for Oracle'style comments
+              if (isOraCommentStyle) {
+                level = 0;
+              } else {
+                --level;
+              }
               ++offset; // don't parse / in */* twice
             }
             break;

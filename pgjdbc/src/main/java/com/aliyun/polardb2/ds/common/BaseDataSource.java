@@ -1904,6 +1904,14 @@ public abstract class BaseDataSource implements CommonDataSource, Referenceable 
     PGProperty.NAMED_PARAM.set(properties, namedParam);
   }
 
+  public boolean getCommentStyle() {
+    return PGProperty.COMMENT_STYLE.getBoolean(properties);
+  }
+
+  public void setCommentStyle(boolean commentStyle) {
+    PGProperty.COMMENT_STYLE.set(properties, commentStyle);
+  }
+
   public boolean getCollectWarning() {
     return PGProperty.COLLECT_WARNING.getBoolean(properties);
   }
