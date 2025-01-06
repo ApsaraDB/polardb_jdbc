@@ -51,6 +51,15 @@ public class LobVarlenaTest {
             + "decode(repeat($$ksjkds\\000trbut8mnnksdf$$,600),"
             + "'escape'))",
         conn);
+    TestUtil.execute("insert into testlobvarlena values(null,null)",
+        conn);
+    TestUtil.execute("insert into testlobvarlena values("
+            + "repeat($$ksjkdjkdshtrb\\000ujy2t8mnnksdf$$,500),"
+            + "decode(repeat($$ksjkds\\000trbut8mnnksdf$$,600),"
+            + "'escape'))",
+        conn);
+    TestUtil.execute("insert into testlobvarlena values('','')",
+        conn);
   }
 
   @After
@@ -103,13 +112,13 @@ public class LobVarlenaTest {
     // test we can get a clob from a text field in a resultset
     Statement stmt = conn.createStatement();
     ResultSet rs = stmt.executeQuery(TestUtil.selectSQL("testlobvarlena", "textcol"));
-    try {
-      Assert.assertTrue("Connection has getClobAsText", ((PgConnection) conn).getClobAsText());
-      Assert.assertTrue("Result set has a row", rs.next());
+    Assert.assertTrue("Connection has getClobAsText", ((PgConnection) conn).getClobAsText());
+    Assert.assertTrue("Result set has a row", rs.next());
+
+    while (rs.next()) {
       Clob clob = rs.getClob(1);
+      String s1 = clob.getSubString(1, (int) clob.length());
       Assert.assertTrue("rs.getClob(1) returns a PgClobText", clob instanceof PgClobText);
-    } finally {
-      rs.close();
     }
   }
 

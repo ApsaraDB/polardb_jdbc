@@ -108,7 +108,7 @@ public class PgClobText implements java.sql.Clob {
       }
       return this.data.substring((int) pos, (int) (pos + length));
     }
-    return castNonNull(this.data);
+    return this.data;
   }
 
   @Override
