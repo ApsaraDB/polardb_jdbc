@@ -364,7 +364,7 @@ public class Parser {
                 p = p - 1;
               }
 
-              if (p > 0 && !Character.isJavaIdentifierPart(aChars[p])) {
+              if (p > 0 && aChars[p] == ';') {
                 int[] result = parseEnd(i, aChars, inBeginEnd);
                 i = result[0];
                 inBeginEnd = result[1];

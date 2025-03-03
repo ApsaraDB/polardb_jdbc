@@ -104,4 +104,36 @@ public class InvalidEnd {
         + "End;");
     ps.execute();
   }
+
+  @Test
+  public void testProc3() throws Exception {
+    String sql1 =  "CREATE OR REPLACE Package Test_Pkg_Case_When Is\n"
+        + "Procedure Test_Proc(); \n"
+        + "END;\n";
+    CallableStatement ps = conn.prepareCall(sql1);
+    ps.execute();
+
+    String sql3 = "--/p PPS_PurCntr_pkg.Oracle.sql Running ...\n"
+        + "--/{\n"
+        + "CREATE OR REPLACE Package Body Test_Pkg_Case_When Is\n"
+        + "\n"
+        + "   -- 创建一张费用单\n"
+        + "  Procedure Test_Proc\n"
+        + "  is\n"
+        + "    vTotal number;\n"
+        + "    vAmt number;\n"
+        + "    vTaxRate  number;\n"
+        + "    vTax      number;\n"
+        + "    selectSql varchar2(2000);\n"
+        + "  begin\n"
+        + "    selectSql := case when 1 = 1 then  selectSql || ',' || ' g.taxType' else ' g"
+        + ".taxType' end;\n"
+        + "    vTax := vTotal * vTaxRate / 100;\n"
+        + "  end;\n"
+        + "\n"
+        + "End Test_Pkg_Case_When;\n"
+        + "/";
+    ps = conn.prepareCall(sql3);
+    ps.execute();
+  }
 }
