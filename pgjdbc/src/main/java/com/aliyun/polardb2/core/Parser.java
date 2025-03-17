@@ -1314,7 +1314,7 @@ public class Parser {
    * @throws SQLException if given SQL is malformed
    */
   public static JdbcCallParseInfo modifyJdbcCall(String jdbcSql, boolean stdStrings,
-      int serverVersion, int protocolVersion, EscapeSyntaxCallMode escapeSyntaxCallMode) throws SQLException {
+      int serverVersion, int protocolVersion, EscapeSyntaxCallMode escapeSyntaxCallMode, boolean callFunctionMode) throws SQLException {
     // Mini-parser for JDBC function-call syntax (only)
     // TODO: Merge with escape processing (and parameter parsing?) so we only parse each query once.
     // RE: frequently used statements are cached (see {@link com.aliyun.polardb2.jdbc.PgConnection#borrowQuery}), so this "merge" is not that important.
@@ -1349,8 +1349,10 @@ public class Parser {
 
         case 2:  // After {, looking for ? or =, skipping whitespace
           if (ch == '?') {
-            outParamBeforeFunc =
-                isFunction = true;   // { ? = call ... }  -- function with one out parameter
+            if (!callFunctionMode) {
+              outParamBeforeFunc = true;
+            }
+            isFunction = true;   // { ? = call ... }  -- function with one out parameter
             ++i;
             ++state;
           } else if (ch == 'c' || ch == 'C') {  // { call ... }      -- proc with no out parameters

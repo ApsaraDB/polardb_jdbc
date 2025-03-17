@@ -209,4 +209,7 @@ public interface ParameterList {
    * @return Object array containing the parameter values.
    */
   @Nullable Object @Nullable [] getValues();
+
+  /* POLAR */
+  void setCallFunctionMode(boolean funMode);
 }

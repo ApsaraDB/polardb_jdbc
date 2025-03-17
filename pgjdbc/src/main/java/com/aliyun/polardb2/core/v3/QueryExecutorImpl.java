@@ -164,6 +164,7 @@ public class QueryExecutorImpl extends QueryExecutorBase {
   /* POLARDB */
   private boolean namedParam = false;
   private boolean commentStyle = false;
+  private boolean callFunctionMode = false;
 
   private int defaultPolarMaxFetchSize = 0;
   private boolean unnamedProc;
@@ -184,6 +185,7 @@ public class QueryExecutorImpl extends QueryExecutorBase {
 
     PolarDriverPrefix driverPrefix = PolarDriverPrefix.forName(PGProperty.DRIVER_PREFIX.getOrDefault(info));
     this.commentStyle =  PGProperty.COMMENT_STYLE.getBoolean(info);
+    this.callFunctionMode = PGProperty.CALL_FUNCTION_MODE.getBoolean(info);
 
     if (driverPrefix != PolarDriverPrefix.POSTGRES) {
       this.mapDateToTimeStamp = PGProperty.MAP_DATE_TO_TIMESTAMP.getBoolean(info);
@@ -3127,5 +3129,9 @@ public class QueryExecutorImpl extends QueryExecutorBase {
   /* POLAR */
   public boolean supportUnnamedProc() {
     return unnamedProc;
+  }
+
+  public boolean callFunctionMode() {
+    return callFunctionMode;
   }
 }

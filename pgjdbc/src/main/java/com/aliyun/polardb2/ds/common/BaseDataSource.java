@@ -2000,5 +2000,13 @@ public abstract class BaseDataSource implements CommonDataSource, Referenceable 
     PGProperty.CHANNEL_BINDING.set(properties, channelBinding);
   }
 
+  public boolean getCallFunctionMode() {
+    return PGProperty.CALL_FUNCTION_MODE.getBoolean(properties);
+  }
+
+  public void setCallFunctionMode(boolean callFunctionMode) {
+    PGProperty.CALL_FUNCTION_MODE.set(properties, callFunctionMode);
+  }
+
   /* ---------------------------------- POLAR --------------------------- */
 }

@@ -6,7 +6,7 @@
 package com.aliyun.polardb2.core;
 
 /**
- * Contains parse flags from {@link Parser#modifyJdbcCall(String, boolean, int, int, EscapeSyntaxCallMode)}.
+ * Contains parse flags from {@link Parser#modifyJdbcCall(String, boolean, int, int, EscapeSyntaxCallMode, boolean)}.
  */
 public class JdbcCallParseInfo {
   private final String sql;

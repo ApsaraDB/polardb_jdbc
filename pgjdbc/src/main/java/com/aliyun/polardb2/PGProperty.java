@@ -171,6 +171,16 @@ public enum PGProperty {
     new String[] {"true", "false"}),
 
   /**
+   * POLAR: CallFunction
+   */
+  CALL_FUNCTION_MODE(
+      "callFunctionMode",
+      "false",
+      "enable oracle style's call function.",
+      false,
+      new String[] {"true", "false"}),
+
+  /**
    * Cancel command is sent out of band over its own connection, so cancel message can itself get
    * stuck.
    * This property controls "connect timeout" and "socket timeout" used for cancel commands.

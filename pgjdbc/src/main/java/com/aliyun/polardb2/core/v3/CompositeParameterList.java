@@ -187,6 +187,11 @@ class CompositeParameterList implements V3ParameterList {
     }
   }
 
+  /* POLAR */
+  public void setCallFunctionMode(boolean funMode) {
+    // unsupported
+  }
+
   private final @Positive int total;
   private final SimpleParameterList[] subparams;
   private final int[] offsets;

@@ -332,4 +332,11 @@ public interface BaseConnection extends PGConnection, Connection {
    */
   boolean isBoolAsInt();
 
+  /**
+   * Returns isBoolAsInt connection setting.
+   *
+   * @return isBoolAsInt setting
+   */
+  boolean callFunctionMode();
+
 }

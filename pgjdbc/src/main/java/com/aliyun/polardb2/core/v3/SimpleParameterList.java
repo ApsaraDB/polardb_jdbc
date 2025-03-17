@@ -54,6 +54,16 @@ public class SimpleParameterList implements V3ParameterList {
 
   @Override
   public void registerOutParameter(int index, int oid) throws SQLException {
+
+    /* POLAR: support {? = call func(?)} */
+    if (polarCallFunctionMode) {
+      if (index == 1) {
+        return;
+      } else {
+        index = index - 1;
+      }
+    }
+
     if (index < 1 || index > paramValues.length) {
       throw new PSQLException(
           GT.tr("The column index is out of range: {0}, number of columns: {1}.",
@@ -70,6 +80,16 @@ public class SimpleParameterList implements V3ParameterList {
   }
 
   private void bind(int index, Object value, int oid, byte binary) throws SQLException {
+
+    /* POLAR: support {? = call func(?)} */
+    if (polarCallFunctionMode) {
+      if (index == 1) {
+        return;
+      } else {
+        index = index - 1;
+      }
+    }
+
     if (index < 1 || index > paramValues.length) {
       throw new PSQLException(
           GT.tr("The column index is out of range: {0}, number of columns: {1}.",
@@ -107,8 +127,8 @@ public class SimpleParameterList implements V3ParameterList {
       }
     }
     // Every function has at least one output.
-    if (count == 0) {
-      count = 1;
+    if (count == 0 || polarCallFunctionMode) {
+      count = count + 1;
     }
     return count;
 
@@ -530,6 +550,11 @@ public class SimpleParameterList implements V3ParameterList {
     return ((flags[index] & OUT) != 0);
   }
 
+  /* POLAR */
+  public void setCallFunctionMode(boolean funMode) {
+    polarCallFunctionMode = funMode;
+  }
+
   private final @Nullable Object[] paramValues;
   private final int[] paramTypes;
   private final byte[] flags;
@@ -543,4 +568,5 @@ public class SimpleParameterList implements V3ParameterList {
   private static final Object NULL_OBJECT = new Object();
 
   private int pos = 0;
+  private boolean polarCallFunctionMode = false;
 }

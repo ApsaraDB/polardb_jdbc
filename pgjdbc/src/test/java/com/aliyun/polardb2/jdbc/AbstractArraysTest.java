@@ -1119,5 +1119,13 @@ public abstract class AbstractArraysTest<A> {
     public boolean isBoolAsInt() {
       return false;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean callFunctionMode() {
+      return false;
+    }
   }
 }

@@ -394,6 +394,11 @@ public class TestUtil {
       PGProperty.GSS_ENC_MODE.set(props, getGSSEncMode().value);
     }
 
+    // Allow properties to override the call function mode
+    if (!props.containsKey(PGProperty.CALL_FUNCTION_MODE.getName())) {
+      PGProperty.CALL_FUNCTION_MODE.set(props, false);
+    }
+
     return DriverManager.getConnection(getURL(hostport, database), props);
   }
 
