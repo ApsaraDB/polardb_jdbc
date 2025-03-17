@@ -175,7 +175,7 @@ public enum PGProperty {
    */
   CALL_FUNCTION_MODE(
       "callFunctionMode",
-      "false",
+      "true",
       "enable oracle style's call function.",
       false,
       new String[] {"true", "false"}),
