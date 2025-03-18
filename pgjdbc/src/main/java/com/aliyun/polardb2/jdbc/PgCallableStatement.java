@@ -67,8 +67,7 @@ class PgCallableStatement extends PgPreparedStatement implements CallableStateme
 
       // POLAR: main entry for call function
       // if server enable, pass function call as Oracle format
-      String funCallMode = connection.getParameterStatus("polar_enable_call_function_syntax");
-      if (funCallMode != null && funCallMode.equalsIgnoreCase("on") && connection.callFunctionMode()) {
+      if (connection.callFunctionMode()) {
         this.preparedParameters.setCallFunctionMode(true);
       }
     }
