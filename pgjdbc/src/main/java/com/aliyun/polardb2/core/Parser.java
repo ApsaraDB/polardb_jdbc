@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Basic query parser infrastructure.
@@ -1318,10 +1320,16 @@ public class Parser {
     // Mini-parser for JDBC function-call syntax (only)
     // TODO: Merge with escape processing (and parameter parsing?) so we only parse each query once.
     // RE: frequently used statements are cached (see {@link com.aliyun.polardb2.jdbc.PgConnection#borrowQuery}), so this "merge" is not that important.
-    String sql = jdbcSql;
     boolean isFunction = false;
     boolean outParamBeforeFunc = false;
+    Pattern pattern = Pattern.compile("^begin(.*)end(;?)$", Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
+    Matcher matcher = pattern.matcher(jdbcSql);
 
+    if (matcher.matches()) {
+      jdbcSql = "{" + matcher.group(1).replaceAll(":=", "= call").replaceAll(";\\s*$", "") + "}";
+    }
+
+    String sql = jdbcSql;
     int len = jdbcSql.length();
     int state = 1;
     boolean inQuotes = false;
@@ -1349,10 +1357,7 @@ public class Parser {
 
         case 2:  // After {, looking for ? or =, skipping whitespace
           if (ch == '?') {
-            if (!callFunctionMode) {
-              outParamBeforeFunc = true;
-            }
-            isFunction = true;   // { ? = call ... }  -- function with one out parameter
+            outParamBeforeFunc = isFunction = true;   // { ? = call ... }  -- function with one out parameter
             ++i;
             ++state;
           } else if (ch == 'c' || ch == 'C') {  // { call ... }      -- proc with no out parameters
@@ -1469,7 +1474,7 @@ public class Parser {
             isFunction = true;
           }
         }
-        return new JdbcCallParseInfo(sql, isFunction);
+        return new JdbcCallParseInfo(sql, isFunction, outParamBeforeFunc);
       }
       if (state != 8) {
         syntaxError = true; // Ran out of query while still parsing
@@ -1485,7 +1490,7 @@ public class Parser {
     String prefix;
     String suffix;
     if (escapeSyntaxCallMode == EscapeSyntaxCallMode.SELECT || serverVersion < 110000
-        || (outParamBeforeFunc && escapeSyntaxCallMode == EscapeSyntaxCallMode.CALL_IF_NO_RETURN)) {
+        || (!callFunctionMode && outParamBeforeFunc && escapeSyntaxCallMode == EscapeSyntaxCallMode.CALL_IF_NO_RETURN)) {
       prefix = "select * from ";
       suffix = " as result";
     } else {
@@ -1502,8 +1507,8 @@ public class Parser {
     int opening = s.indexOf('(') + 1;
     if (opening == 0) {
       // here the function call has no parameters declaration eg : "{ ? = call pack_getValue}"
-      sb.append(outParamBeforeFunc ? "(?)" : "()");
-    } else if (outParamBeforeFunc) {
+      sb.append((outParamBeforeFunc && !callFunctionMode) ? "(?)" : "()");
+    } else if (outParamBeforeFunc && !callFunctionMode) {
       // move the single out parameter into the function call
       // so that it can be treated like all other parameters
       boolean needComma = false;
@@ -1535,7 +1540,7 @@ public class Parser {
     } else {
       sql = sb.toString();
     }
-    return new JdbcCallParseInfo(sql, isFunction);
+    return new JdbcCallParseInfo(sql, isFunction, outParamBeforeFunc);
   }
 
   /**

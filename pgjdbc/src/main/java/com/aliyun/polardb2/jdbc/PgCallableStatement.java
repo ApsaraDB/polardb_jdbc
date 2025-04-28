@@ -40,6 +40,7 @@ import java.util.Map;
 class PgCallableStatement extends PgPreparedStatement implements CallableStatement {
   // Used by the callablestatement style methods
   private final boolean isFunction;
+  private final boolean outParamBeforeFunc;
   // functionReturnType contains the user supplied value to check
   // testReturn contains a modified version to make it easier to
   // check the getXXX methods..
@@ -54,6 +55,7 @@ class PgCallableStatement extends PgPreparedStatement implements CallableStateme
       int rsHoldability) throws SQLException {
     super(connection, connection.borrowCallableQuery(sql), rsType, rsConcurrency, rsHoldability);
     this.isFunction = preparedQuery.isFunction;
+    this.outParamBeforeFunc = preparedQuery.outParamBeforeFunc;
 
     /* POLAR: get the unamed SQL */
     if (this.preparedQuery.unProc != null && this.preparedQuery.unProc.isUnamedProc()) {
@@ -67,7 +69,7 @@ class PgCallableStatement extends PgPreparedStatement implements CallableStateme
 
       // POLAR: main entry for call function
       // if server enable, pass function call as Oracle format
-      if (connection.callFunctionMode()) {
+      if (connection.callFunctionMode() && this.outParamBeforeFunc) {
         this.preparedParameters.setCallFunctionMode(true);
       }
     }

@@ -11,10 +11,12 @@ package com.aliyun.polardb2.core;
 public class JdbcCallParseInfo {
   private final String sql;
   private final boolean isFunction;
+  private final boolean outParamBeforeFunc;
 
-  public JdbcCallParseInfo(String sql, boolean isFunction) {
+  public JdbcCallParseInfo(String sql, boolean isFunction, boolean outParamBeforeFunc) {
     this.sql = sql;
     this.isFunction = isFunction;
+    this.outParamBeforeFunc = outParamBeforeFunc;
   }
 
   /**
@@ -33,6 +35,15 @@ public class JdbcCallParseInfo {
    */
   public boolean isFunction() {
     return isFunction;
+  }
+
+  /**
+   * Returns if given SQL is outParamBeforeFunc
+   *
+   * @return {@code true} if given SQL is outParamBeforeFunc
+   */
+  public boolean outParamBeforeFunc() {
+    return outParamBeforeFunc;
   }
 
 }

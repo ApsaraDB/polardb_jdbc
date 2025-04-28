@@ -58,14 +58,17 @@ class CachedQueryCreateAction implements LruCache.CreateAction<Object, CachedQue
           Parser.replaceProcessing(parsedSql, true, queryExecutor.getStandardConformingStrings());
     }
     boolean isFunction;
+    boolean outParamBeforeFunc;
     if (key instanceof CallableQueryKey) {
       JdbcCallParseInfo callInfo =
           Parser.modifyJdbcCall(parsedSql, queryExecutor.getStandardConformingStrings(),
               queryExecutor.getServerVersionNum(), queryExecutor.getProtocolVersion(), (proc != null && proc.isUnamedProc()) ? EscapeSyntaxCallMode.of("call") : queryExecutor.getEscapeSyntaxCallMode(), queryExecutor.callFunctionMode());
       parsedSql = callInfo.getSql();
       isFunction = callInfo.isFunction();
+      outParamBeforeFunc = callInfo.outParamBeforeFunc();
     } else {
       isFunction = false;
+      outParamBeforeFunc = false;
     }
     boolean isParameterized = key instanceof String || castNonNull(queryKey).isParameterized;
     boolean splitStatements = isParameterized || queryExecutor.getPreferQueryMode().compareTo(PreferQueryMode.EXTENDED) >= 0;
@@ -85,6 +88,6 @@ class CachedQueryCreateAction implements LruCache.CreateAction<Object, CachedQue
         );
 
     Query query = queryExecutor.wrap(queries);
-    return new CachedQuery(key, query, isFunction, proc);
+    return new CachedQuery(key, query, isFunction, outParamBeforeFunc, proc);
   }
 }

@@ -34,7 +34,7 @@ public class EscapeSyntaxCallModeCallIfNoReturnTest extends EscapeSyntaxCallMode
     // escapeSyntaxCallMode=callIfNoReturn will cause a CALL statement to be used for the JDBC escape call
     // syntax used below (since no return parameter is specified). "myiofunc" is a function, so the
     // attempted invocation should fail.
-    PSQLState expected = PSQLState.WRONG_OBJECT_TYPE;
+    PSQLState expected = PSQLState.UNDEFINED_FUNCTION;
     assumeCallableStatementsSupported();
     assumeMinimumServerVersion(ServerVersion.v11);
 

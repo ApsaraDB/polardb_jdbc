@@ -34,7 +34,7 @@ public class EscapeSyntaxCallModeCallTest extends EscapeSyntaxCallModeBaseTest {
   public void testInvokeFunction() throws Throwable {
     // escapeSyntaxCallMode=call will cause a CALL statement to be used for the JDBC escape call
     // syntax used below. "myiofunc" is a function, so the attempted invocation should fail.
-    PSQLState expected = PSQLState.WRONG_OBJECT_TYPE;
+    PSQLState expected = PSQLState.UNDEFINED_FUNCTION;
     assumeCallableStatementsSupported();
     assumeMinimumServerVersion(ServerVersion.v11);
 

@@ -19,19 +19,21 @@ public class CachedQuery implements CanEstimateSize {
   public final Object key;
   public final Query query;
   public final boolean isFunction;
+  public final boolean outParamBeforeFunc;
 
   private int executeCount;
 
   /* POLAR */
   public UnNamedProc unProc;
 
-  public CachedQuery(Object key, Query query, boolean isFunction, UnNamedProc proc) {
+  public CachedQuery(Object key, Query query, boolean isFunction, boolean outParamBeforeFunc, UnNamedProc proc) {
     assert key instanceof String || key instanceof CanEstimateSize
         : "CachedQuery.key should either be String or implement CanEstimateSize."
         + " Actual class is " + key.getClass();
     this.key = key;
     this.query = query;
     this.isFunction = isFunction;
+    this.outParamBeforeFunc = outParamBeforeFunc;
     this.unProc = proc;
   }
 
@@ -75,6 +77,7 @@ public class CachedQuery implements CanEstimateSize {
         + "executeCount=" + executeCount
         + ", query=" + query
         + ", isFunction=" + isFunction
+        + ", outParamBeforeFunc=" + outParamBeforeFunc
         + '}';
   }
 }
