@@ -12,6 +12,7 @@ import org.junit.Test;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
+import java.sql.JDBCType;
 import java.sql.Types;
 import java.util.Properties;
 
@@ -245,7 +246,7 @@ public class CallFunction {
     callableStatement.setInt(2, b);
     callableStatement.registerOutParameter(2, java.sql.Types.INTEGER);
     // c
-    callableStatement.registerOutParameter(3, java.sql.Types.INTEGER);
+    callableStatement.registerOutParameter(3, JDBCType.INTEGER);
     callableStatement.execute();
     b = callableStatement.getInt(2);
     c = callableStatement.getInt(3);

@@ -552,7 +552,7 @@ class PgCallableStatement extends PgPreparedStatement implements CallableStateme
 
   public void registerOutParameter(@Positive int parameterIndex, java.sql.SQLType sqlType)
       throws SQLException {
-    throw Driver.notImplemented(this.getClass(), "registerOutParameter");
+    registerOutParameter(parameterIndex, sqlType.getVendorTypeNumber());
   }
 
   public void registerOutParameter(@Positive int parameterIndex, java.sql.SQLType sqlType, int scale)
