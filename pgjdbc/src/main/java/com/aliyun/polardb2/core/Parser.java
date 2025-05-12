@@ -1326,7 +1326,14 @@ public class Parser {
     Matcher matcher = pattern.matcher(jdbcSql);
 
     if (matcher.matches()) {
-      jdbcSql = "{" + matcher.group(1).replaceAll(":=", "= call").replaceAll(";\\s*$", "") + "}";
+      String inner = matcher.group(1).trim();
+      if (inner.contains(":=")) {
+        String transformed = inner.replaceAll(":=", "= call").replaceAll(";\\s*$", "");
+        jdbcSql = "{" + transformed + "}";
+      } else {
+        String transformed = inner.replaceAll(";\\s*$", "");
+        jdbcSql = "{call " + transformed + "}";
+      }
     }
 
     String sql = jdbcSql;

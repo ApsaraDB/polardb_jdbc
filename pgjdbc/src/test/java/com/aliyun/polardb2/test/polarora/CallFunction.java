@@ -231,6 +231,30 @@ public class CallFunction {
   }
 
   @Test
+  public void test_in_out_procedure2() throws Exception {
+    CallableStatement callableStatement = null;
+    int a = 1;
+    int b = 2;
+    int c = 0;
+    System.out.println(String.format("BEFORE test_in_out_procedure: a=%d, b=%d, c=%d", a, b, c));
+
+    callableStatement = conn.prepareCall("BEGIN test_in_out_procedure (?, ?, ?); END;");
+    // a
+    callableStatement.setInt(1, a);
+    // b
+    callableStatement.setInt(2, b);
+    callableStatement.registerOutParameter(2, java.sql.Types.INTEGER);
+    // c
+    callableStatement.registerOutParameter(3, java.sql.Types.INTEGER);
+    callableStatement.execute();
+    b = callableStatement.getInt(2);
+    c = callableStatement.getInt(3);
+
+    System.out.println(String.format("AFTER test_in_out_procedure: a=%d, b=%d, c=%d", a, b, c));
+    System.out.println();
+  }
+
+  @Test
   public void test_in_out_function() throws Exception {
     CallableStatement callableStatement = null;
 
