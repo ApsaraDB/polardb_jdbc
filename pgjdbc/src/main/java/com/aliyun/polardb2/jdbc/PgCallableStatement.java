@@ -241,6 +241,9 @@ class PgCallableStatement extends PgPreparedStatement implements CallableStateme
           sqlType = Types.TIMESTAMP;
         }
         break;
+      case -10: // OracleTypes.cursor
+        sqlType = Types.REF_CURSOR;
+        break;
       /* POLAR DIFF end */
       default:
         break;

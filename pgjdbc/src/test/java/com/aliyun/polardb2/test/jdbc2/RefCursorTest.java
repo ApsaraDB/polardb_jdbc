@@ -172,4 +172,18 @@ public class RefCursorTest extends BaseTest4 {
     call.close();
   }
 
+  @Test
+  public void testResultType1() throws SQLException {
+    CallableStatement call = con.prepareCall("{ ? = call testspg__getRefcursor () }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+    call.registerOutParameter(1, -10);
+    call.execute();
+    ResultSet rs = (ResultSet) call.getObject(1);
+
+    assertEquals(rs.getType(), ResultSet.TYPE_SCROLL_INSENSITIVE);
+    assertEquals(rs.getConcurrency(), ResultSet.CONCUR_READ_ONLY);
+
+    assertTrue(rs.last());
+    assertEquals(6, rs.getRow());
+  }
+
 }
