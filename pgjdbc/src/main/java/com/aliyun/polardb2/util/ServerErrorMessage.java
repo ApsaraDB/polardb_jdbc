@@ -35,6 +35,7 @@ public class ServerErrorMessage implements Serializable {
   private static final Character COLUMN = 'c';
   private static final Character DATATYPE = 'd';
   private static final Character CONSTRAINT = 'n';
+  private static final Character SQLCODE = 'E';
 
   private final Map<Character, String> mesgParts = new HashMap<Character, String>();
 
@@ -66,6 +67,16 @@ public class ServerErrorMessage implements Serializable {
       }
       pos++;
     }
+  }
+
+  public @Nullable int getErrorCode() {
+    try {
+      return Integer.parseInt(mesgParts.get(SQLCODE));
+    } catch (NumberFormatException e) {
+        // parse error
+    }
+
+    return 0;
   }
 
   public @Nullable String getSQLState() {

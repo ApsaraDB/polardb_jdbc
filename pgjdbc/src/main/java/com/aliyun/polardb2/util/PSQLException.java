@@ -31,7 +31,7 @@ public class PSQLException extends SQLException {
 
   @Pure
   public PSQLException(ServerErrorMessage serverError, boolean detail) {
-    super(detail ? serverError.toString() : serverError.getNonSensitiveErrorMessage(), serverError.getSQLState());
+    super(detail ? serverError.toString() : serverError.getNonSensitiveErrorMessage(), serverError.getSQLState(), serverError.getErrorCode());
     this.serverError = serverError;
   }
 
