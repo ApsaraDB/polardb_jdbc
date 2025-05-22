@@ -39,6 +39,23 @@ class BooleanTypeUtil {
     if (in instanceof Boolean) {
       return (Boolean) in;
     }
+
+    // Attempt to convert to a numeric value
+    try {
+      // Convert input to string for consistent parsing
+      String str = String.valueOf(in);
+      // Parse as double to check numeric conversion
+      Double value = Double.parseDouble(str);
+      // Return true if the parsed value is not zero
+      if (value != 0) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (NumberFormatException e) {
+      // Skip to other type checks if parsing fails
+    }
+
     if (in instanceof String) {
       return fromString((String) in);
     }
