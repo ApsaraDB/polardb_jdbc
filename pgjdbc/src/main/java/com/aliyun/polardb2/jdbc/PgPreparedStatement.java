@@ -48,6 +48,7 @@ import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
@@ -62,6 +63,7 @@ import java.sql.Ref;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.RowId;
+import java.sql.SQLData;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
 import java.sql.SQLXML;
@@ -75,6 +77,8 @@ import java.time.OffsetDateTime;
 import java.time.OffsetTime;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 import java.util.UUID;
@@ -786,6 +790,13 @@ class PgPreparedStatement extends PgStatement implements PreparedStatement {
           setPGobject(parameterIndex, (PGobject) in);
         } else if (in instanceof Map) {
           setMap(parameterIndex, (Map<?, ?>) in);
+        } else {
+          bindString(parameterIndex, in.toString(), Oid.UNSPECIFIED);
+        }
+        break;
+      case Types.STRUCT:
+        if (in instanceof SQLData) {
+          bindString(parameterIndex, toPostgresString(in), Oid.UNSPECIFIED);
         } else {
           bindString(parameterIndex, in.toString(), Oid.UNSPECIFIED);
         }
@@ -1938,5 +1949,58 @@ class PgPreparedStatement extends PgStatement implements PreparedStatement {
     }
     this.batchStatements = newBatchStatements;
     this.batchParameters = newBatchParameters;
+  }
+
+  // This function is used to adapt the direct reference to struct type data in the springframework framework.
+  private static String toPostgresString(Object object) throws SQLException {
+    SQLData sqlData = (SQLData) object;
+    String typeName = sqlData.getSQLTypeName();
+
+    List<Field> fields = new ArrayList<>();
+    Class<?> clazz = sqlData.getClass();
+    while (clazz != null && clazz != Object.class) {
+      for (Field field : clazz.getDeclaredFields()) {
+        if (java.lang.reflect.Modifier.isPublic(field.getModifiers())) {
+          fields.add(field);
+        }
+      }
+      clazz = clazz.getSuperclass();
+    }
+    fields.sort(Comparator.comparing(Field::getName));
+    StringBuilder sb = new StringBuilder("(");
+    for (int i = 0; i < fields.size(); i++) {
+      Field field = fields.get(i);
+      field.setAccessible(true);
+      try {
+        Object value = field.get(sqlData);
+        sb.append(toPostgresValue(value));
+      } catch (IllegalAccessException e) {
+        throw new SQLException("unable to find field" + field.getName(), e);
+      }
+      if (i < fields.size() - 1) {
+        sb.append(", ");
+      }
+    }
+    sb.append(")");
+    return sb.toString();
+  }
+
+  // This function is used to handle the mapping of different types of Java values ​​to strings
+  private static String toPostgresValue(Object value) {
+    if (value == null) {
+      return "NULL";
+    }
+    if (value instanceof String) {
+      String str = (String) value;
+      return "'" + str.replace("'", "''") + "'";
+    } else if (value instanceof Number) {
+      return value.toString();
+    } else if (value instanceof Boolean) {
+      return (Boolean) value ? "TRUE" : "FALSE";
+    } else if (value instanceof java.sql.Date) {
+      return value.toString();
+    } else {
+      return "'" + value.toString() + "'";
+    }
   }
 }
