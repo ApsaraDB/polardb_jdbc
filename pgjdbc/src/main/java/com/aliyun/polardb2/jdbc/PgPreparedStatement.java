@@ -1113,6 +1113,8 @@ class PgPreparedStatement extends PgStatement implements PreparedStatement {
             GT.tr("Cannot cast an instance of {0} to type {1}", x.getClass().getName(), "Types.ARRAY"),
             PSQLState.INVALID_PARAMETER_TYPE, e);
       }
+    } else if (x instanceof PgStruct) {
+      setStruct(parameterIndex, (PgStruct) x);
     } else {
       // Can't infer a type.
       throw new PSQLException(GT.tr(
@@ -2001,6 +2003,15 @@ class PgPreparedStatement extends PgStatement implements PreparedStatement {
       return value.toString();
     } else {
       return "'" + value.toString() + "'";
+    }
+  }
+
+  private void setStruct(@Positive int parameterIndex, @Nullable PgStruct x) throws SQLException {
+    checkClosed();
+    if (x == null) {
+      setNull(parameterIndex, Types.STRUCT);
+    } else {
+      bindString(parameterIndex, PostgresStructConverter.objectArrayToPostgresStruct(x.getAttributes()), Oid.UNSPECIFIED);
     }
   }
 }

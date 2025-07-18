@@ -1501,7 +1501,7 @@ public class PgConnection implements BaseConnection {
   @Override
   public Struct createStruct(String typeName, Object[] attributes) throws SQLException {
     checkClosed();
-    throw com.aliyun.polardb2.Driver.notImplemented(this.getClass(), "createStruct(String, Object[])");
+    return new PgStruct(typeName, attributes);
   }
 
   @SuppressWarnings({ "rawtypes", "unchecked" })
