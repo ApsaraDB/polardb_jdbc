@@ -10,7 +10,6 @@ import static com.aliyun.polardb2.util.internal.Nullness.castNonNull;
 import com.aliyun.polardb2.Driver;
 import com.aliyun.polardb2.core.ParameterList;
 import com.aliyun.polardb2.core.Query;
-import com.aliyun.polardb2.polarora.PolarDriverPrefix;
 import com.aliyun.polardb2.util.GT;
 import com.aliyun.polardb2.util.PSQLException;
 import com.aliyun.polardb2.util.PSQLState;
@@ -321,12 +320,10 @@ class PgCallableStatement extends PgPreparedStatement implements CallableStateme
   public int getInt(@Positive int parameterIndex) throws SQLException {
 
     /* POLAR: allow getInt from number */
-    if (connection.getDriverPrefix() != PolarDriverPrefix.POSTGRES) {
-      int testReturn = this.testReturn != null ? this.testReturn[parameterIndex - 1] : -1;
+    int testReturn = this.testReturn != null ? this.testReturn[parameterIndex - 1] : -1;
 
-      if (testReturn == Types.NUMERIC) {
-        return ((BigDecimal) callResult[parameterIndex - 1]).intValue();
-      }
+    if (testReturn == Types.NUMERIC) {
+      return ((BigDecimal) callResult[parameterIndex - 1]).intValue();
     }
 
     Object result = checkIndex(parameterIndex, Types.INTEGER, "Int");
@@ -377,7 +374,13 @@ class PgCallableStatement extends PgPreparedStatement implements CallableStateme
   public java.sql.@Nullable Date getDate(@Positive int parameterIndex) throws SQLException {
     /* POLAR DIFF: map date to timestamp */
     if (connection.isMapDateToTimestamp()) {
-      return new java.sql.Date(getTimestamp(parameterIndex).getTime());
+      Timestamp result = getTimestamp(parameterIndex);
+
+      if (result == null) {
+        return null;
+      }
+
+      return new java.sql.Date(result.getTime());
     }
     /* POLAR DIFF end */
     Object result = checkIndex(parameterIndex, Types.DATE, "Date");

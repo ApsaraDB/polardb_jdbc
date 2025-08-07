@@ -195,6 +195,7 @@ public class PgConnection implements BaseConnection {
   private boolean boolAsInt = false;
   private boolean commentStyle = false;
   private boolean callFunctionMode = false;
+  private boolean forceDriverType = false;
   /* POLAR DIFF END */
 
   // Current warnings; there might be more on queryExecutor too.
@@ -495,33 +496,22 @@ public class PgConnection implements BaseConnection {
   private void polarSetParameters(Properties info) {
     // new add parameters
     this.driverPrefix = PolarDriverPrefix.forName(PGProperty.DRIVER_PREFIX.getOrDefault(info));
-    if (this.driverPrefix != PolarDriverPrefix.POSTGRES) {
-      this.mapDateToTimestamp = PGProperty.MAP_DATE_TO_TIMESTAMP.getBoolean(info);
-      String oracleCaseLabel = PGProperty.ORACLE_CASE.getOrDefault(info);
-      if (oracleCaseLabel.equalsIgnoreCase("true")) {
-        this.oracleCase = 1;
-      } else if (oracleCaseLabel.equalsIgnoreCase("strict")) {
-        this.oracleCase = 2;
-      }
-      this.autoCommit = PGProperty.AUTO_COMMIT.getBoolean(info);
-      this.autoCommitSpecCompliant = PGProperty.AUTO_COMMIT_SPEC_COMPLIANT.getBoolean(info);
-      this.collectWarning = PGProperty.COLLECT_WARNING.getBoolean(info);
-      this.blobAsBytea = PGProperty.BLOB_AS_BYTEA.getBoolean(info);
-      this.clobAsText = PGProperty.CLOB_AS_TEXT.getBoolean(info);
-      this.defaultPolarMaxFetchSize = PGProperty.DEFAULT_POLAR_MAX_FETCH_SIZE.getIntNoCheck(info);
-      this.boolAsInt = PGProperty.BOOL_AS_INT.getBoolean(info);
-      this.callFunctionMode = PGProperty.CALL_FUNCTION_MODE.getBoolean(info);
-    } else {
-      this.mapDateToTimestamp = false;
-      this.oracleCase = 0;
-      this.autoCommitSpecCompliant = true;
-      this.collectWarning = true;
-      this.blobAsBytea = false;
-      this.clobAsText = false;
-      this.defaultPolarMaxFetchSize = 0;
-      this.boolAsInt = false;
-      this.callFunctionMode = false;
+    this.mapDateToTimestamp = PGProperty.MAP_DATE_TO_TIMESTAMP.getBoolean(info);
+    String oracleCaseLabel = PGProperty.ORACLE_CASE.getOrDefault(info);
+    if (oracleCaseLabel.equalsIgnoreCase("true")) {
+      this.oracleCase = 1;
+    } else if (oracleCaseLabel.equalsIgnoreCase("strict")) {
+      this.oracleCase = 2;
     }
+    this.autoCommit = PGProperty.AUTO_COMMIT.getBoolean(info);
+    this.autoCommitSpecCompliant = PGProperty.AUTO_COMMIT_SPEC_COMPLIANT.getBoolean(info);
+    this.collectWarning = PGProperty.COLLECT_WARNING.getBoolean(info);
+    this.blobAsBytea = PGProperty.BLOB_AS_BYTEA.getBoolean(info);
+    this.clobAsText = PGProperty.CLOB_AS_TEXT.getBoolean(info);
+    this.defaultPolarMaxFetchSize = PGProperty.DEFAULT_POLAR_MAX_FETCH_SIZE.getIntNoCheck(info);
+    this.boolAsInt = PGProperty.BOOL_AS_INT.getBoolean(info);
+    this.callFunctionMode = PGProperty.CALL_FUNCTION_MODE.getBoolean(info);
+    this.forceDriverType = PGProperty.FORCE_DRIVER_TYPE.getBoolean(info);
   }
 
   @Deprecated
@@ -2069,5 +2059,10 @@ public class PgConnection implements BaseConnection {
   @Override
   public boolean callFunctionMode() {
     return callFunctionMode;
+  }
+
+  @Override
+  public boolean isForceDriverType() {
+    return forceDriverType;
   }
 }

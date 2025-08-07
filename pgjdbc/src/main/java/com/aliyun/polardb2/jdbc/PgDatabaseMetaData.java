@@ -14,7 +14,6 @@ import com.aliyun.polardb2.core.ServerVersion;
 import com.aliyun.polardb2.core.Tuple;
 import com.aliyun.polardb2.core.TypeInfo;
 import com.aliyun.polardb2.core.v3.QueryExecutorImpl;
-import com.aliyun.polardb2.polarora.PolarDriverPrefix;
 import com.aliyun.polardb2.util.ByteConverter;
 import com.aliyun.polardb2.util.GT;
 import com.aliyun.polardb2.util.JdbcBlackHole;
@@ -1227,16 +1226,10 @@ public class PgDatabaseMetaData implements DatabaseMetaData {
       // if we are returning a multi-column result.
       if ("c".equals(returnTypeType) || ("p".equals(returnTypeType) && argModesArray != null)) {
         String columnsql;
-        if (connection.getDriverPrefix() != PolarDriverPrefix.POSTGRES) {
-          columnsql = "SELECT a.attname,a.atttypid FROM pg_catalog.pg_attribute a "
-                           + " WHERE a.attrelid = " + returnTypeRelid
-                           + " AND NOT a.attisdropped AND a.attnum > 0 "
-                           + " AND NOT pg_catalog.polar_is_sys_rowid(a.attname) ORDER BY a.attnum ";
-        } else {
-          columnsql = "SELECT a.attname,a.atttypid FROM pg_catalog.pg_attribute a "
-                           + " WHERE a.attrelid = " + returnTypeRelid
-                           + " AND NOT a.attisdropped AND a.attnum > 0 ORDER BY a.attnum ";
-        }
+        columnsql = "SELECT a.attname,a.atttypid FROM pg_catalog.pg_attribute a "
+                          + " WHERE a.attrelid = " + returnTypeRelid
+                          + " AND NOT a.attisdropped AND a.attnum > 0 "
+                          + " AND NOT pg_catalog.polar_is_sys_rowid(a.attname) ORDER BY a.attnum ";
         Statement columnstmt = connection.createStatement();
         ResultSet columnrs = columnstmt.executeQuery(columnsql);
         while (columnrs.next()) {
@@ -1449,17 +1442,10 @@ public class PgDatabaseMetaData implements DatabaseMetaData {
       throws SQLException {
     String sql;
 
-    if (connection.getDriverPrefix() != PolarDriverPrefix.POSTGRES) {
-      sql = "SELECT nspname AS TABLE_SCHEM, NULL AS TABLE_CATALOG FROM pg_catalog.pg_namespace "
-          + " WHERE nspname <> 'pg_toast' AND nsppkgns = 0 AND (nspname !~ '^pg_temp_' "
-          + " OR nspname = (pg_catalog.current_schemas(true))[1]) AND (nspname !~ '^pg_toast_temp_' "
-          + " OR nspname = replace((pg_catalog.current_schemas(true))[1], 'pg_temp_', 'pg_toast_temp_')) ";
-    } else {
-      sql = "SELECT nspname AS TABLE_SCHEM, NULL AS TABLE_CATALOG FROM pg_catalog.pg_namespace "
-          + " WHERE nspname <> 'pg_toast' AND (nspname !~ '^pg_temp_' "
-          + " OR nspname = (pg_catalog.current_schemas(true))[1]) AND (nspname !~ '^pg_toast_temp_' "
-          + " OR nspname = replace((pg_catalog.current_schemas(true))[1], 'pg_temp_', 'pg_toast_temp_')) ";
-    }
+    sql = "SELECT nspname AS TABLE_SCHEM, NULL AS TABLE_CATALOG FROM pg_catalog.pg_namespace "
+        + " WHERE nspname <> 'pg_toast' AND nsppkgns = 0 AND (nspname !~ '^pg_temp_' "
+        + " OR nspname = (pg_catalog.current_schemas(true))[1]) AND (nspname !~ '^pg_toast_temp_' "
+        + " OR nspname = replace((pg_catalog.current_schemas(true))[1], 'pg_temp_', 'pg_toast_temp_')) ";
     if (schemaPattern != null && !schemaPattern.isEmpty()) {
       sql += " AND nspname LIKE " + escapeQuotes(schemaPattern);
     }
@@ -1573,30 +1559,17 @@ public class PgDatabaseMetaData implements DatabaseMetaData {
       sql += "null as attgenerated,";
     }
 
-    if (connection.getDriverPrefix() != PolarDriverPrefix.POSTGRES) {
-      sql += "pg_catalog.pg_get_expr(def.adbin, def.adrelid) AS adsrc,dsc.description,t.typbasetype,t.typtype "
-           + " FROM pg_catalog.pg_namespace n "
-           + " JOIN pg_catalog.pg_class c ON (c.relnamespace = n.oid) "
-           + " JOIN pg_catalog.pg_attribute a ON (a.attrelid=c.oid) "
-           + " JOIN pg_catalog.pg_type t ON (a.atttypid = t.oid) "
-           + " LEFT JOIN pg_catalog.pg_attrdef def ON (a.attrelid=def.adrelid AND a.attnum = def.adnum) "
-           + " LEFT JOIN pg_catalog.pg_description dsc ON (c.oid=dsc.objoid AND a.attnum = dsc.objsubid) "
-           + " LEFT JOIN pg_catalog.pg_class dc ON (dc.oid=dsc.classoid AND dc.relname='pg_class') "
-           + " LEFT JOIN pg_catalog.pg_namespace dn ON (dc.relnamespace=dn.oid AND dn.nspname='pg_catalog') "
-           + " WHERE c.relkind in ('r','p','v','f','m') and a.attnum > 0 AND NOT a.attisdropped "
-           + " AND NOT pg_catalog.polar_is_sys_rowid(a.attname) ";
-    } else {
-      sql += "pg_catalog.pg_get_expr(def.adbin, def.adrelid) AS adsrc,dsc.description,t.typbasetype,t.typtype "
-           + " FROM pg_catalog.pg_namespace n "
-           + " JOIN pg_catalog.pg_class c ON (c.relnamespace = n.oid) "
-           + " JOIN pg_catalog.pg_attribute a ON (a.attrelid=c.oid) "
-           + " JOIN pg_catalog.pg_type t ON (a.atttypid = t.oid) "
-           + " LEFT JOIN pg_catalog.pg_attrdef def ON (a.attrelid=def.adrelid AND a.attnum = def.adnum) "
-           + " LEFT JOIN pg_catalog.pg_description dsc ON (c.oid=dsc.objoid AND a.attnum = dsc.objsubid) "
-           + " LEFT JOIN pg_catalog.pg_class dc ON (dc.oid=dsc.classoid AND dc.relname='pg_class') "
-           + " LEFT JOIN pg_catalog.pg_namespace dn ON (dc.relnamespace=dn.oid AND dn.nspname='pg_catalog') "
-           + " WHERE c.relkind in ('r','p','v','f','m') and a.attnum > 0 AND NOT a.attisdropped ";
-    }
+    sql += "pg_catalog.pg_get_expr(def.adbin, def.adrelid) AS adsrc,dsc.description,t.typbasetype,t.typtype "
+          + " FROM pg_catalog.pg_namespace n "
+          + " JOIN pg_catalog.pg_class c ON (c.relnamespace = n.oid) "
+          + " JOIN pg_catalog.pg_attribute a ON (a.attrelid=c.oid) "
+          + " JOIN pg_catalog.pg_type t ON (a.atttypid = t.oid) "
+          + " LEFT JOIN pg_catalog.pg_attrdef def ON (a.attrelid=def.adrelid AND a.attnum = def.adnum) "
+          + " LEFT JOIN pg_catalog.pg_description dsc ON (c.oid=dsc.objoid AND a.attnum = dsc.objsubid) "
+          + " LEFT JOIN pg_catalog.pg_class dc ON (dc.oid=dsc.classoid AND dc.relname='pg_class') "
+          + " LEFT JOIN pg_catalog.pg_namespace dn ON (dc.relnamespace=dn.oid AND dn.nspname='pg_catalog') "
+          + " WHERE c.relkind in ('r','p','v','f','m') and a.attnum > 0 AND NOT a.attisdropped "
+          + " AND NOT pg_catalog.polar_is_sys_rowid(a.attname) ";
 
     if (schemaPattern != null && !schemaPattern.isEmpty()) {
       sql += " AND n.nspname LIKE " + escapeQuotes(schemaPattern);
@@ -1764,30 +1737,17 @@ public class PgDatabaseMetaData implements DatabaseMetaData {
 
     String sql;
 
-    if (connection.getDriverPrefix() != PolarDriverPrefix.POSTGRES) {
-      sql = "SELECT n.nspname,c.relname,r.rolname,c.relacl, "
-            + (connection.haveMinimumServerVersion(ServerVersion.v8_4) ? "a.attacl, " : "")
-            + " a.attname "
-            + " FROM pg_catalog.pg_namespace n, pg_catalog.pg_class c, "
-            + " pg_catalog.pg_roles r, pg_catalog.pg_attribute a "
-            + " WHERE c.relnamespace = n.oid "
-            + " AND c.relowner = r.oid "
-            + " AND c.oid = a.attrelid "
-            + " AND c.relkind = 'r' "
-            + " AND a.attnum > 0 AND NOT a.attisdropped "
-            + " AND NOT pg_catalog.polar_is_sys_rowid(a.attname) ";
-    } else {
-      sql = "SELECT n.nspname,c.relname,r.rolname,c.relacl, "
-            + (connection.haveMinimumServerVersion(ServerVersion.v8_4) ? "a.attacl, " : "")
-            + " a.attname "
-            + " FROM pg_catalog.pg_namespace n, pg_catalog.pg_class c, "
-            + " pg_catalog.pg_roles r, pg_catalog.pg_attribute a "
-            + " WHERE c.relnamespace = n.oid "
-            + " AND c.relowner = r.oid "
-            + " AND c.oid = a.attrelid "
-            + " AND c.relkind = 'r' "
-            + " AND a.attnum > 0 AND NOT a.attisdropped ";
-    }
+    sql = "SELECT n.nspname,c.relname,r.rolname,c.relacl, "
+          + (connection.haveMinimumServerVersion(ServerVersion.v8_4) ? "a.attacl, " : "")
+          + " a.attname "
+          + " FROM pg_catalog.pg_namespace n, pg_catalog.pg_class c, "
+          + " pg_catalog.pg_roles r, pg_catalog.pg_attribute a "
+          + " WHERE c.relnamespace = n.oid "
+          + " AND c.relowner = r.oid "
+          + " AND c.oid = a.attrelid "
+          + " AND c.relkind = 'r' "
+          + " AND a.attnum > 0 AND NOT a.attisdropped "
+          + " AND NOT pg_catalog.polar_is_sys_rowid(a.attname) ";
 
     if (schema != null && !schema.isEmpty()) {
       sql += " AND n.nspname = " + escapeQuotes(schema);
@@ -2587,9 +2547,7 @@ public class PgDatabaseMetaData implements DatabaseMetaData {
       }
 
       /* POLAR */
-      if (connection.getDriverPrefix() != PolarDriverPrefix.POSTGRES) {
-        sql += " AND ci.relname not like 'polar_rowid%' ";
-      }
+      sql += " AND ci.relname not like 'polar_rowid%' ";
 
       sql = "SELECT "
                 + "    tmp.TABLE_CAT, "
@@ -3093,15 +3051,9 @@ public class PgDatabaseMetaData implements DatabaseMetaData {
       if ("c".equals(returnTypeType) || ("p".equals(returnTypeType) && argModesArray != null)) {
         String columnsql;
 
-        if (connection.getDriverPrefix() != PolarDriverPrefix.POSTGRES) {
-          columnsql = "SELECT a.attname,a.atttypid FROM pg_catalog.pg_attribute a "
-            + " WHERE a.attrelid = " + returnTypeRelid
-            + " AND NOT a.attisdropped AND a.attnum > 0 AND NOT pg_catalog.polar_is_sys_rowid(a.attname) ORDER BY a.attnum ";
-        } else {
-          columnsql = "SELECT a.attname,a.atttypid FROM pg_catalog.pg_attribute a "
-            + " WHERE a.attrelid = " + returnTypeRelid
-            + " AND NOT a.attisdropped AND a.attnum > 0 ORDER BY a.attnum ";
-        }
+        columnsql = "SELECT a.attname,a.atttypid FROM pg_catalog.pg_attribute a "
+          + " WHERE a.attrelid = " + returnTypeRelid
+          + " AND NOT a.attisdropped AND a.attnum > 0 AND NOT pg_catalog.polar_is_sys_rowid(a.attname) ORDER BY a.attnum ";
         Statement columnstmt = connection.createStatement();
         ResultSet columnrs = columnstmt.executeQuery(columnsql);
         while (columnrs.next()) {

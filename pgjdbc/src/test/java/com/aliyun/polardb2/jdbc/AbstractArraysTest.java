@@ -1127,5 +1127,13 @@ public abstract class AbstractArraysTest<A> {
     public boolean callFunctionMode() {
       return false;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isForceDriverType() {
+      return false;
+    }
   }
 }

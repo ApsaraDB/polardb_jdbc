@@ -333,7 +333,8 @@ public enum PGProperty {
   FORCE_DRIVER_TYPE(
       "forceDriverType",
       null,
-      "PolarDB force type pg/ora/ora11/ora14"),
+      "PolarDB force type pg",
+      false),
 
   /**
    * Group startup parameters in a transaction

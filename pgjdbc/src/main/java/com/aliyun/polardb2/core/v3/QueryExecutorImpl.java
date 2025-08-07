@@ -186,18 +186,10 @@ public class QueryExecutorImpl extends QueryExecutorBase {
     PolarDriverPrefix driverPrefix = PolarDriverPrefix.forName(PGProperty.DRIVER_PREFIX.getOrDefault(info));
     this.commentStyle =  PGProperty.COMMENT_STYLE.getBoolean(info);
     this.callFunctionMode = PGProperty.CALL_FUNCTION_MODE.getBoolean(info);
-
-    if (driverPrefix != PolarDriverPrefix.POSTGRES) {
-      this.mapDateToTimeStamp = PGProperty.MAP_DATE_TO_TIMESTAMP.getBoolean(info);
-      this.namedParam =  PGProperty.NAMED_PARAM.getBoolean(info);
-      this.defaultPolarMaxFetchSize = PGProperty.DEFAULT_POLAR_MAX_FETCH_SIZE.getIntNoCheck(info);
-      this.unnamedProc = PGProperty.UNNAMED_PROC.getBoolean(info);
-    } else {
-      this.mapDateToTimeStamp = false;
-      this.namedParam = false;
-      this.defaultPolarMaxFetchSize = 0;
-      this.unnamedProc = false;
-    }
+    this.mapDateToTimeStamp = PGProperty.MAP_DATE_TO_TIMESTAMP.getBoolean(info);
+    this.namedParam =  PGProperty.NAMED_PARAM.getBoolean(info);
+    this.defaultPolarMaxFetchSize = PGProperty.DEFAULT_POLAR_MAX_FETCH_SIZE.getIntNoCheck(info);
+    this.unnamedProc = PGProperty.UNNAMED_PROC.getBoolean(info);
 
     readStartupMessages();
   }

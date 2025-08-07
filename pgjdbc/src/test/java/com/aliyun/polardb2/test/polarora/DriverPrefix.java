@@ -56,15 +56,15 @@ public class DriverPrefix {
   }
 
   @Test
-  public void testGetURL5() {
+  public void testGetURL5() throws Exception  {
     try {
-      conn = DriverManager.getConnection(String.format("jdbc:polardb://%s:%s/%s?" + "user=%s"
+      conn = DriverManager.getConnection(String.format("jdbc:postgresql://%s:%s/%s?" + "user=%s"
               + "&password=%s&forceDriverType=pg", TestUtil.getServer(), TestUtil.getPort(), TestUtil.getDatabase(),
           TestUtil.getUser(), TestUtil.getPassword()));
       Assert.fail("------------");
     } catch (Exception exp) {
       System.out.println(exp.getMessage().toString());
-      Assert.assertTrue(exp.getMessage().startsWith("No suitable driver found for jdbc:polardb://"));
+      Assert.assertTrue(exp.getMessage().startsWith("No suitable driver found for jdbc:postgresql://"));
     }
   }
 
@@ -81,13 +81,13 @@ public class DriverPrefix {
   @Test
   public void testGetURL7() {
     try {
-      conn = DriverManager.getConnection(String.format("jdbc:polardb://%s:%s/%s?" + "user=%s"
+      conn = DriverManager.getConnection(String.format("jdbc:postgresql://%s:%s/%s?" + "user=%s"
               + "&password=%s&forceDriverType=ora11", TestUtil.getServer(), TestUtil.getPort(), TestUtil.getDatabase(),
           TestUtil.getUser(), TestUtil.getPassword()));
       Assert.fail("------------");
     } catch (Exception exp) {
       System.out.println(exp.getMessage().toString());
-      Assert.assertTrue(exp.getMessage().startsWith("No suitable driver found for jdbc:polardb://"));
+      Assert.assertTrue(exp.getMessage().startsWith("No suitable driver found for jdbc:postgresql://"));
     }
   }
 
@@ -112,5 +112,15 @@ public class DriverPrefix {
       System.out.println(exp.getMessage().toString());
       Assert.assertTrue(exp.getMessage().startsWith("No suitable driver found for jdbc:polardb1://"));
     }
+  }
+
+  @Test
+  public void testGetURL11() throws Exception {
+    conn = DriverManager.getConnection(String.format("jdbc:postgresql://%s:%s/%s?" + "user=%s"
+          + "&password=%s&forceDriverType=True", TestUtil.getServer(), TestUtil.getPort(), TestUtil.getDatabase(),
+      TestUtil.getUser(), TestUtil.getPassword()));
+
+    Assert.assertNotNull(conn);
+    Assert.assertTrue(((PgConnection) conn).getURL().startsWith("jdbc:postgresql://"));
   }
 }

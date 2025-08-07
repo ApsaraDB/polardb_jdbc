@@ -339,4 +339,11 @@ public interface BaseConnection extends PGConnection, Connection {
    */
   boolean callFunctionMode();
 
+  /**
+   * Returns isForceDriverType connection setting.
+   *
+   * @return isForceDriverType setting
+   */
+  boolean isForceDriverType();
+
 }
