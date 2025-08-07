@@ -21,7 +21,7 @@ plugins {
 dependencies {
     // Make jmhCompileClasspath resolvable
     jmhImplementation(platform(project(":bom")))
-    jmhImplementation(project(":postgresql"))
+    jmhImplementation(project(":polardb"))
 //    jmhImplementation("com.google.guava:guava")
 //    jmhImplementation("org.codehaus.janino:commons-compiler")
     jmhImplementation("org.openjdk.jmh:jmh-core")

@@ -46,10 +46,10 @@ rootProject.name = "pgjdbc"
 include(
     "bom",
     "benchmarks",
-    "postgresql"
+    "polardb"
 )
 
-project(":postgresql").projectDir = file("pgjdbc")
+project(":polardb").projectDir = file("pgjdbc")
 
 // See https://github.com/gradle/gradle/issues/1348#issuecomment-284758705 and
 // https://github.com/gradle/gradle/issues/5321#issuecomment-387561204

@@ -713,7 +713,7 @@ allprojects {
 }
 
 subprojects {
-    if (project.path.startsWith(":postgresql")) {
+    if (project.path.startsWith(":polardb")) {
         plugins.withId("java") {
             configure<JavaPluginExtension> {
                 val sourceSets: SourceSetContainer by project
