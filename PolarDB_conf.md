@@ -1,8 +1,8 @@
 ### 测试
 #### build.local.properties
-host=11.239.69.226
-server=11.239.69.226
-port=59245
+host=x.x.x.x
+server=x.x.x.x
+port=xxxx
 database=test
 username=test
 password=test
